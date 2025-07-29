@@ -205,3 +205,113 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# LaTeX
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.idx
+*.ilg
+*.ind
+*.lof
+*.lot
+*.out
+*.toc
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+*.ist
+*.loa
+*.nav
+*.snm
+*.vrb
+*.xdy
+*.synctex.gz
+*.synctex(busy)
+*.pdfsync
+*.auxlock
+*.figlist
+*.makefile
+*.fdb_latexmk
+
+# BibTeX
+*.bib.bak
+*.bib.orig
+
+# Lean 4
+lake-packages/
+.lake/
+build/
+*.olean
+Lean.toml.lock
+
+# Isabelle/HOL
+*.thy~
+*.thy.orig
+output/
+browser_info/
+.isabelle/
+
+# Coq
+*.vo
+*.vos
+*.vok
+*.glob
+*.v.d
+.coqdeps.d
+.lia.cache
+
+# Agda
+*.agdai
+MAlonzo/
+
+# Dafny
+*.dfy.bak
+
+# TLA+
+*.tla.bak
+
+# Proof assistant temporary files
+*.proof.bak
+*.theory.bak
+formalization_cache/
+verification_logs/
+
+# LLM API keys and configuration
+.env.local
+api_keys.json
+config.secret.json
+
+# Model outputs and temporary files
+outputs/
+temp/
+*.tmp
+*.temp
+
+# Dataset and benchmark files (large files)
+datasets/*.tar.gz
+datasets/*.zip
+benchmarks/results/
+evaluation_results/
+
+# Temporary arXiv downloads
+arxiv_cache/
+papers_cache/
+
+# Generated documentation
+docs/build/
+docs/api/
+
+# Profiling data
+*.prof
+*.pstats
+
+# Performance benchmarks
+benchmarks/results/
+performance_reports/
