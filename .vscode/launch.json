@@ -1,0 +1,153 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            }
+        },
+        {
+            "name": "Python: CLI - Formalize",
+            "type": "python",
+            "request": "launch",
+            "module": "autoformalize.cli",
+            "args": ["formalize", "${workspaceFolder}/tests/data/sample.tex", "--target", "lean4", "--verbose"],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            }
+        },
+        {
+            "name": "Python: CLI - Help",
+            "type": "python",
+            "request": "launch",
+            "module": "autoformalize.cli",
+            "args": ["--help"],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            }
+        },
+        {
+            "name": "Python: CLI - Doctor",
+            "type": "python",
+            "request": "launch",
+            "module": "autoformalize.cli",
+            "args": ["doctor"],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            }
+        },
+        {
+            "name": "Python: Test Current File",
+            "type": "python",
+            "request": "launch",
+            "module": "pytest",
+            "args": ["${file}", "-v"],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src",
+                "PYTEST_CURRENT_TEST": "1"
+            }
+        },
+        {
+            "name": "Python: Test All",
+            "type": "python",
+            "request": "launch",
+            "module": "pytest",
+            "args": ["tests/", "-v"],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src",
+                "PYTEST_CURRENT_TEST": "1"
+            }
+        },
+        {
+            "name": "Python: Test Unit",
+            "type": "python",
+            "request": "launch",
+            "module": "pytest",
+            "args": ["tests/unit/", "-v"],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src",
+                "PYTEST_CURRENT_TEST": "1"
+            }
+        },
+        {
+            "name": "Python: Test Integration",
+            "type": "python",
+            "request": "launch",
+            "module": "pytest",
+            "args": ["tests/integration/", "-v", "-m", "not expensive"],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src",
+                "PYTEST_CURRENT_TEST": "1"
+            }
+        },
+        {
+            "name": "Python: Debug Pipeline",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/debug_pipeline.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src",
+                "DEBUG": "1"
+            },
+            "stopOnEntry": false,
+            "justMyCode": false
+        },
+        {
+            "name": "Python: Attach to Docker",
+            "type": "python",
+            "request": "attach",
+            "connect": {
+                "host": "localhost",
+                "port": 5678
+            },
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}",
+                    "remoteRoot": "/app"
+                }
+            ]
+        },
+        {
+            "name": "Python: Remote SSH Debug",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            },
+            "justMyCode": false
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Launch Tests and Debug",
+            "configurations": [
+                "Python: Test All",
+                "Python: Current File"
+            ]
+        }
+    ]
+}

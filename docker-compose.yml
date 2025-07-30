@@ -1,0 +1,226 @@
+version: '3.8'
+
+services:
+  # Main application service
+  autoformalize:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: autoformalize-app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data:ro
+      - ./outputs:/app/outputs
+      - autoformalize-cache:/app/cache
+    environment:
+      - AUTOFORMALIZE_LOG_LEVEL=INFO
+      - AUTOFORMALIZE_CACHE_DIR=/app/cache
+      - AUTOFORMALIZE_OUTPUT_DIR=/app/outputs
+      - AUTOFORMALIZE_DATA_DIR=/app/data
+      # API keys should be set via .env file or environment
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+    env_file:
+      - .env
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import autoformalize; print('OK')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - autoformalize-network
+
+  # Development service with additional tools
+  autoformalize-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: autoformalize-dev
+    ports:
+      - "8000:8000"
+      - "8888:8888"  # Jupyter notebook
+    volumes:
+      - .:/app:cached
+      - autoformalize-cache:/app/cache
+      - /var/run/docker.sock:/var/run/docker.sock  # For Docker-in-Docker if needed
+    environment:
+      - AUTOFORMALIZE_LOG_LEVEL=DEBUG
+      - JUPYTER_ENABLE_LAB=yes
+    env_file:
+      - .env
+    command: ["tail", "-f", "/dev/null"]  # Keep container running
+    networks:
+      - autoformalize-network
+    profiles:
+      - dev
+
+  # Redis cache for improved performance
+  redis:
+    image: redis:7-alpine
+    container_name: autoformalize-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    restart: unless-stopped
+    networks:
+      - autoformalize-network
+    profiles:
+      - cache
+
+  # PostgreSQL database for storing results and metadata
+  postgres:
+    image: postgres:15-alpine
+    container_name: autoformalize-postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    environment:
+      - POSTGRES_DB=autoformalize
+      - POSTGRES_USER=autoformalize
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-autoformalize_password}
+    restart: unless-stopped
+    networks:
+      - autoformalize-network
+    profiles:
+      - database
+
+  # Nginx reverse proxy (for production deployment)
+  nginx:
+    image: nginx:alpine
+    container_name: autoformalize-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/ssl:/etc/nginx/ssl:ro
+      - nginx-logs:/var/log/nginx
+    depends_on:
+      - autoformalize
+    restart: unless-stopped
+    networks:
+      - autoformalize-network
+    profiles:
+      - production
+
+  # Monitoring with Prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: autoformalize-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+    networks:
+      - autoformalize-network
+    profiles:
+      - monitoring
+
+  # Grafana for metrics visualization
+  grafana:
+    image: grafana/grafana:latest
+    container_name: autoformalize-grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./docker/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./docker/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_SERVER_DOMAIN=${GRAFANA_DOMAIN:-localhost}
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+    networks:
+      - autoformalize-network
+    profiles:
+      - monitoring
+
+  # Jupyter notebook service for experimentation
+  jupyter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: autoformalize-jupyter
+    ports:
+      - "8888:8888"
+    volumes:
+      - .:/app:cached
+      - autoformalize-cache:/app/cache
+      - jupyter-data:/home/autoformalize/.jupyter
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+      - JUPYTER_TOKEN=${JUPYTER_TOKEN:-autoformalize}
+    command: >
+      sh -c "jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root 
+             --ServerApp.token='${JUPYTER_TOKEN:-autoformalize}' 
+             --ServerApp.password='' 
+             --ServerApp.allow_origin='*' 
+             --ServerApp.base_url='/jupyter'"
+    networks:
+      - autoformalize-network
+    profiles:
+      - jupyter
+
+  # Testing service for CI/CD
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: autoformalize-test
+    volumes:
+      - .:/app:cached
+      - autoformalize-cache:/app/cache
+    environment:
+      - PYTEST_CURRENT_TEST=1
+    command: >
+      sh -c "pytest tests/ -v --tb=short --cov=src/autoformalize 
+             --cov-report=xml --cov-report=term 
+             --cov-report=html:/app/htmlcov"
+    networks:
+      - autoformalize-network
+    profiles:
+      - test
+
+volumes:
+  autoformalize-cache:
+    driver: local
+  redis-data:
+    driver: local
+  postgres-data:
+    driver: local
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
+  jupyter-data:
+    driver: local
+  nginx-logs:
+    driver: local
+
+networks:
+  autoformalize-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
