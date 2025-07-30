@@ -1,0 +1,84 @@
+{
+    "recommendations": [
+        // Python development
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.black-formatter",
+        "ms-python.isort",
+        "ms-python.flake8",
+        "ms-python.mypy-type-checker",
+        
+        // Testing
+        "ms-python.pytest",
+        "hbenl.vscode-test-explorer",
+        "ms-vscode.test-adapter-converter",
+        
+        // Git and version control
+        "eamodio.gitlens",
+        "mhutchie.git-graph",
+        "donjayamanne.githistory",
+        
+        // Docker and containers
+        "ms-azuretools.vscode-docker",
+        "ms-vscode-remote.remote-containers",
+        
+        // Markdown and documentation
+        "yzhang.markdown-all-in-one",
+        "davidanson.vscode-markdownlint",
+        "bierner.markdown-mermaid",
+        "yzane.markdown-pdf",
+        
+        // LaTeX support
+        "james-yu.latex-workshop",
+        "tecosaur.latex-utilities",
+        
+        // Proof assistants
+        "leanprover.lean4",
+        "ms-vscode.lean",
+        "coq-community.vscoq",
+        "banacorn.agda-mode",
+        
+        // JSON and YAML
+        "redhat.vscode-yaml",
+        "ms-vscode.vscode-json",
+        
+        // Code quality
+        "ms-vscode.vscode-eslint",
+        "streetsidesoftware.code-spell-checker",
+        "editorconfig.editorconfig",
+        
+        // Productivity
+        "ms-vscode.vscode-todo-highlight",
+        "gruntfuggly.todo-tree",
+        "ms-vsliveshare.vsliveshare",
+        
+        // Jupyter notebooks
+        "ms-toolsai.jupyter",
+        "ms-toolsai.jupyter-keymap",
+        "ms-toolsai.jupyter-renderers",
+        
+        // Remote development
+        "ms-vscode-remote.remote-ssh",
+        "ms-vscode-remote.remote-ssh-edit",
+        
+        // API and HTTP
+        "humao.rest-client",
+        "42crunch.vscode-openapi",
+        
+        // Database
+        "ms-mssql.mssql",
+        "cweijan.vscode-postgresql-client2",
+        
+        // Miscellaneous
+        "ms-vscode.theme-materialkit",
+        "pkief.material-icon-theme",
+        "aaron-bond.better-comments",
+        "formulahendry.auto-rename-tag",
+        "bradlc.vscode-tailwindcss"
+    ],
+    
+    "unwantedRecommendations": [
+        "ms-python.autopep8",
+        "ms-python.pylint"
+    ]
+}

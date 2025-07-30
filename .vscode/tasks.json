@@ -1,0 +1,279 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Install Dependencies",
+            "type": "shell",
+            "command": "pip install -e .",
+            "group": "build",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Install Dev Dependencies",
+            "type": "shell",
+            "command": "pip install -e \".[dev]\"",
+            "group": "build",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Tests",
+            "type": "shell",
+            "command": "pytest",
+            "args": ["tests/", "-v", "--tb=short"],
+            "group": "test",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                {
+                    "owner": "python",
+                    "fileLocation": ["relative", "${workspaceFolder}"],
+                    "pattern": {
+                        "regexp": "^(.*):(\\d+):\\s+(.*)",
+                        "file": 1,
+                        "line": 2,
+                        "message": 3
+                    }
+                }
+            ]
+        },
+        {
+            "label": "Run Tests with Coverage",
+            "type": "shell",
+            "command": "pytest",
+            "args": ["tests/", "-v", "--cov=src/autoformalize", "--cov-report=html", "--cov-report=term"],
+            "group": "test",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Unit Tests",
+            "type": "shell",
+            "command": "pytest",
+            "args": ["tests/unit/", "-v"],
+            "group": "test",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Integration Tests",
+            "type": "shell",
+            "command": "pytest",
+            "args": ["tests/integration/", "-v", "-m", "not expensive"],
+            "group": "test",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Format Code",
+            "type": "shell",
+            "command": "black",
+            "args": ["src/", "tests/"],
+            "group": "build",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Sort Imports",
+            "type": "shell",
+            "command": "isort",
+            "args": ["src/", "tests/"],
+            "group": "build",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Lint Code",
+            "type": "shell",
+            "command": "flake8",
+            "args": ["src/", "tests/"],
+            "group": "build",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                {
+                    "owner": "flake8",
+                    "fileLocation": ["relative", "${workspaceFolder}"],
+                    "pattern": {
+                        "regexp": "^(.*):(\\d+):(\\d+):\\s+(\\w+)\\s+(.*)",
+                        "file": 1,
+                        "line": 2,
+                        "column": 3,
+                        "severity": 4,
+                        "message": 5
+                    }
+                }
+            ]
+        },
+        {
+            "label": "Type Check",
+            "type": "shell",
+            "command": "mypy",
+            "args": ["src/", "--config-file", "pyproject.toml"],
+            "group": "build",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                {
+                    "owner": "mypy",
+                    "fileLocation": ["relative", "${workspaceFolder}"],
+                    "pattern": {
+                        "regexp": "^(.*):(\\d+):\\s+(\\w+):\\s+(.*)",
+                        "file": 1,
+                        "line": 2,
+                        "severity": 3,
+                        "message": 4
+                    }
+                }
+            ]
+        },
+        {
+            "label": "Security Check",
+            "type": "shell",
+            "command": "bandit",
+            "args": ["-r", "src/"],
+            "group": "build",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build Package",
+            "type": "shell",
+            "command": "python",
+            "args": ["-m", "build"],
+            "group": "build",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build Documentation",
+            "type": "shell",
+            "command": "make",
+            "args": ["html"],
+            "group": "build",
+            "options": {
+                "cwd": "${workspaceFolder}/docs"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Serve Documentation",
+            "type": "shell",
+            "command": "make",
+            "args": ["livehtml"],
+            "group": "build",
+            "options": {
+                "cwd": "${workspaceFolder}/docs"
+            },
+            "problemMatcher": [],
+            "isBackground": true
+        },
+        {
+            "label": "Run Pre-commit",
+            "type": "shell",
+            "command": "pre-commit",
+            "args": ["run", "--all-files"],
+            "group": "build",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Docker Build",
+            "type": "shell",
+            "command": "docker",
+            "args": ["build", "-t", "autoformalize-math-lab", "."],
+            "group": "build",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Docker Compose Up",
+            "type": "shell",
+            "command": "docker-compose",
+            "args": ["up", "-d"],
+            "group": "build",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "isBackground": true
+        },
+        {
+            "label": "Docker Compose Down",
+            "type": "shell",
+            "command": "docker-compose",
+            "args": ["down"],
+            "group": "build",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Start Jupyter Lab",
+            "type": "shell",
+            "command": "jupyter",
+            "args": ["lab", "--ip=0.0.0.0", "--port=8888", "--no-browser"],
+            "group": "build",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "isBackground": true
+        },
+        {
+            "label": "Clean Build Artifacts",
+            "type": "shell",
+            "command": "python",
+            "args": ["-c", "import shutil; import pathlib; [shutil.rmtree(p, ignore_errors=True) for p in pathlib.Path('.').glob('**/__pycache__')] + [shutil.rmtree(p, ignore_errors=True) for p in ['build', 'dist', 'htmlcov', '.pytest_cache', '.mypy_cache', '.coverage']]"],
+            "group": "build",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Full Quality Check",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Format Code",
+                "Sort Imports", 
+                "Lint Code",
+                "Type Check",
+                "Security Check",
+                "Run Tests with Coverage"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        }
+    ]
+}

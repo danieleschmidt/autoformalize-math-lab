@@ -1,0 +1,171 @@
+# Git and version control
+.git
+.gitignore
+.gitattributes
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Testing and coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+.hypothesis/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Documentation
+docs/_build/
+site/
+
+# Cache directories
+.cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.ruff_cache/
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Large data files (should be mounted as volumes)
+data/
+datasets/
+models/
+outputs/
+cache/
+logs/
+
+# Docker files (avoid recursive inclusion)
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# CI/CD files
+.github/
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+
+# Local configuration
+.env.local
+config.local.*
+settings.local.*
+
+# Package manager files
+node_modules/
+package-lock.json
+yarn.lock
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Proof assistant artifacts (will be generated in container)
+lake-packages/
+.lake/
+*.olean
+Lean.toml.lock
+*.thy~
+*.thy.orig
+output/
+browser_info/
+.isabelle/
+*.vo
+*.vos
+*.vok
+*.glob
+*.v.d
+.coqdeps.d
+.lia.cache
+
+# LaTeX artifacts
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.idx
+*.ilg
+*.ind
+*.lof
+*.lot
+*.out
+*.toc
+*.synctex.gz
+*.pdfsync
+
+# API keys and secrets
+api_keys.json
+config.secret.json
+.secrets/
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Development and testing artifacts
+.pytest_cache/
+.benchmarks/
+profiling/
+*.prof
+*.pstats
+
+# README and documentation that should be included are NOT ignored
+# README.md
+# LICENSE
+# CONTRIBUTING.md
