@@ -1,0 +1,165 @@
+name: 📐 Mathematical Issue
+description: Report mathematical correctness issues or formalization problems
+title: "[MATH] "
+labels: ["mathematical", "needs-review"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Report mathematical correctness issues, incorrect formalizations, or theorem proving problems.
+        
+        This template is for issues specifically related to mathematical content accuracy.
+
+  - type: dropdown
+    id: issue-type
+    attributes:
+      label: Issue Type
+      description: What type of mathematical issue is this?
+      options:
+        - Incorrect Formalization
+        - Mathematical Error in Output
+        - Missing Mathematical Concepts
+        - Proof Verification Failure
+        - Theorem Statement Mismatch
+        - Library Integration Problem
+        - Mathematical Notation Issue
+    validations:
+      required: true
+
+  - type: dropdown
+    id: domain
+    attributes:
+      label: Mathematical Domain
+      description: Which mathematical area is affected?
+      options:
+        - Basic Algebra
+        - Linear Algebra
+        - Abstract Algebra
+        - Number Theory
+        - Real Analysis
+        - Complex Analysis
+        - Functional Analysis
+        - Topology
+        - Differential Geometry
+        - Logic and Set Theory
+        - Category Theory
+        - Probability Theory
+        - Combinatorics
+        - Graph Theory
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: proof-assistant
+    attributes:
+      label: Proof Assistant
+      description: Which proof assistant is involved?
+      options:
+        - Lean 4
+        - Isabelle/HOL
+        - Coq
+        - Agda
+        - All systems
+        - Not system-specific
+    validations:
+      required: true
+
+  - type: textarea
+    id: latex-input
+    attributes:
+      label: LaTeX Input
+      description: The original LaTeX theorem or proof
+      placeholder: |
+        ```latex
+        \begin{theorem}[Theorem Name]
+        Statement of the theorem...
+        \end{theorem}
+        \begin{proof}
+        Proof content...
+        \end{proof}
+        ```
+    validations:
+      required: true
+
+  - type: textarea
+    id: generated-output
+    attributes:
+      label: Generated Formalization
+      description: The generated formal proof/theorem
+      placeholder: |
+        ```lean
+        theorem theorem_name : statement := by
+          proof_steps
+        ```
+
+  - type: textarea
+    id: expected-formalization
+    attributes:
+      label: Expected Formalization
+      description: What the correct formalization should be
+      placeholder: |
+        ```lean
+        theorem correct_name : correct_statement := by
+          correct_proof_steps
+        ```
+
+  - type: textarea
+    id: mathematical-issue
+    attributes:
+      label: Mathematical Issue Description
+      description: Explain the mathematical problem in detail
+      placeholder: |
+        - What mathematical concept is incorrectly handled?
+        - Which step in the formalization is wrong?
+        - What mathematical property is violated?
+    validations:
+      required: true
+
+  - type: textarea
+    id: verification-error
+    attributes:
+      label: Verification Error
+      description: Error messages from the proof assistant
+      placeholder: |
+        ```
+        Lean error messages:
+        type mismatch at application
+        ...
+        ```
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Mathematical Severity
+      description: How severe is this mathematical issue?
+      options:
+        - Critical (fundamental mathematical error)
+        - High (incorrect theorem statement)
+        - Medium (proof step error)
+        - Low (notation or style issue)
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: Mathematical References
+      description: Relevant mathematical sources
+      placeholder: |
+        - Textbook references
+        - Paper citations
+        - Mathlib references
+        - Online mathematical resources
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Mathematical Context
+      description: Any other relevant mathematical information
+      placeholder: |
+        - Related theorems or concepts
+        - Mathematical prerequisites
+        - Known variations or generalizations
