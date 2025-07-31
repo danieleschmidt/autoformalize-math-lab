@@ -1,0 +1,141 @@
+name: 🐛 Bug Report
+description: Create a report to help us improve autoformalize-math-lab
+title: "[BUG] "
+labels: ["bug", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report for autoformalize-math-lab!
+        
+        Before submitting, please:
+        1. Search existing issues to avoid duplicates
+        2. Use the latest version of the software
+        3. Include relevant mathematical formalization context
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-submission Checklist
+      options:
+        - label: I have searched existing issues
+          required: true
+        - label: I am using the latest version
+          required: true
+        - label: I have included mathematical context where relevant
+          required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Which component is affected?
+      options:
+        - Mathematical Parser
+        - LLM Formalizer
+        - Lean 4 Generator
+        - Isabelle Generator
+        - Coq Generator
+        - Self-Correction Engine
+        - CLI Interface
+        - Documentation
+        - Testing Framework
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: Clear and concise description of the bug
+      placeholder: Describe what happened and what you expected to happen
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Install autoformalize with '...'
+        2. Run formalization on '...'
+        3. See error in '...'
+    validations:
+      required: true
+
+  - type: textarea
+    id: mathematical-context
+    attributes:
+      label: Mathematical Context
+      description: Include LaTeX source, theorem statement, or mathematical domain
+      placeholder: |
+        LaTeX theorem:
+        ```latex
+        \begin{theorem}
+        ...
+        \end{theorem}
+        ```
+        
+        Mathematical domain: Real Analysis, Number Theory, etc.
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What should happen instead?
+      placeholder: Describe the expected outcome
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happens?
+      placeholder: Include error messages, incorrect output, etc.
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error Logs
+      description: Relevant log output or error messages
+      placeholder: |
+        ```
+        Paste error logs here
+        ```
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How severe is this bug?
+      options:
+        - Critical (blocks core functionality)
+        - High (major feature broken)
+        - Medium (minor feature issue)
+        - Low (cosmetic or edge case)
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Information about your environment
+      placeholder: |
+        - OS: [e.g., Ubuntu 22.04, macOS 14.0, Windows 11]
+        - Python version: [e.g., 3.11.5]
+        - autoformalize version: [e.g., 0.1.0]
+        - Proof assistants: [e.g., Lean 4.3.0, Isabelle 2023]
+        - LLM provider: [e.g., OpenAI GPT-4, Anthropic Claude]
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any other context about the problem
+      placeholder: Screenshots, related issues, workarounds, etc.

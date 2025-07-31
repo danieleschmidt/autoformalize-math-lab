@@ -1,0 +1,149 @@
+name: 🚀 Feature Request
+description: Suggest a new feature or enhancement for autoformalize-math-lab
+title: "[FEATURE] "
+labels: ["enhancement", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a feature for autoformalize-math-lab!
+        
+        Please provide detailed information about your feature request to help us understand and evaluate it.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-submission Checklist
+      options:
+        - label: I have searched existing issues and feature requests
+          required: true
+        - label: This feature aligns with the project's mathematical formalization goals
+          required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Feature Category
+      description: What type of feature is this?
+      options:
+        - Mathematical Parser Enhancement
+        - New Proof Assistant Support
+        - LLM Model Integration
+        - Self-Correction Improvement
+        - Performance Optimization
+        - User Interface/CLI
+        - Documentation
+        - Testing/Quality Assurance
+        - Developer Experience
+        - API/Integration
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem does this feature solve?
+      placeholder: |
+        Describe the current limitation or pain point this feature addresses.
+        Include mathematical context if relevant.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe your proposed feature in detail
+      placeholder: |
+        What would you like to see implemented?
+        How should it work from a user perspective?
+    validations:
+      required: true
+
+  - type: textarea
+    id: mathematical-context
+    attributes:
+      label: Mathematical Context
+      description: Mathematical domains, theorem types, or formalization scenarios this would support
+      placeholder: |
+        Mathematical domains: Real Analysis, Abstract Algebra, etc.
+        Theorem types: Existence proofs, constructive proofs, etc.
+        Use cases: Undergraduate textbooks, research papers, etc.
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternative Solutions
+      description: What alternatives have you considered?
+      placeholder: |
+        - Alternative approach A: ...
+        - Alternative approach B: ...
+        - Why the proposed solution is preferred: ...
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this feature to you?
+      options:
+        - Critical (blocks major use cases)
+        - High (significantly improves workflow)
+        - Medium (nice to have improvement)
+        - Low (minor enhancement)
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation
+    attributes:
+      label: Implementation Ideas
+      description: Do you have ideas about how this could be implemented?
+      placeholder: |
+        Technical approaches, architectural considerations, or specific implementation details you've considered.
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: Usage Examples
+      description: Provide examples of how this feature would be used
+      placeholder: |
+        ```python
+        # Example usage
+        pipeline = FormalizationPipeline()
+        result = pipeline.new_feature_method(...)
+        ```
+        
+        ```bash
+        # CLI example
+        autoformalize --new-feature input.tex
+        ```
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: Any relevant papers, tools, or resources
+      placeholder: |
+        - Related academic papers
+        - Similar features in other tools
+        - Relevant mathematical resources
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution Interest
+      options:
+        - label: I would be interested in contributing to this feature
+        - label: I can help with testing this feature
+        - label: I can provide mathematical domain expertise
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any other information about this feature request
+      placeholder: Mockups, diagrams, related discussions, etc.
