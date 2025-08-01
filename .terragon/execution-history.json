@@ -1,0 +1,33 @@
+[
+  {
+    "timestamp": "2025-08-01T01:15:10.918182",
+    "opportunity": {
+      "id": "security-tools--3291911326085270593",
+      "title": "Add security scanning tools: safety, pip-audit",
+      "type": "security",
+      "subtype": "security-tooling",
+      "description": "Missing security tools in project configuration: safety, pip-audit",
+      "file": "pyproject.toml",
+      "priority": "medium",
+      "effort": 2,
+      "source": "security-analysis",
+      "missingTools": [
+        "safety",
+        "pip-audit"
+      ],
+      "wsjfScore": 14.5,
+      "iceScore": 648,
+      "technicalDebtScore": 0,
+      "compositeScore": 12.47,
+      "securityBoost": 2.0,
+      "complianceBoost": 1.0,
+      "scoredAt": "2025-08-01T01:12:48.419510"
+    },
+    "execution": {
+      "success": true,
+      "pr_url": "Branch auto-value/security-security-too pushed - create PR manually",
+      "error": null,
+      "branch": "auto-value/security-security-too"
+    }
+  }
+]
