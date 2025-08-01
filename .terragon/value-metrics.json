@@ -1,0 +1,29 @@
+{
+  "timestamp": "2025-08-01T00:57:17.212826",
+  "repository_maturity": "maturing",
+  "total_opportunities": 33,
+  "average_score": 47.72727272727273,
+  "top_opportunity": {
+    "id": "comment-8774975705877020164",
+    "title": "Address FIXME: , HACK, XXX comments...",
+    "type": "technical-debt",
+    "description": ", HACK, XXX comments",
+    "file": "AUTONOMOUS_SDLC.md",
+    "line": 92,
+    "effort": 1,
+    "priority": "high",
+    "source": "code-comments",
+    "score": 90.0
+  },
+  "breakdown_by_type": {
+    "technical-debt": 33
+  },
+  "breakdown_by_priority": {
+    "high": 4,
+    "medium": 1,
+    "low": 28
+  },
+  "breakdown_by_source": {
+    "code-comments": 33
+  }
+}
