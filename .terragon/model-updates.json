@@ -1,0 +1,18 @@
+[
+  {
+    "timestamp": "2025-08-01T05:34:23.024196",
+    "oldVersion": "1.0",
+    "newVersion": "1.1",
+    "changes": [],
+    "basedOnExecutions": 1,
+    "triggeringSuccessRate": 0.0
+  },
+  {
+    "timestamp": "2025-08-01T05:35:46.670494",
+    "oldVersion": "1.1",
+    "newVersion": "1.2",
+    "changes": [],
+    "basedOnExecutions": 1,
+    "triggeringSuccessRate": 0.0
+  }
+]

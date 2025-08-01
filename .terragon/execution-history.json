@@ -1,0 +1,33 @@
+[
+  {
+    "timestamp": "2025-08-01T05:34:22.947279",
+    "opportunity": {
+      "id": "security-tools-5927230830046350803",
+      "title": "Add security scanning tools: safety, pip-audit",
+      "type": "security",
+      "subtype": "security-tooling",
+      "description": "Missing security tools in project configuration: safety, pip-audit",
+      "file": "pyproject.toml",
+      "priority": "medium",
+      "effort": 2,
+      "source": "security-analysis",
+      "missingTools": [
+        "safety",
+        "pip-audit"
+      ],
+      "wsjfScore": 14.5,
+      "iceScore": 648,
+      "technicalDebtScore": 0,
+      "compositeScore": 12.47,
+      "securityBoost": 2.0,
+      "complianceBoost": 1.0,
+      "scoredAt": "2025-08-01T05:34:21.730270"
+    },
+    "execution": {
+      "success": false,
+      "pr_url": null,
+      "error": "Failed to create PR: Command '['git', 'push', '-u', 'origin', 'auto-value/security-security-too']' returned non-zero exit status 1.",
+      "branch": "auto-value/security-security-too"
+    }
+  }
+]
