@@ -29,5 +29,34 @@
       "error": null,
       "branch": "auto-value/security-security-too"
     }
+  },
+  {
+    "timestamp": "2025-08-01T01:20:29.552698",
+    "opportunity": {
+      "id": "debt--2409397019496585561",
+      "title": "Address TODO: )... | 90.0 | technical-debt | 1... ... | 11.5 | 17.2 | 480 ...",
+      "type": "technical-debt",
+      "subtype": "todo",
+      "description": ")... | 90.0 | technical-debt | 1... ... | 11.5 | 17.2 | 480 | technical-debt | 1h | low |",
+      "file": "BACKLOG.md",
+      "line": 31,
+      "priority": "low",
+      "effort": 1,
+      "source": "git-history",
+      "discoveredAt": "2025-08-01T01:20:27.438359",
+      "wsjfScore": 17.2,
+      "iceScore": 480,
+      "technicalDebtScore": 3.0,
+      "compositeScore": 11.46,
+      "securityBoost": 1.0,
+      "complianceBoost": 1.0,
+      "scoredAt": "2025-08-01T01:20:27.485614"
+    },
+    "execution": {
+      "success": true,
+      "pr_url": "Branch auto-value/technical-debt-debt--240939 pushed - create PR manually",
+      "error": null,
+      "branch": "auto-value/technical-debt-debt--240939"
+    }
   }
 ]

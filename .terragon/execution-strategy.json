@@ -2,7 +2,8 @@
   "riskThreshold": 0.9,
   "effortBufferMultiplier": 1.0,
   "preferredTypes": [
-    "security"
+    "security",
+    "technical-debt"
   ],
   "cautiousTypes": []
 }
