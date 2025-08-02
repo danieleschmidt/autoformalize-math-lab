@@ -1,173 +1,49 @@
 {
-    // Python settings
-    "python.defaultInterpreterPath": "./venv/bin/python",
-    "python.terminal.activateEnvironment": true,
-    "python.analysis.typeCheckingMode": "strict",
-    "python.analysis.autoImportCompletions": true,
-    "python.analysis.autoSearchPaths": true,
-    "python.analysis.extraPaths": ["./src"],
-    
-    // Formatting
-    "python.formatting.provider": "black",
-    "python.formatting.blackArgs": ["--line-length=88"],
-    "python.sortImports.args": ["--profile", "black"],
-    
-    // Linting
-    "python.linting.enabled": true,
-    "python.linting.flake8Enabled": true,
-    "python.linting.mypyEnabled": true,
-    "python.linting.banditEnabled": true,
-    "python.linting.flake8Args": ["--max-line-length=88", "--extend-ignore=E203,W503"],
-    
-    // Testing
-    "python.testing.pytestEnabled": true,
-    "python.testing.unittestEnabled": false,
-    "python.testing.pytestArgs": ["tests", "-v"],
-    "python.testing.autoTestDiscoverOnSaveEnabled": true,
-    
-    // File associations
-    "files.associations": {
-        "*.lean": "lean4",
-        "*.thy": "isabelle",
-        "*.v": "coq",
-        "*.agda": "agda"
-    },
-    
-    // Editor settings
-    "editor.formatOnSave": true,
-    "editor.formatOnPaste": true,
-    "editor.codeActionsOnSave": {
-        "source.organizeImports": true,
-        "source.fixAll": true
-    },
-    "editor.rulers": [88],
-    "editor.tabSize": 4,
-    "editor.insertSpaces": true,
-    "editor.trimAutoWhitespace": true,
-    
-    // File exclusions
-    "files.exclude": {
-        "**/__pycache__": true,
-        "**/*.pyc": true,
-        "**/node_modules": true,
-        "**/.pytest_cache": true,
-        "**/.mypy_cache": true,
-        "**/.coverage": true,
-        "**/htmlcov": true,
-        "**/.tox": true,
-        "**/build": true,
-        "**/dist": true,
-        "**/*.egg-info": true,
-        "**/lake-packages": true,
-        "**/.lake": true
-    },
-    
-    // Search exclusions
-    "search.exclude": {
-        "**/node_modules": true,
-        "**/bower_components": true,
-        "**/*.code-search": true,
-        "**/coverage": true,
-        "**/htmlcov": true,
-        "**/.pytest_cache": true,
-        "**/.mypy_cache": true,
-        "**/lake-packages": true,
-        "**/.lake": true
-    },
-    
-    // Git settings
-    "git.ignoreLimitWarning": true,
-    "git.autofetch": true,
-    "git.confirmSync": false,
-    
-    // Markdown settings
-    "markdown.preview.breaks": true,
-    "markdown.preview.linkify": true,
-    "markdown.preview.typographer": true,
-    
-    // LaTeX settings
-    "latex-workshop.latex.autoBuild.run": "never",
-    "latex-workshop.latex.autoClean.run": "onBuilt",
-    "latex-workshop.view.pdf.viewer": "tab",
-    
-    // JSON settings
-    "json.schemas": [
-        {
-            "fileMatch": ["pyproject.toml"],
-            "url": "https://json.schemastore.org/pyproject.json"
-        }
-    ],
-    
-    // Spell checking
-    "cSpell.words": [
-        "autoformalize",
-        "formalization",
-        "mathlib",
-        "isabelle",
-        "coq",
-        "agda",
-        "lean",
-        "leanprover",
-        "arxiv",
-        "pytorch",
-        "transformers",
-        "openai",
-        "anthropic",
-        "sympy",
-        "pymupdf",
-        "pylatexenc",
-        "latexcodec",
-        "pexpect",
-        "uvicorn",
-        "fastapi",
-        "sqlalchemy",
-        "alembic",
-        "loguru",
-        "sentry",
-        "prometheus",
-        "codecov",
-        "bandit",
-        "mypy",
-        "pytest",
-        "isort",
-        "flake8"
-    ],
-    
-    // Workspace specific settings
-    "workbench.colorCustomizations": {
-        "statusBar.background": "#663399",
-        "statusBar.foreground": "#ffffff",
-        "titleBar.activeBackground": "#663399",
-        "titleBar.activeForeground": "#ffffff"
-    },
-    
-    // Terminal settings
-    "terminal.integrated.env.linux": {
-        "PYTHONPATH": "${workspaceFolder}/src"
-    },
-    "terminal.integrated.env.osx": {
-        "PYTHONPATH": "${workspaceFolder}/src"
-    },
-    "terminal.integrated.env.windows": {
-        "PYTHONPATH": "${workspaceFolder}/src"
-    },
-    
-    // Extensions settings
-    "autoDocstring.docstringFormat": "google",
-    "autoDocstring.startOnNewLine": false,
-    "autoDocstring.includeExtendedSummary": true,
-    
-    // Jupyter settings
-    "jupyter.askForKernelRestart": false,
-    "jupyter.alwaysTrustNotebooks": true,
-    "jupyter.jupyterServerType": "local",
-    
-    // Remote development settings
-    "remote.SSH.remotePlatform": {
-        "autoformalize-dev": "linux"
-    },
-    
-    // Tasks and debugging
-    "task.autoDetect": "on",
-    "debug.terminal.clearBeforeReusing": true
+  "python.defaultInterpreterPath": "./venv/bin/python",
+  "python.analysis.typeCheckingMode": "basic",
+  "python.formatting.provider": "black",
+  "python.formatting.blackArgs": ["--line-length=88"],
+  "python.linting.enabled": true,
+  "python.linting.pylintEnabled": false,
+  "python.linting.flake8Enabled": true,
+  "python.linting.mypyEnabled": true,
+  "python.linting.banditEnabled": true,
+  "python.testing.pytestEnabled": true,
+  "python.testing.pytestArgs": ["tests", "-v"],
+  "python.testing.unittestEnabled": false,
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": true,
+    "source.fixAll": true
+  },
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/*.pyc": true, 
+    "**/.pytest_cache": true,
+    "**/.mypy_cache": true,
+    "**/node_modules": true,
+    "**/.git": false,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/.vscode/extensions.json": false
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/.venv": true,
+    "**/venv": true,
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "**/.mypy_cache": true
+  },
+  "autoformalize.realtime": false,
+  "autoformalize.target": "lean4",
+  "autoformalize.showSuggestions": true,
+  "git.enableCommitSigning": false,
+  "git.autofetch": true,
+  "extensions.ignoreRecommendations": false
 }
+EOF < /dev/null
