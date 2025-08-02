@@ -1,140 +1,40 @@
 {
-    "name": "autoformalize-math-lab Dev Container",
-    "build": {
-        "dockerfile": "Dockerfile",
-        "context": "..",
-        "target": "development"
+  "name": "Autoformalize Math Lab Development",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "dev",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "python.defaultInterpreterPath": "/opt/conda/bin/python",
+        "python.formatting.provider": "black",
+        "python.testing.pytestEnabled": true,
+        "editor.formatOnSave": true
+      },
+      "extensions": [
+        "ms-python.python",
+        "ms-python.black-formatter",
+        "leanprover.lean4",
+        "GitHub.copilot"
+      ]
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "username": "vscode"
     },
-    
-    // Configure tool-specific properties
-    "customizations": {
-        "vscode": {
-            "settings": {
-                "python.defaultInterpreterPath": "/usr/local/bin/python",
-                "python.linting.enabled": true,
-                "python.linting.pylintEnabled": false,
-                "python.linting.flake8Enabled": true,
-                "python.linting.mypyEnabled": true,
-                "python.formatting.provider": "black",
-                "python.testing.pytestEnabled": true,
-                "python.testing.unittestEnabled": false,
-                "editor.formatOnSave": true,
-                "terminal.integrated.shell.linux": "/bin/bash"
-            },
-            
-            "extensions": [
-                "ms-python.python",
-                "ms-python.vscode-pylance",
-                "ms-python.black-formatter",
-                "ms-python.isort",
-                "ms-python.flake8",
-                "ms-python.mypy-type-checker",
-                "ms-python.pytest",
-                "eamodio.gitlens",
-                "ms-azuretools.vscode-docker",
-                "yzhang.markdown-all-in-one",
-                "james-yu.latex-workshop",
-                "leanprover.lean4",
-                "coq-community.vscoq",
-                "ms-toolsai.jupyter",
-                "streetsidesoftware.code-spell-checker",
-                "editorconfig.editorconfig"
-            ]
-        }
-    },
-    
-    // Use 'forwardPorts' to make a list of ports inside the container available locally
-    "forwardPorts": [8000, 8888, 5000, 3000],
-    
-    // Configure port attributes
-    "portsAttributes": {
-        "8000": {
-            "label": "Application",
-            "onAutoForward": "notify"
-        },
-        "8888": {
-            "label": "Jupyter Lab",
-            "onAutoForward": "openBrowser"
-        },
-        "5000": {
-            "label": "Flask Debug",
-            "onAutoForward": "silent"
-        },
-        "3000": {
-            "label": "Docs Server",
-            "onAutoForward": "silent"
-        }
-    },
-    
-    // Set environment variables
-    "containerEnv": {
-        "PYTHONPATH": "/workspace/src",
-        "AUTOFORMALIZE_DEV_MODE": "1",
-        "JUPYTER_ENABLE_LAB": "yes"
-    },
-    
-    // Mount the workspace and additional volumes
-    "mounts": [
-        "source=${localWorkspaceFolder}/.git,target=/workspace/.git,type=bind,consistency=cached",
-        "source=autoformalize-cache,target=/home/autoformalize/.cache,type=volume",
-        "source=autoformalize-local,target=/home/autoformalize/.local,type=volume"
-    ],
-    
-    // Set the default user (matches Dockerfile)
-    "remoteUser": "autoformalize",
-    
-    // Commands to run after container creation
-    "onCreateCommand": [
-        "bash",
-        "-c",
-        "pip install --upgrade pip && pip install -e '.[dev,docs]' && pre-commit install"
-    ],
-    
-    // Commands to run when starting the container
-    "postStartCommand": [
-        "bash",
-        "-c",
-        "echo 'Dev container is ready! 🚀' && autoformalize --help"
-    ],
-    
-    // Commands to run when attaching to the container
-    "postAttachCommand": [
-        "bash",
-        "-c",
-        "cd /workspace && echo 'Welcome to autoformalize-math-lab development environment!'"
-    ],
-    
-    // Features to add to the dev container
-    "features": {
-        "ghcr.io/devcontainers/features/git:1": {},
-        "ghcr.io/devcontainers/features/github-cli:1": {},
-        "ghcr.io/devcontainers/features/docker-in-docker:2": {},
-        "ghcr.io/devcontainers/features/node:1": {
-            "version": "18"
-        }
-    },
-    
-    // Lifecycle scripts
-    "shutdownAction": "stopContainer",
-    
-    // Security settings
-    "capAdd": [],
-    "securityOpt": [
-        "seccomp=unconfined"
-    ],
-    
-    // Resource limits
-    "hostRequirements": {
-        "cpus": 2,
-        "memory": "4gb",
-        "storage": "10gb"
-    },
-    
-    // Override the workspace folder
-    "workspaceFolder": "/workspace",
-    
-    // Run arguments for the container
-    "runArgs": [
-        "--name=autoformalize-devcontainer"
-    ]
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "latest"
+    }
+  },
+  "forwardPorts": [8000, 8080],
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "containerEnv": {
+    "PYTHONPATH": "/workspace/src",
+    "AUTOFORMALIZE_ENV": "development"
+  },
+  "remoteUser": "vscode"
 }
+EOF < /dev/null
