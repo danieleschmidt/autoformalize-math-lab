@@ -1,0 +1,284 @@
+# Security Scanning Workflow for autoformalize-math-lab
+# Copy to .github/workflows/security.yml to enable
+
+name: Security Scan
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # Daily at 2 AM UTC
+  push:
+    branches: [ main ]
+    paths:
+      - 'requirements.txt'
+      - 'pyproject.toml'
+      - 'Dockerfile'
+      - '.github/workflows/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'requirements.txt'
+      - 'pyproject.toml'
+      - 'Dockerfile'
+  workflow_dispatch:  # Allow manual triggering
+
+env:
+  PYTHON_VERSION: "3.11"
+
+jobs:
+  vulnerability-scan:
+    name: Vulnerability Scanning
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install safety pip-audit bandit semgrep
+        pip install -e .
+        
+    - name: Run Safety check
+      run: |
+        safety check --json --output safety-report.json || true
+        safety check || true  # Continue on vulnerabilities for reporting
+      continue-on-error: true
+        
+    - name: Run pip-audit
+      run: |
+        pip-audit --format=json --output=pip-audit-report.json || true
+        pip-audit || true  # Continue on vulnerabilities for reporting
+      continue-on-error: true
+        
+    - name: Run Bandit security scan
+      run: |
+        bandit -r src/ -f json -o bandit-report.json || true
+        bandit -r src/ || true  # Continue on security issues for reporting
+      continue-on-error: true
+        
+    - name: Run Semgrep security scan
+      run: |
+        semgrep --config=auto --json --output=semgrep-report.json src/ || true
+        semgrep --config=auto src/ || true
+      continue-on-error: true
+        
+    - name: Upload security reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: security-reports
+        path: |
+          safety-report.json
+          pip-audit-report.json
+          bandit-report.json
+          semgrep-report.json
+          
+  docker-security:
+    name: Docker Security Scan
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.modified, 'Dockerfile') || github.event_name == 'schedule'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Build Docker image
+      run: |
+        docker build -t autoformalize:security-test .
+        
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: 'autoformalize:security-test'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+        
+    - name: Upload Trivy scan results
+      uses: github/codeql-action/upload-sarif@v2
+      if: always()
+      with:
+        sarif_file: 'trivy-results.sarif'
+        
+    - name: Run Docker Bench Security
+      run: |
+        docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+          -v /etc:/etc:ro \
+          -v /usr/bin/docker-containerd:/usr/bin/docker-containerd:ro \
+          -v /usr/bin/docker-runc:/usr/bin/docker-runc:ro \
+          -v /usr/lib/systemd:/usr/lib/systemd:ro \
+          docker/docker-bench-security
+
+  secrets-scan:
+    name: Secrets Detection
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Full history for secret scanning
+        
+    - name: Run TruffleHog secrets scan
+      uses: trufflesecurity/trufflehog@main
+      with:
+        path: ./
+        base: main
+        head: HEAD
+        extra_args: --debug --only-verified
+        
+    - name: Run GitLeaks
+      uses: gitleaks/gitleaks-action@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}
+
+  license-check:
+    name: License Compliance
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pip-licenses licensecheck
+        pip install -e .
+        
+    - name: Check licenses
+      run: |
+        pip-licenses --format=json --output-file=licenses.json
+        pip-licenses --format=plain-vertical
+        
+    - name: Validate license compatibility
+      run: |
+        # Check for GPL and other copyleft licenses that might conflict
+        licensecheck --zero
+        
+    - name: Upload license report
+      uses: actions/upload-artifact@v3
+      with:
+        name: license-report
+        path: licenses.json
+
+  sbom-generation:
+    name: Software Bill of Materials
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install cyclone-dx-bom pip-audit
+        pip install -e .
+        
+    - name: Generate CycloneDX SBOM
+      run: |
+        cyclone-dx py -o autoformalize-sbom.json .
+        
+    - name: Generate SPDX SBOM
+      run: |
+        pip-audit --format=cyclonedx --output=autoformalize-spdx.json .
+        
+    - name: Upload SBOM artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: sbom-reports
+        path: |
+          autoformalize-sbom.json
+          autoformalize-spdx.json
+
+  security-summary:
+    name: Security Summary
+    runs-on: ubuntu-latest
+    needs: [vulnerability-scan, docker-security, secrets-scan, license-check, sbom-generation]
+    if: always()
+    
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v3
+      
+    - name: Generate security summary
+      run: |
+        echo "# Security Scan Summary" > security-summary.md
+        echo "" >> security-summary.md
+        echo "Generated on: $(date)" >> security-summary.md
+        echo "" >> security-summary.md
+        
+        echo "## Vulnerability Scan Results" >> security-summary.md
+        if [ -f security-reports/safety-report.json ]; then
+          echo "- Safety: $(cat security-reports/safety-report.json | jq '.vulnerabilities | length') vulnerabilities found"
+        fi
+        if [ -f security-reports/pip-audit-report.json ]; then
+          echo "- Pip-audit: $(cat security-reports/pip-audit-report.json | jq '.vulnerabilities | length') vulnerabilities found"
+        fi
+        if [ -f security-reports/bandit-report.json ]; then
+          echo "- Bandit: $(cat security-reports/bandit-report.json | jq '.results | length') security issues found"
+        fi
+        
+        echo "" >> security-summary.md
+        echo "## Compliance Status" >> security-summary.md
+        echo "- License scan: ${{ needs.license-check.result }}" >> security-summary.md
+        echo "- Secret detection: ${{ needs.secrets-scan.result }}" >> security-summary.md
+        echo "- SBOM generation: ${{ needs.sbom-generation.result }}" >> security-summary.md
+        
+        cat security-summary.md
+        
+    - name: Upload security summary
+      uses: actions/upload-artifact@v3
+      with:
+        name: security-summary
+        path: security-summary.md
+        
+    - name: Comment on PR
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const summary = fs.readFileSync('security-summary.md', 'utf8');
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: `## 🛡️ Security Scan Results\n\n${summary}`
+          });
+
+  security-alerts:
+    name: Security Alerts
+    runs-on: ubuntu-latest
+    needs: [vulnerability-scan, docker-security, secrets-scan]
+    if: failure() && (github.event_name == 'push' || github.event_name == 'schedule')
+    
+    steps:
+    - name: Send security alert
+      run: |
+        echo "🚨 Security scan failures detected!"
+        echo "Vulnerability scan: ${{ needs.vulnerability-scan.result }}"
+        echo "Docker security: ${{ needs.docker-security.result }}"
+        echo "Secrets scan: ${{ needs.secrets-scan.result }}"
+        
+        # Here you could integrate with your alerting system
+        # curl -X POST "https://hooks.slack.com/your-webhook" \
+        #   -H "Content-Type: application/json" \
+        #   -d '{"text": "🚨 Security scan failures in autoformalize repository!"}'

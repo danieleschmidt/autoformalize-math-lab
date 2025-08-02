@@ -1,0 +1,230 @@
+{
+  "project": {
+    "name": "autoformalize-math-lab",
+    "description": "LLM-driven auto-formalization workbench for mathematical proof translation",
+    "repository": "danieleschmidt/autoformalize-math-lab",
+    "language": "Python",
+    "domain": "Mathematical Formalization",
+    "last_updated": "2024-01-01T00:00:00Z"
+  },
+  "metrics": {
+    "code_quality": {
+      "coverage_threshold": 80,
+      "complexity_threshold": 10,
+      "maintainability_index_min": 70,
+      "technical_debt_ratio_max": 5,
+      "duplication_threshold": 3,
+      "security_hotspots_max": 0
+    },
+    "performance": {
+      "formalization_success_rate_min": 70,
+      "avg_formalization_time_max_seconds": 60,
+      "llm_api_response_time_max_ms": 5000,
+      "proof_verification_time_max_seconds": 30,
+      "memory_usage_max_mb": 2048,
+      "cpu_usage_max_percent": 80
+    },
+    "reliability": {
+      "uptime_target_percent": 99.5,
+      "error_rate_max_percent": 1,
+      "mttr_max_minutes": 30,
+      "mtbf_min_hours": 168
+    },
+    "business": {
+      "daily_formalizations_target": 1000,
+      "unique_users_monthly_target": 100,
+      "api_calls_daily_limit": 10000,
+      "cost_per_formalization_max_usd": 0.10
+    },
+    "security": {
+      "vulnerability_sla_days": 7,
+      "critical_vulnerability_sla_hours": 24,
+      "security_scan_frequency_days": 1,
+      "dependency_update_frequency_days": 7
+    }
+  },
+  "tracking": {
+    "code_metrics": {
+      "lines_of_code": {
+        "source": "sonarqube",
+        "query": "ncloc",
+        "frequency": "daily"
+      },
+      "cyclomatic_complexity": {
+        "source": "sonarqube", 
+        "query": "complexity",
+        "frequency": "daily"
+      },
+      "test_coverage": {
+        "source": "codecov",
+        "query": "coverage",
+        "frequency": "per_commit"
+      },
+      "technical_debt": {
+        "source": "sonarqube",
+        "query": "sqale_index",
+        "frequency": "daily"
+      }
+    },
+    "performance_metrics": {
+      "formalization_success_rate": {
+        "source": "prometheus",
+        "query": "formalization_success_rate",
+        "frequency": "real_time"
+      },
+      "api_response_time": {
+        "source": "prometheus",
+        "query": "histogram_quantile(0.95, rate(formalization_duration_seconds_bucket[5m]))",
+        "frequency": "real_time"
+      },
+      "llm_token_usage": {
+        "source": "prometheus",
+        "query": "rate(llm_tokens_used_total[1h])",
+        "frequency": "hourly"
+      },
+      "error_rate": {
+        "source": "prometheus",
+        "query": "rate(formalizations_total{status=\"error\"}[5m])",
+        "frequency": "real_time"
+      }
+    },
+    "business_metrics": {
+      "daily_active_users": {
+        "source": "analytics",
+        "query": "unique_users_24h",
+        "frequency": "daily"
+      },
+      "formalization_volume": {
+        "source": "prometheus",
+        "query": "increase(formalizations_total[24h])",
+        "frequency": "daily"
+      },
+      "cost_tracking": {
+        "source": "prometheus",
+        "query": "increase(llm_cost_usd_total[24h])",
+        "frequency": "daily"
+      }
+    }
+  },
+  "alerts": {
+    "critical": [
+      {
+        "name": "FormalizationSuccessRateCritical",
+        "condition": "formalization_success_rate < 50",
+        "duration": "5m",
+        "channels": ["pagerduty", "slack-critical"]
+      },
+      {
+        "name": "HighErrorRate",
+        "condition": "rate(formalizations_total{status=\"error\"}[5m]) > 0.1",
+        "duration": "2m", 
+        "channels": ["pagerduty", "slack-critical"]
+      },
+      {
+        "name": "ServiceDown",
+        "condition": "up{job=\"autoformalize\"} == 0",
+        "duration": "1m",
+        "channels": ["pagerduty", "slack-critical"]
+      }
+    ],
+    "warning": [
+      {
+        "name": "FormalizationSuccessRateWarning",
+        "condition": "formalization_success_rate < 70",
+        "duration": "10m",
+        "channels": ["slack-alerts"]
+      },
+      {
+        "name": "HighLLMCosts",
+        "condition": "increase(llm_cost_usd_total[1h]) > 50",
+        "duration": "0m",
+        "channels": ["slack-alerts", "email"]
+      },
+      {
+        "name": "SlowPerformance",
+        "condition": "histogram_quantile(0.95, rate(formalization_duration_seconds_bucket[10m])) > 60",
+        "duration": "15m",
+        "channels": ["slack-alerts"]
+      }
+    ]
+  },
+  "reporting": {
+    "dashboards": [
+      {
+        "name": "Main Dashboard",
+        "url": "http://grafana.internal/d/autoformalize-main",
+        "audience": ["engineering", "product", "business"]
+      },
+      {
+        "name": "Performance Dashboard", 
+        "url": "http://grafana.internal/d/autoformalize-performance",
+        "audience": ["engineering"]
+      },
+      {
+        "name": "Business Metrics",
+        "url": "http://grafana.internal/d/autoformalize-business",
+        "audience": ["product", "business"]
+      }
+    ],
+    "reports": [
+      {
+        "name": "Weekly Performance Report",
+        "frequency": "weekly",
+        "format": "email",
+        "recipients": ["engineering-team@company.com"]
+      },
+      {
+        "name": "Monthly Business Review",
+        "frequency": "monthly", 
+        "format": "pdf",
+        "recipients": ["stakeholders@company.com"]
+      },
+      {
+        "name": "Security Compliance Report",
+        "frequency": "quarterly",
+        "format": "pdf",
+        "recipients": ["security-team@company.com", "compliance@company.com"]
+      }
+    ]
+  },
+  "automation": {
+    "dependency_updates": {
+      "enabled": true,
+      "frequency": "weekly",
+      "auto_merge": false,
+      "security_updates_auto_merge": true
+    },
+    "performance_regression_detection": {
+      "enabled": true,
+      "threshold_percent": 15,
+      "action": "block_merge"
+    },
+    "cost_optimization": {
+      "enabled": true,
+      "daily_budget_usd": 100,
+      "action_on_exceed": "alert_and_throttle"
+    },
+    "capacity_planning": {
+      "enabled": true,
+      "forecast_horizon_days": 30,
+      "scaling_trigger_threshold": 80
+    }
+  },
+  "compliance": {
+    "data_retention": {
+      "metrics_retention_days": 90,
+      "logs_retention_days": 30,
+      "traces_retention_days": 7
+    },
+    "privacy": {
+      "anonymize_user_data": true,
+      "gdpr_compliant": true,
+      "data_export_available": true
+    },
+    "security": {
+      "vulnerability_scanning": "daily",
+      "penetration_testing": "quarterly",
+      "security_audit": "annually"
+    }
+  }
+}

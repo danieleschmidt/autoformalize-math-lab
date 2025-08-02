@@ -1,0 +1,50 @@
+# CODEOWNERS file for autoformalize-math-lab
+# 
+# This file defines code ownership for automatic review assignment
+# when pull requests are created.
+
+# Global ownership - these users/teams are requested for all changes
+* @danieleschmidt
+
+# Core source code
+/src/ @danieleschmidt
+/src/autoformalize/core/ @danieleschmidt
+/src/autoformalize/generators/ @danieleschmidt
+/src/autoformalize/verifiers/ @danieleschmidt
+
+# Mathematical content and algorithms
+/src/autoformalize/parsers/ @danieleschmidt
+/src/autoformalize/models/ @danieleschmidt
+
+# Infrastructure and DevOps
+/.github/ @danieleschmidt
+/docker/ @danieleschmidt
+/scripts/ @danieleschmidt
+/Dockerfile @danieleschmidt
+/docker-compose.yml @danieleschmidt
+
+# Documentation
+/docs/ @danieleschmidt
+/README.md @danieleschmidt
+/CONTRIBUTING.md @danieleschmidt
+
+# Testing
+/tests/ @danieleschmidt
+/pytest.ini @danieleschmidt
+
+# Configuration files
+/pyproject.toml @danieleschmidt
+/requirements*.txt @danieleschmidt
+/.pre-commit-config.yaml @danieleschmidt
+
+# Security and compliance
+/SECURITY.md @danieleschmidt
+/LICENSE @danieleschmidt
+
+# Performance and benchmarking
+/tests/performance/ @danieleschmidt
+/scripts/performance_benchmarking.py @danieleschmidt
+
+# Monitoring and observability
+/docs/monitoring/ @danieleschmidt
+/docs/runbooks/ @danieleschmidt

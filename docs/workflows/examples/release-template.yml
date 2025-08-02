@@ -1,0 +1,396 @@
+# Release Automation Workflow for autoformalize-math-lab
+# Copy to .github/workflows/release.yml to enable
+
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # Trigger on version tags like v1.0.0
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., 1.0.0)'
+        required: true
+        type: string
+      prerelease:
+        description: 'Mark as pre-release'
+        required: false
+        type: boolean
+        default: false
+
+env:
+  PYTHON_VERSION: "3.11"
+
+permissions:
+  contents: write
+  id-token: write  # For trusted publishing to PyPI
+
+jobs:
+  validate-release:
+    name: Validate Release
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      is_prerelease: ${{ steps.version.outputs.is_prerelease }}
+      
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - name: Extract version
+      id: version
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          VERSION="${{ github.event.inputs.version }}"
+          IS_PRERELEASE="${{ github.event.inputs.prerelease }}"
+        else
+          VERSION=${GITHUB_REF#refs/tags/v}
+          # Check if it's a pre-release (contains alpha, beta, rc)
+          if [[ $VERSION =~ (alpha|beta|rc) ]]; then
+            IS_PRERELEASE=true
+          else
+            IS_PRERELEASE=false
+          fi
+        fi
+        
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "is_prerelease=$IS_PRERELEASE" >> $GITHUB_OUTPUT
+        echo "Releasing version: $VERSION (prerelease: $IS_PRERELEASE)"
+        
+    - name: Validate version format
+      run: |
+        if ! [[ "${{ steps.version.outputs.version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+(\.[0-9]+)?)?$ ]]; then
+          echo "Invalid version format: ${{ steps.version.outputs.version }}"
+          exit 1
+        fi
+        
+    - name: Check if version exists
+      run: |
+        if git tag | grep -q "^v${{ steps.version.outputs.version }}$"; then
+          echo "Version ${{ steps.version.outputs.version }} already exists!"
+          exit 1
+        fi
+
+  run-tests:
+    name: Run Full Test Suite
+    runs-on: ubuntu-latest
+    needs: validate-release
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e ".[dev]"
+        
+    - name: Run comprehensive tests
+      run: |
+        pytest tests/ -v --cov=src/autoformalize --cov-report=xml --cov-report=term
+        
+    - name: Run security scans
+      run: |
+        bandit -r src/
+        safety check
+        
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-results
+        path: |
+          coverage.xml
+          pytest-report.xml
+
+  build-package:
+    name: Build Distribution Packages
+    runs-on: ubuntu-latest
+    needs: [validate-release, run-tests]
+    outputs:
+      package-version: ${{ steps.build.outputs.version }}
+      
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        
+    - name: Install build dependencies
+      run: |
+        python -m pip install --upgrade pip build twine
+        
+    - name: Update version in package
+      run: |
+        # Update version in pyproject.toml or setup.py
+        VERSION="${{ needs.validate-release.outputs.version }}"
+        sed -i "s/version = \".*\"/version = \"$VERSION\"/" pyproject.toml
+        
+    - name: Build source and wheel distributions
+      id: build
+      run: |
+        python -m build
+        
+        # Verify the built packages
+        twine check dist/*
+        
+        # Extract actual version from built package
+        BUILT_VERSION=$(python -c "import pkg_resources; print(pkg_resources.get_distribution('autoformalize').version)")
+        echo "version=$BUILT_VERSION" >> $GITHUB_OUTPUT
+        
+    - name: Test package installation
+      run: |
+        # Test installation in clean environment
+        python -m venv test-env
+        source test-env/bin/activate
+        pip install dist/*.whl
+        autoformalize --version
+        deactivate
+        rm -rf test-env
+        
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: dist-packages
+        path: dist/
+        retention-days: 30
+
+  build-docker:
+    name: Build Docker Images
+    runs-on: ubuntu-latest
+    needs: [validate-release, run-tests]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: Log in to Docker Hub
+      if: github.event_name != 'workflow_dispatch'
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: autoformalize/math-lab
+        tags: |
+          type=ref,event=tag
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=semver,pattern={{major}}
+          
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        platforms: linux/amd64,linux/arm64
+        push: ${{ github.event_name != 'workflow_dispatch' }}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        build-args: |
+          VERSION=${{ needs.validate-release.outputs.version }}
+
+  generate-changelog:
+    name: Generate Changelog
+    runs-on: ubuntu-latest
+    needs: validate-release
+    outputs:
+      changelog: ${{ steps.changelog.outputs.changelog }}
+      
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - name: Generate changelog
+      id: changelog
+      run: |
+        # Get the previous tag
+        PREVIOUS_TAG=$(git tag --sort=-version:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+' | head -2 | tail -1)
+        CURRENT_TAG="v${{ needs.validate-release.outputs.version }}"
+        
+        echo "Generating changelog from $PREVIOUS_TAG to $CURRENT_TAG"
+        
+        # Generate changelog using git log
+        CHANGELOG=$(cat << 'EOF'
+        ## What's Changed
+        
+        ### Features
+        $(git log $PREVIOUS_TAG..HEAD --grep="feat" --pretty="- %s" | head -10)
+        
+        ### Bug Fixes
+        $(git log $PREVIOUS_TAG..HEAD --grep="fix" --pretty="- %s" | head -10)
+        
+        ### Documentation
+        $(git log $PREVIOUS_TAG..HEAD --grep="docs" --pretty="- %s" | head -5)
+        
+        ### Other Changes
+        $(git log $PREVIOUS_TAG..HEAD --grep="refactor\|perf\|style" --pretty="- %s" | head -5)
+        
+        **Full Changelog**: https://github.com/${{ github.repository }}/compare/$PREVIOUS_TAG...$CURRENT_TAG
+        EOF
+        )
+        
+        # Save changelog to output
+        echo "changelog<<EOF" >> $GITHUB_OUTPUT
+        echo "$CHANGELOG" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+  publish-pypi:
+    name: Publish to PyPI
+    runs-on: ubuntu-latest
+    needs: [validate-release, build-package]
+    if: github.event_name == 'push'  # Only publish on tag push, not manual dispatch
+    environment: pypi
+    
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: dist-packages
+        path: dist/
+        
+    - name: Publish to Test PyPI
+      if: needs.validate-release.outputs.is_prerelease == 'true'
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        repository-url: https://test.pypi.org/legacy/
+        
+    - name: Publish to PyPI
+      if: needs.validate-release.outputs.is_prerelease == 'false'
+      uses: pypa/gh-action-pypi-publish@release/v1
+
+  create-github-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: [validate-release, build-package, generate-changelog, publish-pypi]
+    if: always() && needs.validate-release.result == 'success'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Download build artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: dist-packages
+        path: dist/
+        
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v${{ needs.validate-release.outputs.version }}
+        name: Release ${{ needs.validate-release.outputs.version }}
+        body: ${{ needs.generate-changelog.outputs.changelog }}
+        prerelease: ${{ needs.validate-release.outputs.is_prerelease }}
+        files: |
+          dist/*
+        generate_release_notes: true
+        
+    - name: Update latest tag
+      if: needs.validate-release.outputs.is_prerelease == 'false'
+      run: |
+        git tag -f latest
+        git push -f origin latest
+
+  post-release:
+    name: Post-Release Actions
+    runs-on: ubuntu-latest
+    needs: [validate-release, create-github-release, publish-pypi]
+    if: always() && needs.validate-release.result == 'success'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Update development version
+      if: needs.validate-release.outputs.is_prerelease == 'false'
+      run: |
+        # Bump version for next development cycle
+        VERSION="${{ needs.validate-release.outputs.version }}"
+        IFS='.' read -ra VERSION_PARTS <<< "$VERSION"
+        MAJOR=${VERSION_PARTS[0]}
+        MINOR=${VERSION_PARTS[1]}
+        PATCH=${VERSION_PARTS[2]}
+        
+        # Increment minor version for next dev cycle
+        NEXT_MINOR=$((MINOR + 1))
+        NEXT_VERSION="$MAJOR.$NEXT_MINOR.0-dev"
+        
+        # Update version in pyproject.toml
+        sed -i "s/version = \".*\"/version = \"$NEXT_VERSION\"/" pyproject.toml
+        
+        # Update CHANGELOG.md
+        echo -e "# Changelog\n\n## [Unreleased]\n\n$(cat CHANGELOG.md)" > CHANGELOG.md
+        
+    - name: Create development PR
+      if: needs.validate-release.outputs.is_prerelease == 'false'
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "chore: bump version for next development cycle"
+        title: "Prepare for next development cycle"
+        body: |
+          Automated PR to bump version after release ${{ needs.validate-release.outputs.version }}
+          
+          Changes:
+          - Update version to next development version
+          - Add unreleased section to CHANGELOG
+        branch: chore/post-release-${{ needs.validate-release.outputs.version }}
+        
+    - name: Notify release success
+      run: |
+        echo "🎉 Successfully released version ${{ needs.validate-release.outputs.version }}"
+        echo "PyPI: https://pypi.org/project/autoformalize/${{ needs.validate-release.outputs.version }}/"
+        echo "GitHub: ${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ needs.validate-release.outputs.version }}"
+        
+        # Send notification to Slack/Discord/etc.
+        # curl -X POST "https://hooks.slack.com/your-webhook" \
+        #   -H "Content-Type: application/json" \
+        #   -d '{"text": "🎉 Released autoformalize v${{ needs.validate-release.outputs.version }}!"}'
+
+  security-scan-release:
+    name: Security Scan Release Artifacts
+    runs-on: ubuntu-latest
+    needs: [build-package, build-docker]
+    
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: dist-packages
+        path: dist/
+        
+    - name: Scan Python packages
+      run: |
+        pip install safety bandit
+        
+        # Extract and scan the wheel
+        unzip -q dist/*.whl -d extracted/
+        bandit -r extracted/ -f json -o release-security-scan.json || true
+        
+    - name: Upload security scan results
+      uses: actions/upload-artifact@v3
+      with:
+        name: release-security-scan
+        path: release-security-scan.json
