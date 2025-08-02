@@ -76,6 +76,13 @@ repos:
       - id: python-safety-dependencies-check
         files: requirements.*\.txt$
 
+  # Advanced Python security auditing with pip-audit
+  - repo: https://github.com/pypa/pip-audit
+    rev: v2.6.1
+    hooks:
+      - id: pip-audit
+        args: ['--require-hashes', '--disable-pip']
+
   # LaTeX formatting and linting
   - repo: https://github.com/cmhughes/latexindent.pl
     rev: V3.21

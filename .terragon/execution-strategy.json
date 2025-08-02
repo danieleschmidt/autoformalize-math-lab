@@ -1,0 +1,8 @@
+{
+  "riskThreshold": 0.7000000000000001,
+  "effortBufferMultiplier": 1.0,
+  "preferredTypes": [],
+  "cautiousTypes": [
+    "security"
+  ]
+}

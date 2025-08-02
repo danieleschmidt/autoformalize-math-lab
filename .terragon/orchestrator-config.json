@@ -1,0 +1,8 @@
+{
+  "base_cycle_interval_minutes": 60,
+  "max_concurrent_executions": 1,
+  "enable_learning": true,
+  "enable_tracking": true,
+  "max_cycle_duration_minutes": 30,
+  "health_check_interval_minutes": 5
+}
