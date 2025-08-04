@@ -440,7 +440,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 ```bibtex
 @inproceedings{autoformalize_math_lab,
   title={Autoformalize-Math-Lab: Bridging Informal and Formal Mathematics},
-  author={Your Name},
+  author={Daniel Schmidt},
   booktitle={International Conference on Automated Reasoning},
   year={2025}
 }
