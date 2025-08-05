@@ -1,0 +1,26 @@
+theory Generated_Theory
+  imports Main Complex_Main
+begin
+
+(* Definition: unnamed *)
+(* \label{def:even} A natural number $n$ is called even if there exists a natural number $k$ such that $n = 2k$. *)
+definition even_number :: "nat ⇒ bool" where
+  "even_number n ≡ ∃k. n = 2 * k"
+
+(* Theorem: unnamed *)
+(* \label{thm:sum_even} The sum of two even numbers is even. *)
+theorem sum_even_theorem: "even_number a ∧ even_number b ⟹ even_number (a + b)"
+proof -
+  assume "even_number a ∧ even_number b"
+  then show "even_number (a + b)" by auto
+qed
+
+(* Theorem: unnamed *)
+(* If $n$ is even, then $n^2$ is even. *)
+theorem sum_even_theorem: "even_number a ∧ even_number b ⟹ even_number (a + b)"
+proof -
+  assume "even_number a ∧ even_number b"
+  then show "even_number (a + b)" by auto
+qed
+
+end

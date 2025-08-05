@@ -1,0 +1,287 @@
+# Kubernetes deployment for Autoformalize
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autoformalize-app
+  namespace: autoformalize
+  labels:
+    app: autoformalize
+    component: api
+    version: v1.0.0
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: autoformalize
+      component: api
+  template:
+    metadata:
+      labels:
+        app: autoformalize
+        component: api
+        version: v1.0.0
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: "/api/v1/metrics/prometheus"
+    spec:
+      serviceAccountName: autoformalize-sa
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
+      containers:
+      - name: autoformalize
+        image: autoformalize:1.0.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+          name: http
+          protocol: TCP
+        env:
+        - name: AUTOFORMALIZE_ENV
+          value: "production"
+        - name: AUTOFORMALIZE_LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: autoformalize-config
+              key: log-level
+        - name: AUTOFORMALIZE_MAX_WORKERS
+          valueFrom:
+            configMapKeyRef:
+              name: autoformalize-config
+              key: max-workers
+        - name: AUTOFORMALIZE_REDIS_URL
+          valueFrom:
+            configMapKeyRef:
+              name: autoformalize-config
+              key: redis-url
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: autoformalize-secrets
+              key: openai-api-key
+        - name: ANTHROPIC_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: autoformalize-secrets
+              key: anthropic-api-key
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /api/v1/status
+            port: 8000
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /api/v1/status
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        volumeMounts:
+        - name: app-data
+          mountPath: /app/data
+        - name: app-cache
+          mountPath: /app/cache
+        - name: config-volume
+          mountPath: /app/config
+          readOnly: true
+      volumes:
+      - name: app-data
+        persistentVolumeClaim:
+          claimName: autoformalize-data-pvc
+      - name: app-cache
+        emptyDir:
+          sizeLimit: 1Gi
+      - name: config-volume
+        configMap:
+          name: autoformalize-config
+      nodeSelector:
+        kubernetes.io/arch: amd64
+      tolerations:
+      - key: "autoformalize.io/dedicated"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: autoformalize-service
+  namespace: autoformalize
+  labels:
+    app: autoformalize
+    component: api
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8000
+    protocol: TCP
+    name: http
+  selector:
+    app: autoformalize
+    component: api
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: autoformalize-config
+  namespace: autoformalize
+data:
+  log-level: "INFO"
+  max-workers: "4"
+  redis-url: "redis://autoformalize-redis:6379"
+  enable-metrics: "true"
+  enable-caching: "true"
+  cache-ttl: "3600"
+  max-request-size: "10485760"  # 10MB
+  rate-limit-requests: "100"
+  rate-limit-window: "60"
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: autoformalize-secrets
+  namespace: autoformalize
+type: Opaque
+data:
+  # These should be base64 encoded in production
+  openai-api-key: ""  # Add your base64 encoded API key
+  anthropic-api-key: ""  # Add your base64 encoded API key
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: autoformalize-sa
+  namespace: autoformalize
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: autoformalize-data-pvc
+  namespace: autoformalize
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: fast-ssd
+
+---
+# Horizontal Pod Autoscaler
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: autoformalize-hpa
+  namespace: autoformalize
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: autoformalize-app
+  minReplicas: 3
+  maxReplicas: 20
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 10
+        periodSeconds: 60
+
+---
+# Pod Disruption Budget
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: autoformalize-pdb
+  namespace: autoformalize
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: autoformalize
+      component: api
+
+---
+# Network Policy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: autoformalize-network-policy
+  namespace: autoformalize
+spec:
+  podSelector:
+    matchLabels:
+      app: autoformalize
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: nginx-ingress
+    - podSelector:
+        matchLabels:
+          app: prometheus
+    ports:
+    - protocol: TCP
+      port: 8000
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: redis
+    ports:
+    - protocol: TCP
+      port: 6379
+  - to: []  # Allow all outbound traffic for API calls
+    ports:
+    - protocol: TCP
+      port: 443
+    - protocol: TCP
+      port: 80

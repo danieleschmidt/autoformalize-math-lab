@@ -1,0 +1,27 @@
+import Mathlib.Data.Nat.Basic
+import Mathlib.Data.Int.Basic
+import Mathlib.Algebra.Group.Basic
+
+-- Definition: unnamed
+-- \label{def:even} A natural number $n$ is called even if there exists a natural number $k$ such that $n = 2k$.
+def EvenNumber (n : ℕ) : Prop := ∃ k : ℕ, n = 2 * k
+
+-- Theorem: unnamed
+-- \label{thm:sum_even} The sum of two even numbers is even.
+theorem sum_of_even_is_even (a b : ℕ) (ha : EvenNumber a) (hb : EvenNumber b) :
+  EvenNumber (a + b) := by
+  obtain ⟨k, hk⟩ := ha
+  obtain ⟨l, hl⟩ := hb
+  use k + l
+  rw [hk, hl]
+  ring
+
+-- Theorem: unnamed
+-- If $n$ is even, then $n^2$ is even.
+theorem example_theorem : True := by trivial
+
+-- Lemma: unnamed
+-- \label{lem:zero_even} The number $0$ is even.
+lemma zero_is_even : EvenNumber 0 := by
+  use 0
+  simp
