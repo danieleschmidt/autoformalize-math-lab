@@ -41,6 +41,10 @@ try:
     from .core.self_correcting import SelfCorrectingPipeline
     from .core.cross_system import CrossSystemTranslator
     from .core.mathlib_aligner import MathlibAligner
+    from .core.config import FormalizationConfig
+    from .parsers.latex_parser import LaTeXParser
+    from .generators.lean import Lean4Generator
+    from .verifiers.lean_verifier import Lean4Verifier
 except ImportError:
     # Handle case where dependencies are not yet installed
     pass
