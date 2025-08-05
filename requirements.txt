@@ -24,10 +24,8 @@ pymupdf>=1.23.0
 
 # Mathematical Libraries
 sympy>=1.12
-maximilian-latex>=0.1.0
 
 # Proof Assistant Interfaces
-subprocess-manager>=1.0.0
 pexpect>=4.8.0
 
 # API and Web

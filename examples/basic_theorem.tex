@@ -1,0 +1,54 @@
+\documentclass{article}
+\usepackage{amsmath,amsthm,amssymb}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{definition}{Definition}
+
+\begin{document}
+
+\title{Sample Mathematical Content}
+\author{Autoformalize Demo}
+\date{\today}
+\maketitle
+
+\begin{definition}[Even Number]
+\label{def:even}
+A natural number $n$ is called even if there exists a natural number $k$ such that $n = 2k$.
+\end{definition}
+
+\begin{theorem}[Sum of Even Numbers]
+\label{thm:sum_even}
+The sum of two even numbers is even.
+\end{theorem}
+
+\begin{proof}
+Let $a$ and $b$ be two even numbers. By the definition of even numbers, there exist natural numbers $k$ and $l$ such that $a = 2k$ and $b = 2l$.
+
+Therefore, $a + b = 2k + 2l = 2(k + l)$.
+
+Since $k + l$ is a natural number, we have shown that $a + b$ is even.
+\end{proof}
+
+\begin{lemma}[Zero is Even]
+\label{lem:zero_even}
+The number $0$ is even.
+\end{lemma}
+
+\begin{proof}
+We can write $0 = 2 \cdot 0$, so by definition, $0$ is even.
+\end{proof}
+
+\begin{theorem}[Product Property]
+If $n$ is even, then $n^2$ is even.
+\end{theorem}
+
+\begin{proof}
+Let $n$ be even. Then there exists a natural number $k$ such that $n = 2k$.
+
+Therefore, $n^2 = (2k)^2 = 4k^2 = 2(2k^2)$.
+
+Since $2k^2$ is a natural number, we have shown that $n^2$ is even.
+\end{proof}
+
+\end{document}
