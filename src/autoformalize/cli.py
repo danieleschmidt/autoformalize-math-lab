@@ -4,15 +4,18 @@ This module provides a comprehensive CLI for mathematical formalization tasks,
 including single-file processing, batch operations, and evaluation workflows.
 """
 
+import asyncio
 import click
 import sys
+import json
 from pathlib import Path
 from typing import Optional, List
 
-# Import will be available once the core modules are implemented
-# from .core import FormalizationPipeline, SelfCorrectingPipeline
-# from .utils import setup_logging, Timer
-# from .datasets import BenchmarkLoader, EvaluationMetrics
+from .core.pipeline import FormalizationPipeline, TargetSystem
+from .core.config import FormalizationConfig
+from .utils.logging_config import setup_logger
+from .utils.metrics import global_metrics
+from .verifiers.lean_verifier import Lean4Verifier
 
 
 @click.group()
@@ -29,8 +32,21 @@ def main(ctx: click.Context, debug: bool, config: Optional[str]) -> None:
     ctx.obj['debug'] = debug
     ctx.obj['config'] = config
     
-    # Setup logging (will be implemented later)
-    # setup_logging(debug=debug)
+    # Setup logging
+    log_level = "DEBUG" if debug else "INFO"
+    logger = setup_logger("autoformalize", level=log_level)
+    ctx.obj['logger'] = logger
+    
+    # Load configuration
+    if config:
+        try:
+            ctx.obj['config_obj'] = FormalizationConfig.from_file(Path(config))
+            logger.info(f"Loaded configuration from {config}")
+        except Exception as e:
+            logger.error(f"Failed to load configuration: {e}")
+            sys.exit(1)
+    else:
+        ctx.obj['config_obj'] = FormalizationConfig()
     
     if debug:
         click.echo("Debug mode enabled", err=True)
@@ -54,28 +70,62 @@ def formalize(ctx: click.Context, input_file: str, target: str, output: Optional
     
     INPUT_FILE: Path to LaTeX file containing mathematical content
     """
-    click.echo(f"Formalizing {input_file} to {target}...")
+    logger = ctx.obj['logger']
+    config = ctx.obj['config_obj']
     
-    # Implementation will be added later
-    click.echo("🚧 Implementation coming soon!")
-    click.echo(f"Target: {target}")
-    click.echo(f"Model: {model}")
-    click.echo(f"Max corrections: {max_corrections}")
+    click.echo(f"🚀 Formalizing {input_file} to {target}...")
     
-    if output:
-        click.echo(f"Output will be written to: {output}")
-    else:
-        # Auto-generate output filename
-        input_path = Path(input_file)
-        if target == 'lean4':
-            output_path = input_path.with_suffix('.lean')
-        elif target == 'isabelle':
-            output_path = input_path.with_suffix('.thy')
-        elif target == 'coq':
-            output_path = input_path.with_suffix('.v')
-        elif target == 'agda':
-            output_path = input_path.with_suffix('.agda')
-        click.echo(f"Output will be written to: {output_path}")
+    # Auto-generate output filename if not provided
+    input_path = Path(input_file)
+    if not output:
+        extension_map = {
+            'lean4': '.lean',
+            'isabelle': '.thy', 
+            'coq': '.v',
+            'agda': '.agda'
+        }
+        output = str(input_path.with_suffix(extension_map.get(target, '.txt')))
+    
+    async def run_formalization():
+        try:
+            # Create pipeline
+            pipeline = FormalizationPipeline(
+                target_system=target,
+                model=model,
+                config=config
+            )
+            
+            # Run formalization
+            result = await pipeline.formalize_file(
+                input_path=input_path,
+                output_path=Path(output),
+                verify=True
+            )
+            
+            if result.success:
+                click.echo(f"✅ Success! Generated code written to: {output}")
+                click.echo(f"⏱️  Processing time: {result.processing_time:.2f}s")
+                
+                if result.verification_status is not None:
+                    status = "✅ VERIFIED" if result.verification_status else "❌ FAILED"
+                    click.echo(f"🔍 Verification: {status}")
+                
+                if verbose and result.metrics:
+                    click.echo("\n📊 Metrics:")
+                    for key, value in result.metrics.items():
+                        click.echo(f"  {key}: {value}")
+                        
+            else:
+                click.echo(f"❌ Formalization failed: {result.error_message}")
+                sys.exit(1)
+                
+        except Exception as e:
+            logger.error(f"Formalization error: {e}")
+            click.echo(f"❌ Error: {e}")
+            sys.exit(1)
+    
+    # Run the async function
+    asyncio.run(run_formalization())
 
 
 @main.command()
