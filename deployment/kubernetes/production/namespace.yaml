@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: autoformalize-prod
+  labels:
+    name: autoformalize-prod
+    environment: production
+    app: autoformalize-math-lab
+  annotations:
+    description: "Production namespace for autoformalize-math-lab"
