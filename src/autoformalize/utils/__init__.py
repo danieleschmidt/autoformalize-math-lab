@@ -12,12 +12,23 @@ Modules:
     time_utils: Timing and performance measurement utilities
 """
 
+try:
+    from .logging_config import setup_logger
+    from .metrics import FormalizationMetrics
+    from .caching import CacheManager, CacheStrategy
+    from .concurrency import ResourcePool, AsyncBatch
+    from .resilience import retry_async, CircuitBreaker
+except ImportError:
+    # Handle missing dependencies gracefully
+    pass
+
 __all__ = [
-    "setup_logging",
-    "FileUtils",
-    "MathUtils",
+    "setup_logger",
+    "FormalizationMetrics",
     "CacheManager",
-    "ConfigLoader",
-    "Timer",
-    "PerformanceMonitor",
+    "CacheStrategy", 
+    "ResourcePool",
+    "AsyncBatch",
+    "retry_async",
+    "CircuitBreaker",
 ]
