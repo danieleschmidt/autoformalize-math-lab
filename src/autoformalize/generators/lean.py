@@ -97,6 +97,10 @@ class Lean4Generator:
                 raise ModelError("Anthropic package not installed. Run: pip install anthropic")
             self.client = AsyncAnthropic(api_key=api_key)
             self.client_type = "anthropic"
+        elif self.model == "mock":
+            # Mock client for testing
+            self.client = None
+            self.client_type = "mock"
         else:
             raise ModelError(f"Unsupported model: {self.model}")
     
@@ -414,6 +418,11 @@ Generate valid Lean 4 code with proper syntax and tactics.
                     ]
                 )
                 return response.content[0].text
+            
+            elif self.client_type == "mock":
+                # Return mock Lean 4 code for testing
+                return """theorem test_theorem (n : ℕ) : n + 0 = n := by
+  exact Nat.add_zero n"""
             
             else:
                 raise ModelError(f"Unsupported client type: {self.client_type}")

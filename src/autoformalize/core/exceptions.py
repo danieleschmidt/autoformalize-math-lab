@@ -30,6 +30,11 @@ class UnsupportedSystemError(FormalizationError):
     pass
 
 
+class ValidationError(FormalizationError):
+    """Raised when input validation fails."""
+    pass
+
+
 class ModelError(FormalizationError):
     """Raised when LLM model access fails."""
     pass
