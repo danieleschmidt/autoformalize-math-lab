@@ -1,0 +1,303 @@
+{
+  "timestamp": 1754668225.4186451,
+  "overall_success": false,
+  "passed_gates": 2,
+  "total_gates": 4,
+  "execution_time": 15.133248329162598,
+  "gate_results": [
+    {
+      "gate_name": "Security Assessment",
+      "passed": false,
+      "score": 63,
+      "threshold": 80.0,
+      "execution_time": 3.5,
+      "recommendations": [
+        "Fix high-severity vulnerabilities immediately",
+        "Update vulnerable dependencies",
+        "Remove exposed secrets from codebase"
+      ]
+    },
+    {
+      "gate_name": "Performance Benchmarking",
+      "passed": true,
+      "score": 100,
+      "threshold": 20.0,
+      "execution_time": 8.2,
+      "recommendations": []
+    },
+    {
+      "gate_name": "Code Quality Analysis",
+      "passed": true,
+      "score": 87.85,
+      "threshold": 80.0,
+      "execution_time": 3.3,
+      "recommendations": []
+    },
+    {
+      "gate_name": "Integration Testing",
+      "passed": false,
+      "score": 70.66666666666666,
+      "threshold": 90.0,
+      "execution_time": 6.8,
+      "recommendations": [
+        "Fix failing integration tests",
+        "Improve system compatibility",
+        "Enhance error recovery mechanisms"
+      ]
+    }
+  ],
+  "detailed_results": {
+    "security": {
+      "vulnerability_scan": "SecurityScanResult(vulnerability_count=5, critical_issues=[], high_issues=['Potential SQL injection in query builder'], medium_issues=['Weak cryptographic key generation', 'Insecure random number generation'], low_issues=['Missing input validation', 'Hardcoded secret in config'], score=63)",
+      "dependency_scan": {
+        "vulnerable_packages": [
+          {
+            "package": "requests",
+            "version": "2.25.1",
+            "vulnerability": "CVE-2023-32681",
+            "severity": "medium"
+          },
+          {
+            "package": "cryptography",
+            "version": "3.4.8",
+            "vulnerability": "CVE-2023-23931",
+            "severity": "high"
+          }
+        ],
+        "total_packages_scanned": 45,
+        "vulnerable_count": 2
+      },
+      "secrets_scan": {
+        "exposed_secrets": [
+          {
+            "file": "config/settings.py",
+            "type": "api_key",
+            "line": 23
+          },
+          {
+            "file": "tests/test_integration.py",
+            "type": "password",
+            "line": 45
+          }
+        ],
+        "files_scanned": 127,
+        "secrets_count": 2
+      }
+    },
+    "performance": {
+      "benchmarks": [
+        "PerformanceBenchmark(operation='latex_parsing', avg_time=0.05035877227783203, min_time=0.05029797554016113, max_time=0.05041956901550293, p95_time=0.05041956901550293, throughput=19.857513493040432, memory_usage=12.5, cpu_usage=15.2)",
+        "PerformanceBenchmark(operation='code_generation', avg_time=0.150493323802948, min_time=0.1504197120666504, max_time=0.15057587623596191, p95_time=0.15057587623596191, throughput=6.644813037084447, memory_usage=28.3, cpu_usage=45.7)",
+        "PerformanceBenchmark(operation='full_pipeline', avg_time=0.30062451362609866, min_time=0.30057740211486816, max_time=0.3006622791290283, p95_time=0.3006622791290283, throughput=3.3264087081193545, memory_usage=67.8, cpu_usage=72.4)",
+        "PerformanceBenchmark(operation='concurrent_processing', avg_time=0.010066890716552734, min_time=0.1, max_time=0.1, p95_time=0.1, throughput=99.33553747193513, memory_usage=45.2, cpu_usage=85.6)"
+      ],
+      "regression_analysis": {
+        "regressions": [],
+        "improvements": [],
+        "baseline_updated": true
+      }
+    },
+    "code_quality": {
+      "coverage": {
+        "total_lines": 2847,
+        "covered_lines": 2415,
+        "coverage_percent": 84.8,
+        "missing_coverage": [
+          "src/autoformalize/core/exceptions.py:45-52",
+          "src/autoformalize/utils/validation.py:128-135",
+          "src/autoformalize/generators/coq.py:89-96"
+        ]
+      },
+      "complexity": {
+        "average_complexity": 3.2,
+        "max_complexity": 12,
+        "high_complexity_functions": [
+          {
+            "function": "FormalizationPipeline.formalize",
+            "complexity": 12
+          },
+          {
+            "function": "LaTeXParser._parse_theorem",
+            "complexity": 9
+          },
+          {
+            "function": "Lean4Generator._generate_proof",
+            "complexity": 8
+          }
+        ],
+        "total_functions": 234
+      },
+      "style": {
+        "total_files": 45,
+        "compliant_files": 42,
+        "compliance_percent": 93.3,
+        "style_violations": [
+          {
+            "file": "src/autoformalize/core/pipeline.py",
+            "line": 156,
+            "issue": "Line too long"
+          },
+          {
+            "file": "src/autoformalize/parsers/latex_parser.py",
+            "line": 89,
+            "issue": "Missing docstring"
+          },
+          {
+            "file": "src/autoformalize/utils/metrics.py",
+            "line": 23,
+            "issue": "Unused import"
+          }
+        ]
+      },
+      "documentation": {
+        "total_functions": 234,
+        "documented_functions": 198,
+        "documentation_percent": 84.6,
+        "missing_docs": [
+          "src/autoformalize/core/pipeline.py:FormalizationPipeline._setup_components",
+          "src/autoformalize/utils/caching.py:CacheManager._evict_expired",
+          "src/autoformalize/generators/lean.py:Lean4Generator._format_proof"
+        ]
+      },
+      "typing": {
+        "total_functions": 234,
+        "typed_functions": 211,
+        "typing_percent": 90.2,
+        "missing_types": [
+          "src/autoformalize/utils/templates.py:TemplateManager.load_template",
+          "src/autoformalize/core/optimization.py:PerformanceOptimizer._profile_function",
+          "src/autoformalize/verifiers/coq_verifier.py:CoqVerifier._parse_output"
+        ]
+      }
+    },
+    "integration": {
+      "end_to_end": {
+        "total_tests": 3,
+        "passed_tests": 2,
+        "success_rate": 66.66666666666666,
+        "test_results": [
+          {
+            "test_case": "For any prime p > 2, p is odd.",
+            "success": true,
+            "processing_time": 0.2,
+            "formal_code_generated": true
+          },
+          {
+            "test_case": "The sum of two even numbers is even.",
+            "success": true,
+            "processing_time": 0.30000000000000004,
+            "formal_code_generated": true
+          },
+          {
+            "test_case": "Every perfect square is non-negative.",
+            "success": false,
+            "processing_time": 0.4,
+            "formal_code_generated": false
+          }
+        ]
+      },
+      "compatibility": {
+        "tested_systems": [
+          "lean4",
+          "isabelle",
+          "coq"
+        ],
+        "compatibility_matrix": {
+          "lean4": {
+            "compatible": true,
+            "syntax_correct": true,
+            "verification_passed": true
+          },
+          "isabelle": {
+            "compatible": true,
+            "syntax_correct": true,
+            "verification_passed": true
+          },
+          "coq": {
+            "compatible": false,
+            "syntax_correct": false,
+            "verification_passed": false
+          }
+        },
+        "compatibility_rate": 66.66666666666666
+      },
+      "error_handling": {
+        "error_scenarios": [
+          "invalid_latex_syntax",
+          "api_timeout",
+          "verification_failure",
+          "memory_exhaustion",
+          "network_error"
+        ],
+        "recovery_results": {
+          "invalid_latex_syntax": {
+            "error_triggered": true,
+            "recovery_attempted": true,
+            "recovery_successful": true,
+            "fallback_used": true
+          },
+          "api_timeout": {
+            "error_triggered": true,
+            "recovery_attempted": true,
+            "recovery_successful": true,
+            "fallback_used": true
+          },
+          "verification_failure": {
+            "error_triggered": true,
+            "recovery_attempted": true,
+            "recovery_successful": true,
+            "fallback_used": true
+          },
+          "memory_exhaustion": {
+            "error_triggered": true,
+            "recovery_attempted": true,
+            "recovery_successful": false,
+            "fallback_used": false
+          },
+          "network_error": {
+            "error_triggered": true,
+            "recovery_attempted": true,
+            "recovery_successful": true,
+            "fallback_used": true
+          }
+        },
+        "recovery_rate": 80.0
+      },
+      "load_testing": {
+        "load_levels_tested": [
+          1,
+          10,
+          50,
+          100
+        ],
+        "load_results": {
+          "load_1": {
+            "concurrent_requests": 1,
+            "avg_response_time": 0.12000000000000001,
+            "success_rate": 99.5,
+            "throughput": 8.333333333333332
+          },
+          "load_10": {
+            "concurrent_requests": 10,
+            "avg_response_time": 0.30000000000000004,
+            "success_rate": 95.0,
+            "throughput": 33.33333333333333
+          },
+          "load_50": {
+            "concurrent_requests": 50,
+            "avg_response_time": 1.1,
+            "success_rate": 75.0,
+            "throughput": 45.45454545454545
+          },
+          "load_100": {
+            "concurrent_requests": 100,
+            "avg_response_time": 2.1,
+            "success_rate": 50,
+            "throughput": 47.61904761904762
+          }
+        },
+        "max_sustainable_load": 50
+      }
+    }
+  }
+}

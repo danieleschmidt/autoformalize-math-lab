@@ -1,0 +1,400 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autoformalize-api
+  namespace: autoformalize-prod
+  labels:
+    app: autoformalize-api
+    environment: production
+    version: v1.0.0
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: autoformalize-api
+  template:
+    metadata:
+      labels:
+        app: autoformalize-api
+        environment: production
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: autoformalize-service-account
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+      - name: autoformalize-api
+        image: autoformalize/math-lab:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+          name: http
+        env:
+        - name: ENVIRONMENT
+          value: "production"
+        - name: LOG_LEVEL
+          value: "INFO"
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: autoformalize-secrets
+              key: redis-url
+        - name: POSTGRES_URL
+          valueFrom:
+            secretKeyRef:
+              name: autoformalize-secrets
+              key: postgres-url
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: autoformalize-secrets
+              key: openai-api-key
+        - name: ANTHROPIC_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: autoformalize-secrets
+              key: anthropic-api-key
+        - name: PROMETHEUS_MULTIPROC_DIR
+          value: "/tmp/prometheus"
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        volumeMounts:
+        - name: cache-volume
+          mountPath: /app/cache
+        - name: prometheus-volume
+          mountPath: /tmp/prometheus
+        - name: config-volume
+          mountPath: /app/config
+          readOnly: true
+      volumes:
+      - name: cache-volume
+        emptyDir:
+          sizeLimit: 1Gi
+      - name: prometheus-volume
+        emptyDir:
+          sizeLimit: 100Mi
+      - name: config-volume
+        configMap:
+          name: autoformalize-config
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - autoformalize-api
+              topologyKey: kubernetes.io/hostname
+      tolerations:
+      - key: "node.kubernetes.io/memory-pressure"
+        operator: "Exists"
+        effect: "NoSchedule"
+      - key: "node.kubernetes.io/disk-pressure"
+        operator: "Exists"
+        effect: "NoSchedule"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autoformalize-worker
+  namespace: autoformalize-prod
+  labels:
+    app: autoformalize-worker
+    environment: production
+    version: v1.0.0
+spec:
+  replicas: 6
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: autoformalize-worker
+  template:
+    metadata:
+      labels:
+        app: autoformalize-worker
+        environment: production
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9090"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: autoformalize-service-account
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+      - name: autoformalize-worker
+        image: autoformalize/math-lab:latest
+        imagePullPolicy: Always
+        command: ["./entrypoint.sh", "worker"]
+        env:
+        - name: ENVIRONMENT
+          value: "production"
+        - name: WORKER_TYPE
+          value: "general"
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: autoformalize-secrets
+              key: redis-url
+        - name: POSTGRES_URL
+          valueFrom:
+            secretKeyRef:
+              name: autoformalize-secrets
+              key: postgres-url
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: autoformalize-secrets
+              key: openai-api-key
+        - name: ANTHROPIC_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: autoformalize-secrets
+              key: anthropic-api-key
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "300m"
+          limits:
+            memory: "1.5Gi"
+            cpu: "800m"
+        livenessProbe:
+          exec:
+            command:
+            - python
+            - healthcheck.py
+          initialDelaySeconds: 30
+          periodSeconds: 60
+          timeoutSeconds: 10
+          failureThreshold: 3
+        volumeMounts:
+        - name: cache-volume
+          mountPath: /app/cache
+        - name: config-volume
+          mountPath: /app/config
+          readOnly: true
+      volumes:
+      - name: cache-volume
+        emptyDir:
+          sizeLimit: 512Mi
+      - name: config-volume
+        configMap:
+          name: autoformalize-config
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 50
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - autoformalize-worker
+              topologyKey: kubernetes.io/hostname
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: autoformalize-api-service
+  namespace: autoformalize-prod
+  labels:
+    app: autoformalize-api
+    environment: production
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8000
+    protocol: TCP
+    name: http
+  selector:
+    app: autoformalize-api
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: autoformalize-api-headless
+  namespace: autoformalize-prod
+  labels:
+    app: autoformalize-api
+    environment: production
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - port: 8000
+    targetPort: 8000
+    protocol: TCP
+    name: http
+  selector:
+    app: autoformalize-api
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: autoformalize-ingress
+  namespace: autoformalize-prod
+  labels:
+    app: autoformalize-api
+    environment: production
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/rate-limit-window: "1m"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+    - api.autoformalize.terragon-labs.com
+    secretName: autoformalize-tls
+  rules:
+  - host: api.autoformalize.terragon-labs.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: autoformalize-api-service
+            port:
+              number: 80
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: autoformalize-api-hpa
+  namespace: autoformalize-prod
+  labels:
+    app: autoformalize-api
+    environment: production
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: autoformalize-api
+  minReplicas: 3
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+      - type: Pods
+        value: 2
+        periodSeconds: 60
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 50
+        periodSeconds: 60
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: autoformalize-worker-hpa
+  namespace: autoformalize-prod
+  labels:
+    app: autoformalize-worker
+    environment: production
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: autoformalize-worker
+  minReplicas: 6
+  maxReplicas: 20
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 60
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 70
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 180
+      policies:
+      - type: Percent
+        value: 50
+        periodSeconds: 60
+      - type: Pods
+        value: 3
+        periodSeconds: 60
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      policies:
+      - type: Percent
+        value: 25
+        periodSeconds: 60

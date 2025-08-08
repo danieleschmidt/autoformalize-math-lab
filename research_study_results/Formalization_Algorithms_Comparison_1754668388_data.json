@@ -1,0 +1,245 @@
+{
+  "study_name": "Formalization_Algorithms_Comparison_1754668388",
+  "algorithms": [
+    "Baseline_Algorithm",
+    "Semantic_Guided",
+    "Adaptive_Learning"
+  ],
+  "datasets": [
+    "number_theory_basic",
+    "real_analysis",
+    "abstract_algebra"
+  ],
+  "statistical_analysis": {
+    "overall_rankings": {
+      "success_rate": [
+        [
+          "Adaptive_Learning",
+          71.55555555555556
+        ],
+        [
+          "Semantic_Guided",
+          61.111111111111114
+        ],
+        [
+          "Baseline_Algorithm",
+          39.11111111111111
+        ]
+      ],
+      "semantic_preservation": [
+        [
+          "Adaptive_Learning",
+          0.6063739661973773
+        ],
+        [
+          "Semantic_Guided",
+          0.5236455700088787
+        ],
+        [
+          "Baseline_Algorithm",
+          0.3459732993745653
+        ]
+      ],
+      "correctness_score": [
+        [
+          "Adaptive_Learning",
+          0.6176460442158184
+        ],
+        [
+          "Semantic_Guided",
+          0.5359906752113387
+        ],
+        [
+          "Baseline_Algorithm",
+          0.30747717925654316
+        ]
+      ],
+      "efficiency_score": [
+        [
+          "Adaptive_Learning",
+          2.8471534356867547
+        ],
+        [
+          "Semantic_Guided",
+          2.025183318407714
+        ],
+        [
+          "Baseline_Algorithm",
+          1.9456363458725185
+        ]
+      ]
+    },
+    "metric_comparisons": {
+      "success_rate": {
+        "Baseline_Algorithm": 39.11111111111111,
+        "Semantic_Guided": 61.111111111111114,
+        "Adaptive_Learning": 71.55555555555556
+      },
+      "semantic_preservation": {
+        "Baseline_Algorithm": 0.3459732993745653,
+        "Semantic_Guided": 0.5236455700088787,
+        "Adaptive_Learning": 0.6063739661973773
+      },
+      "correctness_score": {
+        "Baseline_Algorithm": 0.30747717925654316,
+        "Semantic_Guided": 0.5359906752113387,
+        "Adaptive_Learning": 0.6176460442158184
+      },
+      "efficiency_score": {
+        "Baseline_Algorithm": 1.9456363458725185,
+        "Semantic_Guided": 2.025183318407714,
+        "Adaptive_Learning": 2.8471534356867547
+      }
+    },
+    "effect_sizes": {},
+    "confidence_intervals": {}
+  },
+  "significance_tests": {
+    "Baseline_Algorithm_vs_Semantic_Guided": 0.12770302341063258,
+    "Baseline_Algorithm_vs_Adaptive_Learning": 0.04681367447648792,
+    "Semantic_Guided_vs_Adaptive_Learning": 0.18310324785335952
+  },
+  "detailed_results": {
+    "Baseline_Algorithm": {
+      "number_theory_basic": {
+        "success_rate": 64.0,
+        "avg_processing_time": 0.2007935905456543,
+        "semantic_preservation": 0.6127805042797438,
+        "correctness_score": 0.5122332088251749,
+        "efficiency_score": 3.1873527350191173,
+        "statistical_metrics": {
+          "processing_time_std": 0.0002962235541885261,
+          "semantic_preservation_std": 0.4707808529970398,
+          "correctness_std": 0.396343006709573,
+          "processing_time_median": 0.20068120956420898,
+          "semantic_preservation_median": 0.912059629249806,
+          "correctness_median": 0.7377869690264474
+        }
+      },
+      "real_analysis": {
+        "success_rate": 33.33333333333333,
+        "avg_processing_time": 0.20123834609985353,
+        "semantic_preservation": 0.25258459077846585,
+        "correctness_score": 0.2612687279114282,
+        "efficiency_score": 1.656410618520661,
+        "statistical_metrics": {
+          "processing_time_std": 0.00038505591936942464,
+          "semantic_preservation_std": 0.37094296542752375,
+          "correctness_std": 0.38374408776246116,
+          "processing_time_median": 0.2012181282043457,
+          "semantic_preservation_median": 0.0,
+          "correctness_median": 0.0
+        }
+      },
+      "abstract_algebra": {
+        "success_rate": 20.0,
+        "avg_processing_time": 0.2013803243637085,
+        "semantic_preservation": 0.17255480306548615,
+        "correctness_score": 0.14892960103302644,
+        "efficiency_score": 0.9931456840777775,
+        "statistical_metrics": {
+          "processing_time_std": 0.00036435594374608103,
+          "semantic_preservation_std": 0.36508955046948005,
+          "correctness_std": 0.3144108211257993,
+          "processing_time_median": 0.2013486623764038,
+          "semantic_preservation_median": 0.0,
+          "correctness_median": 0.0
+        }
+      }
+    },
+    "Semantic_Guided": {
+      "number_theory_basic": {
+        "success_rate": 80.0,
+        "avg_processing_time": 0.3009128761291504,
+        "semantic_preservation": 0.75693154937827,
+        "correctness_score": 0.6915613399427117,
+        "efficiency_score": 2.658576828917895,
+        "statistical_metrics": {
+          "processing_time_std": 0.0003783464907528099,
+          "semantic_preservation_std": 0.3889954465200448,
+          "correctness_std": 0.3560045698952912,
+          "processing_time_median": 0.3007838726043701,
+          "semantic_preservation_median": 0.912035137941868,
+          "correctness_median": 0.8414002688022214
+        }
+      },
+      "real_analysis": {
+        "success_rate": 53.333333333333336,
+        "avg_processing_time": 0.30075329144795737,
+        "semantic_preservation": 0.40992189566388304,
+        "correctness_score": 0.4618190752666766,
+        "efficiency_score": 1.7733250092314345,
+        "statistical_metrics": {
+          "processing_time_std": 0.00014933095409885755,
+          "semantic_preservation_std": 0.39906090697131613,
+          "correctness_std": 0.4541940619430504,
+          "processing_time_median": 0.30072784423828125,
+          "semantic_preservation_median": 0.687271195276066,
+          "correctness_median": 0.7163396784414947
+        }
+      },
+      "abstract_algebra": {
+        "success_rate": 50.0,
+        "avg_processing_time": 0.3042013645172119,
+        "semantic_preservation": 0.40408326498448294,
+        "correctness_score": 0.45459161042462765,
+        "efficiency_score": 1.643648117073813,
+        "statistical_metrics": {
+          "processing_time_std": 0.00847852007476546,
+          "semantic_preservation_std": 0.42818908466962907,
+          "correctness_std": 0.4802847527834798,
+          "processing_time_median": 0.3013792037963867,
+          "semantic_preservation_median": 0.3627476076911922,
+          "correctness_median": 0.4322701134425918
+        }
+      }
+    },
+    "Adaptive_Learning": {
+      "number_theory_basic": {
+        "success_rate": 68.0,
+        "avg_processing_time": 0.25103593826293946,
+        "semantic_preservation": 0.646446921195569,
+        "correctness_score": 0.5892629325471763,
+        "efficiency_score": 2.7087755032419145,
+        "statistical_metrics": {
+          "processing_time_std": 0.00044518931954109467,
+          "semantic_preservation_std": 0.4537510734684871,
+          "correctness_std": 0.4182115382852882,
+          "processing_time_median": 0.2508823871612549,
+          "semantic_preservation_median": 0.9389030632529914,
+          "correctness_median": 0.8147413005612497
+        }
+      },
+      "real_analysis": {
+        "success_rate": 66.66666666666666,
+        "avg_processing_time": 0.2509169578552246,
+        "semantic_preservation": 0.5254034285382103,
+        "correctness_score": 0.5608463389022784,
+        "efficiency_score": 2.6569215264092407,
+        "statistical_metrics": {
+          "processing_time_std": 0.00030168256741234904,
+          "semantic_preservation_std": 0.3899293673491111,
+          "correctness_std": 0.4192339140309961,
+          "processing_time_median": 0.2507956027984619,
+          "semantic_preservation_median": 0.7291117000908123,
+          "correctness_median": 0.7396125241224205
+        }
+      },
+      "abstract_algebra": {
+        "success_rate": 80.0,
+        "avg_processing_time": 0.25190794467926025,
+        "semantic_preservation": 0.6472715488583526,
+        "correctness_score": 0.7028288611980004,
+        "efficiency_score": 3.175763277409109,
+        "statistical_metrics": {
+          "processing_time_std": 0.002969733593365387,
+          "semantic_preservation_std": 0.3471653205179979,
+          "correctness_std": 0.38002815048891075,
+          "processing_time_median": 0.2507762908935547,
+          "semantic_preservation_median": 0.7576768800726907,
+          "correctness_median": 0.8413215544225903
+        }
+      }
+    }
+  }
+}
