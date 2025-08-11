@@ -4,14 +4,20 @@ This module contains experimental algorithms and novel approaches
 for automated mathematical formalization research.
 """
 
-from .semantic_translation import SemanticGuidedTranslator
-from .adaptive_learning import AdaptiveLearningEngine  
-from .proof_optimization import ProofSynthesisOptimizer
-from .benchmark_framework import FormalizationBenchmark
+try:
+    from .neural_theorem_synthesis import NeuralTheoremSynthesizer, TheoremCandidate
+except ImportError:
+    NeuralTheoremSynthesizer = None
+    TheoremCandidate = None
 
-__all__ = [
-    "SemanticGuidedTranslator",
-    "AdaptiveLearningEngine", 
-    "ProofSynthesisOptimizer",
-    "FormalizationBenchmark"
-]
+try:
+    from .quantum_formalization import QuantumFormalizationEngine
+except ImportError:
+    QuantumFormalizationEngine = None
+
+# Only import what exists
+__all__ = []
+if NeuralTheoremSynthesizer:
+    __all__.extend(["NeuralTheoremSynthesizer", "TheoremCandidate"])
+if QuantumFormalizationEngine:
+    __all__.append("QuantumFormalizationEngine")
