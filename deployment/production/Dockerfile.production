@@ -1,116 +1,35 @@
-# Multi-stage production Dockerfile for autoformalize-math-lab
-FROM python:3.11-slim as builder
+FROM python:3.11-slim
 
-# Build arguments
-ARG BUILD_DATE
-ARG VERSION
-ARG VCS_REF
-
-# Labels for metadata
-LABEL maintainer="autoformalize-team@terragon-labs.com" \
-      org.label-schema.build-date=$BUILD_DATE \
-      org.label-schema.name="autoformalize-math-lab" \
-      org.label-schema.description="LLM-driven mathematical formalization pipeline" \
-      org.label-schema.url="https://github.com/danieleschmidt/autoformalize-math-lab" \
-      org.label-schema.vcs-ref=$VCS_REF \
-      org.label-schema.vcs-url="https://github.com/danieleschmidt/autoformalize-math-lab" \
-      org.label-schema.vendor="Terragon Labs" \
-      org.label-schema.version=$VERSION \
-      org.label-schema.schema-version="1.0"
-
-# Set environment variables
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1 \
-    DEBIAN_FRONTEND=noninteractive
+WORKDIR /app
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    build-essential \
     curl \
-    git \
-    libpq-dev \
+    gcc \
+    g++ \
     && rm -rf /var/lib/apt/lists/*
 
-# Create application user
-RUN groupadd -r appuser && useradd -r -g appuser -d /app -s /bin/bash appuser
-
-# Set work directory
-WORKDIR /app
-
-# Copy dependency files
-COPY requirements.txt requirements-dev.txt ./
-
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt \
-    && pip install --no-cache-dir gunicorn uvicorn[standard]
-
-# Production stage
-FROM python:3.11-slim as production
-
-# Install runtime dependencies
-RUN apt-get update && apt-get install -y \
-    curl \
-    libpq5 \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
-
-# Create application user
-RUN groupadd -r appuser && useradd -r -g appuser -d /app -s /bin/bash appuser
-
-# Set work directory
-WORKDIR /app
-
-# Copy Python dependencies from builder
-COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
-COPY --from=builder /usr/local/bin /usr/local/bin
+# Copy requirements and install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY src/ ./src/
-COPY examples/ ./examples/
-COPY scripts/ ./scripts/
-COPY deployment/production/entrypoint.sh ./entrypoint.sh
-COPY deployment/production/healthcheck.py ./healthcheck.py
+COPY pyproject.toml .
 
-# Create necessary directories
-RUN mkdir -p cache logs tmp/prometheus \
-    && chown -R appuser:appuser /app \
-    && chmod +x entrypoint.sh healthcheck.py
+# Install the application
+RUN pip install -e .
 
-# Switch to application user
+# Create non-root user
+RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
 USER appuser
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
 
 # Expose port
 EXPOSE 8000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD python healthcheck.py
-
-# Set entrypoint
-ENTRYPOINT ["./entrypoint.sh"]
-
-# Default command
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker", "--access-logfile", "-", "--error-logfile", "-", "autoformalize.api.server:app"]
-
-# Development stage (for debugging)
-FROM production as development
-
-USER root
-
-# Install development dependencies
-RUN apt-get update && apt-get install -y \
-    vim \
-    htop \
-    strace \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install development Python packages
-COPY requirements-dev.txt ./
-RUN pip install --no-cache-dir -r requirements-dev.txt
-
-USER appuser
-
-# Override command for development
-CMD ["uvicorn", "autoformalize.api.server:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# Start the application
+CMD ["uvicorn", "autoformalize.api.server:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]
