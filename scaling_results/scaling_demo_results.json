@@ -1,34 +1,37 @@
 {
   "distributed_processing": {
     "total_tasks": 40,
-    "successful_tasks": 40,
-    "total_time": 4.76837158203125e-05,
-    "throughput": 838860.8,
-    "avg_time_per_task": 1.1920928955078125e-06
+    "successful_tasks": 0,
+    "total_time": 4.013251066207886,
+    "throughput": 9.966981716345979,
+    "avg_time_per_task": 0.10033127665519714
   },
   "load_balancing": {
-    "error": "'str' object has no attribute 'value'"
+    "total_tasks": 24,
+    "completed_tasks": 24,
+    "processing_time": 1.001237392425537,
+    "worker_count": 6
   },
   "performance_optimization": {
     "baseline": {
-      "processing_time": 2.0023319721221924,
-      "throughput": 4.994176859395296,
-      "improvement": -0.11659860610961914
+      "processing_time": 2.001830577850342,
+      "throughput": 4.9954277403128,
+      "improvement": -0.09152889251708984
     },
     "caching_enabled": {
-      "processing_time": 1.402665376663208,
-      "throughput": 7.129284123194755,
-      "improvement": 29.8667311668396
+      "processing_time": 1.4027409553527832,
+      "throughput": 7.128900002413521,
+      "improvement": 29.86295223236084
     },
     "compression_enabled": {
-      "processing_time": 1.1915345191955566,
-      "throughput": 8.392539065298186,
-      "improvement": 40.42327404022217
+      "processing_time": 1.1914777755737305,
+      "throughput": 8.392938756398301,
+      "improvement": 40.42611122131348
     },
     "full_optimization": {
-      "processing_time": 0.7150895595550537,
-      "throughput": 13.984262343617834,
-      "improvement": 64.24552202224731
+      "processing_time": 0.7150037288665771,
+      "throughput": 13.985941046562072,
+      "improvement": 64.24981355667114
     }
   }
 }
