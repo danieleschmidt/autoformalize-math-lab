@@ -1,0 +1,48 @@
+{
+  "deployment_type": "production",
+  "created_files": [
+    "docker-compose.production.yml",
+    "deployment/kubernetes/deployment.yaml",
+    "deployment/nginx/nginx.conf",
+    "deployment/monitoring/prometheus.yml",
+    ".env.production.template",
+    "scripts/deploy.sh",
+    "scripts/healthcheck.sh",
+    "scripts/backup.sh",
+    "scripts/rollback.sh"
+  ],
+  "directories_created": [
+    "deployment/production",
+    "deployment/nginx",
+    "deployment/monitoring",
+    "deployment/ssl",
+    "logs",
+    "cache",
+    "backups"
+  ],
+  "services": [
+    "autoformalize-api",
+    "redis",
+    "nginx",
+    "prometheus",
+    "grafana",
+    "node-exporter"
+  ],
+  "ports": {
+    "HTTP": 80,
+    "HTTPS": 443,
+    "API": 8000,
+    "Redis": 6379,
+    "Prometheus": 9090,
+    "Grafana": 3000,
+    "Node Exporter": 9100
+  },
+  "next_steps": [
+    "1. Copy .env.production.template to .env.production and customize",
+    "2. Generate SSL certificates and place in deployment/ssl/",
+    "3. Review and customize nginx.conf for your domain",
+    "4. Run: chmod +x scripts/*.sh",
+    "5. Deploy with: ./scripts/deploy.sh",
+    "6. Monitor with: ./scripts/healthcheck.sh"
+  ]
+}

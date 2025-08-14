@@ -1,0 +1,83 @@
+{
+  "timestamp": 1755184163.8932974,
+  "total_gates": 6,
+  "passed_gates": 5,
+  "failed_gates": 1,
+  "overall_passed": true,
+  "gate_results": {
+    "Code Quality": {
+      "passed": true,
+      "message": "Code quality check passed",
+      "details": {
+        "python_files_count": 51,
+        "total_lines": 19038,
+        "complexity_issues": 0,
+        "style_issues": 0
+      },
+      "duration": 0.010864734649658203
+    },
+    "Security": {
+      "passed": false,
+      "message": "Security vulnerabilities detected",
+      "details": {
+        "validation_test_passed": false,
+        "dangerous_patterns": 1,
+        "input_sanitization": false
+      },
+      "duration": 0.0006513595581054688
+    },
+    "Performance": {
+      "passed": true,
+      "message": "Performance checks passed",
+      "details": {
+        "latency_ms": 3.7,
+        "throughput_ops_sec": 2802.2,
+        "memory_usage_mb": 0.0,
+        "cache_hit_rate": 0.0,
+        "concurrent_processing": true
+      },
+      "duration": 0.008829593658447266
+    },
+    "Functionality": {
+      "passed": true,
+      "message": "Functionality checks passed",
+      "details": {
+        "latex_parsing": true,
+        "pipeline_integration": true,
+        "multi_system_support": true,
+        "error_handling": "No mathematical content found in LaTeX",
+        "concurrent_processing": true
+      },
+      "duration": 0.004889249801635742
+    },
+    "Reliability": {
+      "passed": true,
+      "message": "Reliability checks passed",
+      "details": {
+        "retry_mechanism": true,
+        "circuit_breaker": true,
+        "health_monitoring": true,
+        "error_recovery": true,
+        "graceful_degradation": true
+      },
+      "duration": 0.10641813278198242
+    },
+    "Deployment Readiness": {
+      "passed": true,
+      "message": "Deployment readiness passed",
+      "details": {
+        "dockerfile_exists": true,
+        "requirements_complete": true,
+        "environment_config": true,
+        "monitoring_ready": true,
+        "documentation_available": true
+      },
+      "duration": 0.0002052783966064453
+    }
+  },
+  "summary": {
+    "pass_rate": 0.8333333333333334,
+    "critical_failures": 1,
+    "recommendation": "Deploy ready"
+  }
+}
