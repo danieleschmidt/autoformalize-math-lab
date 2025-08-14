@@ -1,0 +1,39 @@
+{
+  "patterns": [
+    {
+      "pattern_type": "success",
+      "latex_pattern": "\\begin{theorem} | \\end{theorem} | \\begin{proof} | This follows from the definition of addition. | \\end{proof}",
+      "formal_pattern": "-- Mock Lean 4 formalization\ntheorem mock_theorem : True := by trivial",
+      "success_rate": 1.0,
+      "usage_count": 0,
+      "confidence_score": 0.8,
+      "domain": null,
+      "metadata": {
+        "processing_time": 0.0002625699999043718,
+        "verification_success": null,
+        "correction_rounds": 0
+      }
+    },
+    {
+      "pattern_type": "success",
+      "latex_pattern": "\\begin{theorem} $1 + 1 = 2$ \\end{theorem}",
+      "formal_pattern": "-- Mock Lean 4 formalization\ntheorem mock_theorem : True := by trivial",
+      "success_rate": 1.0,
+      "usage_count": 1,
+      "confidence_score": 0.8500000000000001,
+      "domain": null,
+      "metadata": {
+        "processing_time": 0.0022962569998981053,
+        "verification_success": false,
+        "correction_rounds": 0
+      }
+    }
+  ],
+  "metrics": {
+    "patterns_learned": 2,
+    "patterns_applied": 0,
+    "improvement_rate": 0.0,
+    "adaptation_cycles": 0,
+    "learning_efficiency": 0.0
+  }
+}

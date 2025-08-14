@@ -1,9 +1,9 @@
 {
-  "timestamp": 1755035505.864977,
+  "timestamp": 1755143579.524648,
   "overall_success": false,
   "passed_gates": 2,
   "total_gates": 4,
-  "execution_time": 15.131831645965576,
+  "execution_time": 15.1337251663208,
   "gate_results": [
     {
       "gate_name": "Security Assessment",
@@ -86,10 +86,10 @@
     },
     "performance": {
       "benchmarks": [
-        "PerformanceBenchmark(operation='latex_parsing', avg_time=0.05037384033203125, min_time=0.050333261489868164, max_time=0.05045914649963379, p95_time=0.05045914649963379, throughput=19.851573622512344, memory_usage=12.5, cpu_usage=15.2)",
-        "PerformanceBenchmark(operation='code_generation', avg_time=0.15043780207633972, min_time=0.15036487579345703, max_time=0.15047669410705566, p95_time=0.15047669410705566, throughput=6.647265422639913, memory_usage=28.3, cpu_usage=45.7)",
-        "PerformanceBenchmark(operation='full_pipeline', avg_time=0.30060763359069825, min_time=0.30055999755859375, max_time=0.3006765842437744, p95_time=0.3006765842437744, throughput=3.3265954961129878, memory_usage=67.8, cpu_usage=72.4)",
-        "PerformanceBenchmark(operation='concurrent_processing', avg_time=0.010075807571411133, min_time=0.1, max_time=0.1, p95_time=0.1, throughput=99.24762783653959, memory_usage=45.2, cpu_usage=85.6)"
+        "PerformanceBenchmark(operation='latex_parsing', avg_time=0.0503467321395874, min_time=0.05028510093688965, max_time=0.05041193962097168, p95_time=0.05041193962097168, throughput=19.862262305872772, memory_usage=12.5, cpu_usage=15.2)",
+        "PerformanceBenchmark(operation='code_generation', avg_time=0.15051555633544922, min_time=0.15038490295410156, max_time=0.1506342887878418, p95_time=0.1506342887878418, throughput=6.643831537062733, memory_usage=28.3, cpu_usage=45.7)",
+        "PerformanceBenchmark(operation='full_pipeline', avg_time=0.3006776809692383, min_time=0.3005685806274414, max_time=0.3007512092590332, p95_time=0.3007512092590332, throughput=3.3258205157645473, memory_usage=67.8, cpu_usage=72.4)",
+        "PerformanceBenchmark(operation='concurrent_processing', avg_time=0.010078835487365722, min_time=0.1, max_time=0.1, p95_time=0.1, throughput=99.21781154713214, memory_usage=45.2, cpu_usage=85.6)"
       ],
       "regression_analysis": {
         "regressions": [],

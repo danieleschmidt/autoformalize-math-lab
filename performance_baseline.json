@@ -1,18 +1,18 @@
 {
   "latex_parsing": {
-    "avg_time": 0.05037384033203125,
-    "throughput": 19.851573622512344
+    "avg_time": 0.0503467321395874,
+    "throughput": 19.862262305872772
   },
   "code_generation": {
-    "avg_time": 0.15043780207633972,
-    "throughput": 6.647265422639913
+    "avg_time": 0.15051555633544922,
+    "throughput": 6.643831537062733
   },
   "full_pipeline": {
-    "avg_time": 0.30060763359069825,
-    "throughput": 3.3265954961129878
+    "avg_time": 0.3006776809692383,
+    "throughput": 3.3258205157645473
   },
   "concurrent_processing": {
-    "avg_time": 0.010075807571411133,
-    "throughput": 99.24762783653959
+    "avg_time": 0.010078835487365722,
+    "throughput": 99.21781154713214
   }
 }

@@ -5,16 +5,8 @@ formalization pipelines including distributed processing, auto-scaling,
 and performance optimization.
 """
 
-from .distributed_pipeline import DistributedFormalizationPipeline
-from .auto_scaler import AutoScaler
-from .load_balancer import LoadBalancer
-from .performance_optimizer import PerformanceOptimizer
-from .resource_manager import ResourceManager
-
-__all__ = [
-    "DistributedFormalizationPipeline",
-    "AutoScaler", 
-    "LoadBalancer",
-    "PerformanceOptimizer",
-    "ResourceManager"
-]
+try:
+    from .distributed_coordination import DistributedTaskManager, NodeInfo, NodeRole, ClusterConfig
+    __all__ = ["DistributedTaskManager", "NodeInfo", "NodeRole", "ClusterConfig"]
+except ImportError:
+    __all__ = []
