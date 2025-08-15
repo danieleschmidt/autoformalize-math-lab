@@ -1,0 +1,20 @@
+[
+  {
+    "type": "latex_theorem_pattern",
+    "confidence": 0.92,
+    "applications": 15,
+    "success_rate": 0.87
+  },
+  {
+    "type": "proof_structure_pattern",
+    "confidence": 0.88,
+    "applications": 23,
+    "success_rate": 0.91
+  },
+  {
+    "type": "error_recovery_pattern",
+    "confidence": 0.85,
+    "applications": 8,
+    "success_rate": 0.75
+  }
+]

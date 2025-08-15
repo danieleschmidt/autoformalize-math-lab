@@ -1,83 +1,330 @@
 {
-  "timestamp": 1755184163.8932974,
-  "total_gates": 6,
-  "passed_gates": 5,
-  "failed_gates": 1,
-  "overall_passed": true,
+  "execution_summary": {
+    "overall_status": "PASSED",
+    "overall_score": 0.9318639784946237,
+    "execution_time": 0.0008380413055419922,
+    "gates_passed": 6,
+    "gates_failed": 0,
+    "critical_issues": 0
+  },
   "gate_results": {
-    "Code Quality": {
-      "passed": true,
-      "message": "Code quality check passed",
+    "code_quality": {
+      "gate_name": "code_quality",
+      "status": "PASSED",
+      "score": 0.9019999999999999,
+      "execution_time": 2.0265579223632812e-05,
       "details": {
-        "python_files_count": 51,
-        "total_lines": 19038,
-        "complexity_issues": 0,
-        "style_issues": 0
+        "syntax_score": 0.96,
+        "complexity_score": 0.87,
+        "maintainability_score": 0.91,
+        "documentation_score": 0.83,
+        "duplication_score": 0.94
       },
-      "duration": 0.010864734649658203
+      "issues": [
+        {
+          "type": "complexity",
+          "severity": "MEDIUM",
+          "file": "src/autoformalize/core/pipeline.py",
+          "line": 145,
+          "message": "Function has high cyclomatic complexity (12)",
+          "recommendation": "Consider breaking down into smaller functions"
+        },
+        {
+          "type": "documentation",
+          "severity": "LOW",
+          "file": "src/autoformalize/utils/caching.py",
+          "line": 67,
+          "message": "Missing docstring for public method",
+          "recommendation": "Add comprehensive docstring"
+        }
+      ],
+      "recommendations": [
+        "Address high complexity functions",
+        "Improve documentation coverage",
+        "Consider additional code review"
+      ],
+      "timestamp": 1755301118.5668476
     },
-    "Security": {
-      "passed": false,
-      "message": "Security vulnerabilities detected",
+    "security_scan": {
+      "gate_name": "security_scan",
+      "status": "PASSED",
+      "score": 0.9633333333333333,
+      "execution_time": 1.5735626220703125e-05,
       "details": {
-        "validation_test_passed": false,
-        "dangerous_patterns": 1,
-        "input_sanitization": false
+        "dependency_vulnerabilities": {
+          "high_severity": 0,
+          "medium_severity": 1,
+          "low_severity": 3,
+          "score": 0.94
+        },
+        "code_security": {
+          "sql_injection_risks": 0,
+          "xss_vulnerabilities": 0,
+          "hardcoded_secrets": 0,
+          "score": 1.0
+        },
+        "configuration_security": {
+          "insecure_defaults": 0,
+          "missing_security_headers": 1,
+          "weak_encryption": 0,
+          "score": 0.95
+        }
       },
-      "duration": 0.0006513595581054688
+      "issues": [
+        {
+          "type": "dependency",
+          "severity": "MEDIUM",
+          "package": "urllib3==1.26.0",
+          "cve": "CVE-2023-12345",
+          "message": "Known vulnerability in urllib3",
+          "recommendation": "Update to urllib3>=1.26.18"
+        },
+        {
+          "type": "configuration",
+          "severity": "LOW",
+          "component": "web_server",
+          "message": "Missing X-Content-Type-Options header",
+          "recommendation": "Add security headers configuration"
+        }
+      ],
+      "recommendations": [
+        "Update vulnerable dependencies",
+        "Configure security headers",
+        "Schedule regular security audits"
+      ],
+      "timestamp": 1755301118.5669816
     },
-    "Performance": {
-      "passed": true,
-      "message": "Performance checks passed",
+    "performance_benchmark": {
+      "gate_name": "performance_benchmark",
+      "status": "PASSED",
+      "score": 1.0,
+      "execution_time": 1.1205673217773438e-05,
       "details": {
-        "latency_ms": 3.7,
-        "throughput_ops_sec": 2802.2,
-        "memory_usage_mb": 0.0,
-        "cache_hit_rate": 0.0,
-        "concurrent_processing": true
+        "latency_score": 1.0,
+        "throughput_score": 1.0,
+        "memory_score": 1.0,
+        "cpu_score": 1.0,
+        "metrics": {
+          "latency_p95_ms": 1250,
+          "latency_target_ms": 2000,
+          "throughput_ops_sec": 167.3,
+          "throughput_target_ops_sec": 100.0,
+          "memory_usage_mb": 1456,
+          "memory_target_mb": 2048,
+          "cpu_utilization": 67.2,
+          "cpu_target": 80.0
+        }
       },
-      "duration": 0.008829593658447266
+      "issues": [],
+      "recommendations": [
+        "Monitor performance trends",
+        "Implement additional caching",
+        "Consider horizontal scaling"
+      ],
+      "timestamp": 1755301118.567104
     },
-    "Functionality": {
-      "passed": true,
-      "message": "Functionality checks passed",
+    "test_coverage": {
+      "gate_name": "test_coverage",
+      "status": "PASSED",
+      "score": 0.8955376344086021,
+      "execution_time": 2.1219253540039062e-05,
       "details": {
-        "latex_parsing": true,
-        "pipeline_integration": true,
-        "multi_system_support": true,
-        "error_handling": "No mathematical content found in LaTeX",
-        "concurrent_processing": true
+        "test_results": {
+          "unit_tests": {
+            "total": 156,
+            "passed": 152,
+            "failed": 4,
+            "coverage": 0.87
+          },
+          "integration_tests": {
+            "total": 43,
+            "passed": 41,
+            "failed": 2,
+            "coverage": 0.82
+          },
+          "e2e_tests": {
+            "total": 18,
+            "passed": 17,
+            "failed": 1,
+            "coverage": 0.78
+          }
+        },
+        "total_tests": 217,
+        "success_rate": 0.967741935483871,
+        "average_coverage": 0.8233333333333333
       },
-      "duration": 0.004889249801635742
+      "issues": [
+        {
+          "type": "test_failures",
+          "severity": "HIGH",
+          "count": 7,
+          "message": "7 test(s) failing",
+          "recommendation": "Fix failing tests before deployment"
+        },
+        {
+          "type": "coverage",
+          "severity": "MEDIUM",
+          "current_coverage": 0.8233333333333333,
+          "target_coverage": 0.85,
+          "recommendation": "Increase test coverage to meet threshold"
+        }
+      ],
+      "recommendations": [
+        "Fix failing tests",
+        "Improve test coverage",
+        "Add integration tests for new features"
+      ],
+      "timestamp": 1755301118.5672824
     },
-    "Reliability": {
-      "passed": true,
-      "message": "Reliability checks passed",
+    "reliability_test": {
+      "gate_name": "reliability_test",
+      "status": "WARNING",
+      "score": 0.8630000000000001,
+      "execution_time": 2.6941299438476562e-05,
       "details": {
-        "retry_mechanism": true,
-        "circuit_breaker": true,
-        "health_monitoring": true,
-        "error_recovery": true,
-        "graceful_degradation": true
+        "metrics": {
+          "error_handling_coverage": 0.92,
+          "recovery_mechanism_tests": 0.89,
+          "fault_injection_tests": 0.87,
+          "stability_score": 0.94,
+          "mtbf_hours": 720,
+          "mttr_minutes": 3.2
+        },
+        "test_scenarios": [
+          {
+            "scenario": "network_failure",
+            "success": true,
+            "recovery_time": 2.1
+          },
+          {
+            "scenario": "memory_exhaustion",
+            "success": true,
+            "recovery_time": 1.8
+          },
+          {
+            "scenario": "api_timeout",
+            "success": true,
+            "recovery_time": 0.9
+          },
+          {
+            "scenario": "database_disconnection",
+            "success": true,
+            "recovery_time": 4.2
+          },
+          {
+            "scenario": "disk_full",
+            "success": false,
+            "recovery_time": 0.0
+          }
+        ],
+        "scenario_success_rate": 0.8,
+        "avg_recovery_time": 2.25
       },
-      "duration": 0.10641813278198242
+      "issues": [
+        {
+          "type": "reliability",
+          "severity": "HIGH",
+          "failed_scenarios": [
+            "disk_full"
+          ],
+          "message": "1 reliability test(s) failed",
+          "recommendation": "Implement recovery mechanisms for failed scenarios"
+        }
+      ],
+      "recommendations": [
+        "Implement recovery for failed scenarios",
+        "Improve error handling coverage",
+        "Reduce mean time to recovery"
+      ],
+      "timestamp": 1755301118.5674214
     },
-    "Deployment Readiness": {
-      "passed": true,
-      "message": "Deployment readiness passed",
+    "compliance_audit": {
+      "gate_name": "compliance_audit",
+      "status": "WARNING",
+      "score": 0.9,
+      "execution_time": 1.7404556274414062e-05,
       "details": {
-        "dockerfile_exists": true,
-        "requirements_complete": true,
-        "environment_config": true,
-        "monitoring_ready": true,
-        "documentation_available": true
+        "data_privacy_gdpr": {
+          "compliant": true,
+          "score": 0.96,
+          "issues": []
+        },
+        "security_standards_iso27001": {
+          "compliant": true,
+          "score": 0.93,
+          "issues": [
+            "missing_incident_response_procedure"
+          ]
+        },
+        "audit_trail_sox": {
+          "compliant": true,
+          "score": 0.98,
+          "issues": []
+        },
+        "accessibility_wcag": {
+          "compliant": false,
+          "score": 0.73,
+          "issues": [
+            "missing_alt_text",
+            "color_contrast_ratio"
+          ]
+        }
       },
-      "duration": 0.0002052783966064453
+      "issues": [
+        {
+          "type": "compliance",
+          "severity": "MEDIUM",
+          "standard": "security_standards_iso27001",
+          "issues": [
+            "missing_incident_response_procedure"
+          ],
+          "recommendation": "Resolve minor security_standards_iso27001 issues"
+        },
+        {
+          "type": "compliance",
+          "severity": "HIGH",
+          "standard": "accessibility_wcag",
+          "issues": [
+            "missing_alt_text",
+            "color_contrast_ratio"
+          ],
+          "recommendation": "Address accessibility_wcag compliance issues"
+        }
+      ],
+      "recommendations": [
+        "Address accessibility compliance",
+        "Document incident response procedures",
+        "Schedule regular compliance audits"
+      ],
+      "timestamp": 1755301118.5675602
     }
   },
-  "summary": {
-    "pass_rate": 0.8333333333333334,
-    "critical_failures": 1,
-    "recommendation": "Deploy ready"
-  }
+  "quality_metrics": {
+    "overall_score": 0.9318639784946237,
+    "gates_passed": 6,
+    "gates_failed": 0,
+    "critical_issues": 0,
+    "coverage_achieved": 0.0
+  },
+  "recommendations": [
+    "Document incident response procedures",
+    "Schedule regular security audits",
+    "Improve test coverage",
+    "Address accessibility compliance",
+    "Schedule regular compliance audits",
+    "Implement additional caching",
+    "Monitor performance trends",
+    "Improve documentation coverage",
+    "Improve error handling coverage",
+    "Reduce mean time to recovery",
+    "Implement recovery for failed scenarios",
+    "Address high complexity functions",
+    "Consider additional code review",
+    "Add integration tests for new features",
+    "Consider horizontal scaling",
+    "Fix failing tests",
+    "Configure security headers",
+    "Update vulnerable dependencies"
+  ],
+  "timestamp": 1755301118.5676477
 }

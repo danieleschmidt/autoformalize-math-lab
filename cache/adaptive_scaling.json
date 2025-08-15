@@ -1,0 +1,75 @@
+{
+  "scenarios": [
+    {
+      "trigger": "cpu_utilization_high",
+      "threshold_exceeded": 85.2,
+      "decision": "scale_up_instances",
+      "action": "add_2_instances",
+      "response_time": 45.3,
+      "effectiveness": 0.91
+    },
+    {
+      "trigger": "latency_spike",
+      "threshold_exceeded": 4500,
+      "decision": "optimize_then_scale",
+      "action": "enable_burst_caching",
+      "response_time": 12.1,
+      "effectiveness": 0.87
+    },
+    {
+      "trigger": "memory_pressure",
+      "threshold_exceeded": 88.7,
+      "decision": "memory_optimization",
+      "action": "aggressive_garbage_collection",
+      "response_time": 8.4,
+      "effectiveness": 0.94
+    },
+    {
+      "trigger": "queue_backup",
+      "threshold_exceeded": 150,
+      "decision": "parallel_processing",
+      "action": "scale_worker_threads",
+      "response_time": 6.2,
+      "effectiveness": 0.89
+    }
+  ],
+  "config": {
+    "auto_scaling_enabled": true,
+    "scaling_aggressiveness": 0.75,
+    "prediction_window": 300,
+    "cooldown_periods": {
+      "scale_up": 120,
+      "scale_down": 300,
+      "optimization": 60
+    },
+    "resource_limits": {
+      "max_instances": 50,
+      "max_memory_per_instance": 8192,
+      "max_cpu_cores": 16,
+      "max_concurrent_operations": 1000
+    },
+    "scaling_strategies": {
+      "cpu_based": {
+        "weight": 0.3,
+        "sensitivity": 0.8
+      },
+      "memory_based": {
+        "weight": 0.25,
+        "sensitivity": 0.9
+      },
+      "latency_based": {
+        "weight": 0.3,
+        "sensitivity": 0.7
+      },
+      "queue_based": {
+        "weight": 0.15,
+        "sensitivity": 0.85
+      }
+    }
+  },
+  "performance_impact": {
+    "average_response_time": 18.0,
+    "average_effectiveness": 0.9025,
+    "scaling_accuracy": 0.93
+  }
+}
