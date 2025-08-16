@@ -1,0 +1,30 @@
+[
+  {
+    "scenario": "API_RATE_LIMIT",
+    "detection_time": 0.1,
+    "recovery_time": 2.3,
+    "success_rate": 0.95,
+    "strategy": "exponential_backoff_with_jitter"
+  },
+  {
+    "scenario": "MEMORY_LEAK",
+    "detection_time": 0.05,
+    "recovery_time": 1.8,
+    "success_rate": 0.92,
+    "strategy": "garbage_collection_and_cleanup"
+  },
+  {
+    "scenario": "NETWORK_PARTITION",
+    "detection_time": 0.2,
+    "recovery_time": 5.1,
+    "success_rate": 0.88,
+    "strategy": "failover_to_backup_service"
+  },
+  {
+    "scenario": "DATA_VALIDATION_FAILURE",
+    "detection_time": 0.02,
+    "recovery_time": 0.5,
+    "success_rate": 0.98,
+    "strategy": "input_sanitization_and_retry"
+  }
+]

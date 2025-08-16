@@ -1,0 +1,106 @@
+{
+  "deployment_id": "deploy_1755301235",
+  "overall_status": "SUCCESS",
+  "total_execution_time": 0.00026679039001464844,
+  "environment": "production",
+  "stages_executed": 7,
+  "stages_successful": 7,
+  "stages_failed": 0,
+  "timestamp": 1755301235.3898108,
+  "stage_results": [
+    {
+      "stage": "preparation",
+      "status": "SUCCESS",
+      "duration": 4.0531158447265625e-06,
+      "artifacts": [
+        "deployment_config.json",
+        "rollback_plan.json"
+      ],
+      "rollback_point": "rollback_deploy_1755301235_pre_deployment"
+    },
+    {
+      "stage": "build",
+      "status": "SUCCESS",
+      "duration": 1.430511474609375e-06,
+      "artifacts": [
+        "autoformalize-math-lab:latest",
+        "deployment-manifests.tar.gz",
+        "test-reports.xml"
+      ],
+      "rollback_point": null
+    },
+    {
+      "stage": "security_scan",
+      "status": "SUCCESS",
+      "duration": 7.152557373046875e-06,
+      "artifacts": [
+        "security_report.json",
+        "vulnerability_scan.xml"
+      ],
+      "rollback_point": null
+    },
+    {
+      "stage": "staging",
+      "status": "SUCCESS",
+      "duration": 1.9073486328125e-06,
+      "artifacts": [
+        "staging_deployment.yaml",
+        "test_results.xml"
+      ],
+      "rollback_point": null
+    },
+    {
+      "stage": "production",
+      "status": "SUCCESS",
+      "duration": 3.218650817871094e-05,
+      "artifacts": [
+        "production_deployment.yaml",
+        "load_balancer_config.json"
+      ],
+      "rollback_point": "rollback_deploy_1755301235_production"
+    },
+    {
+      "stage": "verification",
+      "status": "SUCCESS",
+      "duration": 1.0728836059570312e-05,
+      "artifacts": [
+        "verification_report.json",
+        "health_check_results.json"
+      ],
+      "rollback_point": null
+    },
+    {
+      "stage": "verification",
+      "status": "SUCCESS",
+      "duration": 1.430511474609375e-06,
+      "artifacts": [
+        "deployment_summary.json",
+        "post_deployment_report.json"
+      ],
+      "rollback_point": null
+    }
+  ],
+  "rollback_points": [
+    {
+      "id": "rollback_deploy_1755301235_pre_deployment",
+      "timestamp": 1755301235.3895366,
+      "description": "Pre-deployment state backup"
+    },
+    {
+      "id": "rollback_deploy_1755301235_production",
+      "timestamp": 1755301235.3896945,
+      "description": "Production deployment state"
+    }
+  ],
+  "recommendations": [
+    "Monitor application performance closely for the next 24 hours",
+    "Verify all business metrics are within expected ranges",
+    "Schedule cleanup of old deployment artifacts",
+    "Update runbooks with any new procedures"
+  ],
+  "next_actions": [
+    "Continue monitoring production environment",
+    "Prepare for next deployment cycle",
+    "Update documentation and procedures"
+  ]
+}

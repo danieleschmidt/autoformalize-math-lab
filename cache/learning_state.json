@@ -1,0 +1,32 @@
+{
+  "total_examples_processed": 156,
+  "successful_formalizations": 142,
+  "learning_sessions": 12,
+  "pattern_updates": 34,
+  "performance_improvements": [
+    {
+      "metric": "success_rate",
+      "before": 0.78,
+      "after": 0.91,
+      "improvement": 0.13
+    },
+    {
+      "metric": "avg_time",
+      "before": 28.5,
+      "after": 22.1,
+      "improvement": -6.4
+    },
+    {
+      "metric": "error_rate",
+      "before": 0.22,
+      "after": 0.09,
+      "improvement": -0.13
+    }
+  ],
+  "learned_optimizations": [
+    "early_termination_for_simple_proofs",
+    "parallel_verification_paths",
+    "dynamic_prompt_adjustment",
+    "contextual_error_recovery"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "learning_rate": 0.01,
+  "adaptation_threshold": 0.75,
+  "pattern_weight_decay": 0.99,
+  "auto_optimization_enabled": true,
+  "performance_targets": {
+    "success_rate_minimum": 0.8,
+    "response_time_maximum": 30.0,
+    "error_rate_maximum": 0.15
+  },
+  "adaptation_rules": [
+    {
+      "condition": "success_rate < 0.70",
+      "action": "increase_correction_rounds",
+      "magnitude": 1.2
+    },
+    {
+      "condition": "response_time > 45.0",
+      "action": "reduce_complexity",
+      "magnitude": 0.8
+    },
+    {
+      "condition": "error_rate > 0.20",
+      "action": "activate_defensive_mode",
+      "magnitude": 1.0
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "config": {
+    "real_time_metrics": [
+      "formalization_success_rate",
+      "average_response_time",
+      "error_rate",
+      "memory_usage",
+      "cpu_utilization",
+      "active_connections",
+      "cache_hit_ratio",
+      "queue_length"
+    ],
+    "alert_thresholds": {
+      "error_rate_critical": 0.1,
+      "response_time_warning": 5.0,
+      "response_time_critical": 10.0,
+      "memory_usage_warning": 80.0,
+      "memory_usage_critical": 90.0,
+      "cpu_usage_warning": 70.0,
+      "cpu_usage_critical": 85.0
+    },
+    "dashboard_metrics": {
+      "business_kpis": {
+        "daily_formalizations": 1247,
+        "success_rate_24h": 0.891,
+        "user_satisfaction": 4.7,
+        "processing_volume": "15.3GB"
+      },
+      "technical_kpis": {
+        "avg_latency_ms": 1150,
+        "p95_latency_ms": 2800,
+        "uptime_percentage": 99.8,
+        "error_rate": 0.012
+      },
+      "learning_kpis": {
+        "patterns_discovered_today": 23,
+        "model_accuracy_improvement": 0.08,
+        "adaptation_speed": "fast",
+        "knowledge_base_growth": "12.5%"
+      }
+    }
+  },
+  "dashboard_data": {
+    "timestamp": 1755300861.9212723,
+    "system_health": "HEALTHY",
+    "performance_score": 0.91,
+    "reliability_score": 0.94,
+    "efficiency_score": 0.87,
+    "alerts_active": 0,
+    "recent_events": [
+      {
+        "time": 1755300561.9212728,
+        "type": "INFO",
+        "message": "Pattern discovery completed"
+      },
+      {
+        "time": 1755300261.9212737,
+        "type": "SUCCESS",
+        "message": "Self-healing activated"
+      },
+      {
+        "time": 1755299961.9212742,
+        "type": "INFO",
+        "message": "Cache optimization finished"
+      }
+    ]
+  }
+}
