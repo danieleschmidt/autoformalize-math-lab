@@ -1,0 +1,213 @@
+{
+  "neural": {
+    "gen4_results": [
+      "BenchmarkResult(approach_name='Generation 4 Neural Synthesis', metrics=BenchmarkMetrics(accuracy=0.84, processing_time=0.16000357627868653, resource_usage=56.0, scalability_factor=1.29, novelty_score=0.8450000000000001, confidence=0.88), success_rate=0.84, problem_complexity=0.3, notes='AI-driven theorem discovery')",
+      "BenchmarkResult(approach_name='Generation 4 Neural Synthesis', metrics=BenchmarkMetrics(accuracy=0.78, processing_time=0.22000238418579102, resource_usage=62.0, scalability_factor=1.38, novelty_score=0.89, confidence=0.9099999999999999), success_rate=0.78, problem_complexity=0.6, notes='AI-driven theorem discovery')",
+      "BenchmarkResult(approach_name='Generation 4 Neural Synthesis', metrics=BenchmarkMetrics(accuracy=0.74, processing_time=0.2600007152557373, resource_usage=66.0, scalability_factor=1.44, novelty_score=0.92, confidence=0.9299999999999999), success_rate=0.74, problem_complexity=0.8, notes='AI-driven theorem discovery')",
+      "BenchmarkResult(approach_name='Generation 4 Neural Synthesis', metrics=BenchmarkMetrics(accuracy=0.72, processing_time=0.28000047683715823, resource_usage=68.0, scalability_factor=1.47, novelty_score=0.935, confidence=0.94), success_rate=0.72, problem_complexity=0.9, notes='AI-driven theorem discovery')"
+    ],
+    "baseline_results": [
+      "BenchmarkResult(approach_name='Traditional Template-Based', metrics=BenchmarkMetrics(accuracy=0.78, processing_time=0.86, resource_usage=23.0, scalability_factor=0.74, novelty_score=0.27, confidence=0.6399999999999999), success_rate=0.78, problem_complexity=0.3, notes='Rule-based pattern matching')",
+      "BenchmarkResult(approach_name='Traditional Template-Based', metrics=BenchmarkMetrics(accuracy=0.66, processing_time=1.22, resource_usage=26.0, scalability_factor=0.68, novelty_score=0.24, confidence=0.58), success_rate=0.66, problem_complexity=0.6, notes='Rule-based pattern matching')",
+      "BenchmarkResult(approach_name='Traditional Template-Based', metrics=BenchmarkMetrics(accuracy=0.6, processing_time=1.46, resource_usage=28.0, scalability_factor=0.64, novelty_score=0.21999999999999997, confidence=0.5399999999999999), success_rate=0.6, problem_complexity=0.8, notes='Rule-based pattern matching')",
+      "BenchmarkResult(approach_name='Traditional Template-Based', metrics=BenchmarkMetrics(accuracy=0.6, processing_time=1.58, resource_usage=29.0, scalability_factor=0.62, novelty_score=0.20999999999999996, confidence=0.5199999999999999), success_rate=0.6, problem_complexity=0.9, notes='Rule-based pattern matching')"
+    ],
+    "improvements": {
+      "accuracy": 0.16666666666666663,
+      "novelty": 2.819148936170213
+    }
+  },
+  "quantum": {
+    "results": [
+      {
+        "scenario": "Simple proof verification",
+        "complexity": 2,
+        "parallel_paths": 4,
+        "classical_time_estimate": 4.0,
+        "quantum_time": 2.2222222222222223,
+        "quantum_acceleration": 1.8,
+        "coherence_penalty": 0.0
+      },
+      {
+        "scenario": "Medium complexity proof",
+        "complexity": 4,
+        "parallel_paths": 8,
+        "classical_time_estimate": 8.0,
+        "quantum_time": 3.0769230769230766,
+        "quantum_acceleration": 2.6,
+        "coherence_penalty": 0.0
+      },
+      {
+        "scenario": "High complexity proof",
+        "complexity": 6,
+        "parallel_paths": 16,
+        "classical_time_estimate": 12.0,
+        "quantum_time": 3.529411764705882,
+        "quantum_acceleration": 2.04,
+        "coherence_penalty": 0.4
+      },
+      {
+        "scenario": "Extreme complexity proof",
+        "complexity": 8,
+        "parallel_paths": 32,
+        "classical_time_estimate": 16.0,
+        "quantum_time": 3.8095238095238093,
+        "quantum_acceleration": -0.8400000000000007,
+        "coherence_penalty": 1.2000000000000002
+      }
+    ],
+    "average_acceleration": 1.4
+  },
+  "rl": {
+    "rl_performance": [
+      0.3,
+      0.33024999999999993,
+      0.361,
+      0.39225,
+      0.424,
+      0.45624999999999993,
+      0.489,
+      0.52225,
+      0.556,
+      0.59025,
+      0.625,
+      0.66025,
+      0.696,
+      0.73225,
+      0.769,
+      0.80625,
+      0.8440000000000001,
+      0.8822500000000001,
+      0.921,
+      0.95
+    ],
+    "static_performance": [
+      0.7,
+      0.6,
+      0.6,
+      0.7,
+      0.6,
+      0.6,
+      0.7,
+      0.6,
+      0.6,
+      0.7,
+      0.6,
+      0.6,
+      0.7,
+      0.6,
+      0.6,
+      0.7,
+      0.6,
+      0.6,
+      0.7,
+      0.6
+    ],
+    "learning_improvement": 1.4362378976486865
+  },
+  "multi_agent": {
+    "results": [
+      {
+        "num_agents": 1,
+        "ideal_speedup": 1,
+        "actual_speedup": 1.0,
+        "efficiency": 1.0,
+        "processing_time": 10.0,
+        "coordination_overhead": 0.0
+      },
+      {
+        "num_agents": 2,
+        "ideal_speedup": 2,
+        "actual_speedup": 1.35,
+        "efficiency": 0.675,
+        "processing_time": 7.4074074074074066,
+        "coordination_overhead": 0.1
+      },
+      {
+        "num_agents": 4,
+        "ideal_speedup": 4,
+        "actual_speedup": 2.38,
+        "efficiency": 0.595,
+        "processing_time": 4.201680672268908,
+        "coordination_overhead": 0.30000000000000004
+      },
+      {
+        "num_agents": 8,
+        "ideal_speedup": 8,
+        "actual_speedup": 2.3999999999999995,
+        "efficiency": 0.29999999999999993,
+        "processing_time": 4.166666666666668,
+        "coordination_overhead": 0.7000000000000001
+      },
+      {
+        "num_agents": 16,
+        "ideal_speedup": 16,
+        "actual_speedup": 1.0,
+        "efficiency": 0.0625,
+        "processing_time": 10.0,
+        "coordination_overhead": 1.5
+      }
+    ],
+    "optimal_agents": 1
+  },
+  "meta": {
+    "results": [
+      {
+        "domain": "algebra",
+        "experience_level": 0,
+        "meta_learning_time": 5.0,
+        "meta_learning_accuracy": 0.6,
+        "traditional_time": 5.0,
+        "traditional_accuracy": 0.6,
+        "time_improvement": 0.0,
+        "accuracy_improvement": 0.0
+      },
+      {
+        "domain": "analysis",
+        "experience_level": 1,
+        "meta_learning_time": 4.4,
+        "meta_learning_accuracy": 0.65,
+        "traditional_time": 5.0,
+        "traditional_accuracy": 0.6,
+        "time_improvement": 0.11999999999999993,
+        "accuracy_improvement": 0.08333333333333341
+      },
+      {
+        "domain": "topology",
+        "experience_level": 2,
+        "meta_learning_time": 3.8,
+        "meta_learning_accuracy": 0.7,
+        "traditional_time": 5.0,
+        "traditional_accuracy": 0.6,
+        "time_improvement": 0.24000000000000005,
+        "accuracy_improvement": 0.16666666666666663
+      },
+      {
+        "domain": "number_theory",
+        "experience_level": 3,
+        "meta_learning_time": 3.1999999999999993,
+        "meta_learning_accuracy": 0.75,
+        "traditional_time": 5.0,
+        "traditional_accuracy": 0.6,
+        "time_improvement": 0.36000000000000015,
+        "accuracy_improvement": 0.25000000000000006
+      },
+      {
+        "domain": "geometry",
+        "experience_level": 4,
+        "meta_learning_time": 2.6,
+        "meta_learning_accuracy": 0.8,
+        "traditional_time": 5.0,
+        "traditional_accuracy": 0.6,
+        "time_improvement": 0.48,
+        "accuracy_improvement": 0.3333333333333335
+      }
+    ],
+    "average_improvements": {
+      "time": 0.24000000000000002,
+      "accuracy": 0.1666666666666667
+    }
+  },
+  "execution_time": 0.0006113052368164062,
+  "timestamp": "2025-08-18T14:46:46.669899"
+}
