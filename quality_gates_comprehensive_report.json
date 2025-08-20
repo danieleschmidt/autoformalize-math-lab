@@ -1,0 +1,176 @@
+{
+  "overall_status": "FAILED",
+  "overall_score": 0.6438333333333334,
+  "execution_time": 1.2603254318237305,
+  "gates_summary": {
+    "total": 6,
+    "passed": 1,
+    "failed": 5
+  },
+  "gate_results": [
+    {
+      "name": "code_quality",
+      "passed": false,
+      "score": 0.6666666666666666,
+      "threshold": 0.8,
+      "weight": 0.2,
+      "execution_time": 0.10203266143798828,
+      "issues_count": 0,
+      "recommendations_count": 1
+    },
+    {
+      "name": "security",
+      "passed": false,
+      "score": 0.63,
+      "threshold": 0.95,
+      "weight": 0.25,
+      "execution_time": 0.1439812183380127,
+      "issues_count": 1,
+      "recommendations_count": 1
+    },
+    {
+      "name": "performance",
+      "passed": false,
+      "score": 0.6,
+      "threshold": 0.75,
+      "weight": 0.2,
+      "execution_time": 0.0012204647064208984,
+      "issues_count": 1,
+      "recommendations_count": 0
+    },
+    {
+      "name": "testing",
+      "passed": false,
+      "score": 0.5599999999999999,
+      "threshold": 0.85,
+      "weight": 0.15,
+      "execution_time": 1.0126965045928955,
+      "issues_count": 1,
+      "recommendations_count": 1
+    },
+    {
+      "name": "documentation",
+      "passed": true,
+      "score": 1.0,
+      "threshold": 0.7,
+      "weight": 0.1,
+      "execution_time": 0.0115814208984375,
+      "issues_count": 0,
+      "recommendations_count": 0
+    },
+    {
+      "name": "mathematical_validation",
+      "passed": false,
+      "score": 0.48999999999999994,
+      "threshold": 0.8,
+      "weight": 0.1,
+      "execution_time": 0.004880666732788086,
+      "issues_count": 2,
+      "recommendations_count": 0
+    }
+  ],
+  "detailed_results": {
+    "code_quality": {
+      "gate_name": "code_quality",
+      "passed": false,
+      "score": 0.6666666666666666,
+      "details": {
+        "python_files_count": 132,
+        "import_structure_score": 1.0,
+        "docstring_coverage": 0.6666666666666666
+      },
+      "issues": [],
+      "recommendations": [
+        "Add more comprehensive docstrings"
+      ],
+      "execution_time": 0.10203266143798828
+    },
+    "security": {
+      "gate_name": "security",
+      "passed": false,
+      "score": 0.63,
+      "details": {
+        "secrets_found": 2,
+        "security_practices_score": 1.0,
+        "input_validation_score": 0.9
+      },
+      "issues": [
+        "Found 2 potential hardcoded secrets"
+      ],
+      "recommendations": [
+        "Remove hardcoded secrets and use environment variables"
+      ],
+      "execution_time": 0.1439812183380127
+    },
+    "performance": {
+      "gate_name": "performance",
+      "passed": false,
+      "score": 0.6,
+      "details": {},
+      "issues": [
+        "Performance test failed: Lean4Generator.__init__() got an unexpected keyword argument 'model_name'"
+      ],
+      "recommendations": [],
+      "execution_time": 0.0012204647064208984
+    },
+    "testing": {
+      "gate_name": "testing",
+      "passed": false,
+      "score": 0.5599999999999999,
+      "details": {
+        "test_files_count": 51,
+        "error_recovery": true,
+        "health_monitoring": true,
+        "estimated_coverage": 0.6915254237288136
+      },
+      "issues": [
+        "Core functionality test failed: Lean4Generator.__init__() got an unexpected keyword argument 'model_name'"
+      ],
+      "recommendations": [
+        "Increase test coverage"
+      ],
+      "execution_time": 1.0126965045928955
+    },
+    "documentation": {
+      "gate_name": "documentation",
+      "passed": true,
+      "score": 1.0,
+      "details": {
+        "readme_exists": true,
+        "readme_comprehensive": true,
+        "docs_files_count": 17,
+        "api_doc_coverage": 1.0,
+        "examples_count": 1
+      },
+      "issues": [],
+      "recommendations": [],
+      "execution_time": 0.0115814208984375
+    },
+    "mathematical_validation": {
+      "gate_name": "mathematical_validation",
+      "passed": false,
+      "score": 0.48999999999999994,
+      "details": {
+        "math_parsing": true,
+        "lean_verifier_status": {
+          "installed": false,
+          "error": "Executable not found: lean",
+          "executable": "lean"
+        },
+        "verifier_ready": false
+      },
+      "issues": [
+        "Mathematical validation test failed: No module named 'sympy'",
+        "Formal code generation test failed: Lean4Generator.__init__() got an unexpected keyword argument 'model_name'"
+      ],
+      "recommendations": [],
+      "execution_time": 0.004880666732788086
+    }
+  },
+  "summary": {
+    "total_issues": 5,
+    "total_recommendations": 3,
+    "critical_issues": [],
+    "production_ready": false
+  }
+}
