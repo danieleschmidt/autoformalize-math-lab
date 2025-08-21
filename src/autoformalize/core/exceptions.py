@@ -48,3 +48,8 @@ class TimeoutError(FormalizationError):
 class ConfigurationError(FormalizationError):
     """Raised when configuration is invalid or missing."""
     pass
+
+
+class RecoveryError(FormalizationError):
+    """Raised when error recovery fails."""
+    pass
