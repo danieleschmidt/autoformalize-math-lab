@@ -1,0 +1,890 @@
+{
+  "circuit_breaker_tests": [
+    {
+      "test_name": "Circuit Breaker Functionality",
+      "operations": [
+        {
+          "operation_id": 1,
+          "type": "success",
+          "result": "success",
+          "state": "closed",
+          "consecutive_successes": 1
+        },
+        {
+          "operation_id": 2,
+          "type": "success",
+          "result": "success",
+          "state": "closed",
+          "consecutive_successes": 2
+        },
+        {
+          "operation_id": 3,
+          "type": "success",
+          "result": "success",
+          "state": "closed",
+          "consecutive_successes": 3
+        },
+        {
+          "operation_id": 4,
+          "type": "success",
+          "result": "success",
+          "state": "closed",
+          "consecutive_successes": 4
+        },
+        {
+          "operation_id": 5,
+          "type": "success",
+          "result": "success",
+          "state": "closed",
+          "consecutive_successes": 5
+        },
+        {
+          "operation_id": 6,
+          "type": "failure",
+          "error": "Simulated failure",
+          "state": "closed",
+          "consecutive_failures": 1
+        },
+        {
+          "operation_id": 7,
+          "type": "failure",
+          "error": "Simulated failure",
+          "state": "closed",
+          "consecutive_failures": 2
+        },
+        {
+          "operation_id": 8,
+          "type": "failure",
+          "error": "Simulated failure",
+          "state": "open",
+          "consecutive_failures": 3
+        },
+        {
+          "operation_id": 9,
+          "type": "failure",
+          "error": "Circuit breaker test_breaker is OPEN",
+          "state": "open",
+          "consecutive_failures": 3
+        },
+        {
+          "operation_id": 10,
+          "type": "failure",
+          "error": "Circuit breaker test_breaker is OPEN",
+          "state": "open",
+          "consecutive_failures": 3
+        },
+        {
+          "operation_id": 11,
+          "type": "recovery_test",
+          "result": "success",
+          "state": "half_open"
+        }
+      ],
+      "final_status": {
+        "name": "test_breaker",
+        "state": "half_open",
+        "metrics": {
+          "success_rate": 0.6666666666666666,
+          "average_response_time": 0.04706536499094964,
+          "error_count": 3,
+          "total_requests": 9,
+          "consecutive_failures": 0,
+          "consecutive_successes": 1
+        },
+        "thresholds": {
+          "failure_threshold": 3,
+          "recovery_timeout": 5,
+          "success_threshold": 2
+        }
+      }
+    }
+  ],
+  "retry_strategy_tests": [
+    {
+      "test_case": "always_succeed",
+      "failure_rate": 0.0,
+      "attempts": [],
+      "final_result": "Success for always_succeed",
+      "success": true,
+      "total_time": 2.6464462280273438e-05,
+      "recent_success_rate": 1.0
+    },
+    {
+      "test_case": "occasional_failure",
+      "failure_rate": 0.3,
+      "attempts": [],
+      "final_result": "Success for occasional_failure",
+      "success": true,
+      "total_time": 7.62939453125e-06,
+      "recent_success_rate": 1.0
+    },
+    {
+      "test_case": "frequent_failure",
+      "failure_rate": 0.7,
+      "attempts": [],
+      "final_result": "Success for frequent_failure",
+      "success": true,
+      "total_time": 0.5205068588256836,
+      "recent_success_rate": 0.75
+    },
+    {
+      "test_case": "always_fail",
+      "failure_rate": 1.0,
+      "attempts": [],
+      "final_result": "Simulated failure for always_fail",
+      "success": false,
+      "total_time": 4.817267417907715,
+      "recent_success_rate": 0.375
+    }
+  ],
+  "bulkhead_tests": [
+    {
+      "operations_started": 10,
+      "operations_completed": 10,
+      "operations_failed": 0,
+      "bulkhead_snapshots": [
+        {
+          "timestamp": 1755865680.197565,
+          "status": {
+            "fast_operations": {
+              "current": 0,
+              "max": 3,
+              "available": 3
+            },
+            "slow_operations": {
+              "current": 2,
+              "max": 2,
+              "available": 0
+            },
+            "heavy_operations": {
+              "current": 1,
+              "max": 1,
+              "available": 0
+            }
+          }
+        },
+        {
+          "timestamp": 1755865680.6976478,
+          "status": {
+            "fast_operations": {
+              "current": 0,
+              "max": 3,
+              "available": 3
+            },
+            "slow_operations": {
+              "current": 1,
+              "max": 2,
+              "available": 1
+            },
+            "heavy_operations": {
+              "current": 1,
+              "max": 1,
+              "available": 0
+            }
+          }
+        },
+        {
+          "timestamp": 1755865681.198418,
+          "status": {
+            "fast_operations": {
+              "current": 0,
+              "max": 3,
+              "available": 3
+            },
+            "slow_operations": {
+              "current": 1,
+              "max": 2,
+              "available": 1
+            },
+            "heavy_operations": {
+              "current": 1,
+              "max": 1,
+              "available": 0
+            }
+          }
+        },
+        {
+          "timestamp": 1755865681.6987407,
+          "status": {
+            "fast_operations": {
+              "current": 0,
+              "max": 3,
+              "available": 3
+            },
+            "slow_operations": {
+              "current": 0,
+              "max": 2,
+              "available": 2
+            },
+            "heavy_operations": {
+              "current": 1,
+              "max": 1,
+              "available": 0
+            }
+          }
+        },
+        {
+          "timestamp": 1755865682.1996224,
+          "status": {
+            "fast_operations": {
+              "current": 0,
+              "max": 3,
+              "available": 3
+            },
+            "slow_operations": {
+              "current": 0,
+              "max": 2,
+              "available": 2
+            },
+            "heavy_operations": {
+              "current": 1,
+              "max": 1,
+              "available": 0
+            }
+          }
+        }
+      ],
+      "final_status": {
+        "fast_operations": {
+          "current": 0,
+          "max": 3,
+          "available": 3
+        },
+        "slow_operations": {
+          "current": 0,
+          "max": 2,
+          "available": 2
+        },
+        "heavy_operations": {
+          "current": 0,
+          "max": 1,
+          "available": 1
+        }
+      }
+    }
+  ],
+  "health_monitoring_tests": [
+    {
+      "components_monitored": 3,
+      "health_snapshots": [
+        {
+          "check_iteration": 1,
+          "overall_health": {
+            "overall_status": "warning",
+            "overall_success_rate": 0.6666666666666666,
+            "component_count": 3,
+            "active_alerts": 2,
+            "recent_alerts": [
+              {
+                "component": "unhealthy",
+                "status": "critical",
+                "timestamp": "2025-08-22T12:28:03.700512",
+                "details": {
+                  "status": "critical",
+                  "timestamp": "2025-08-22T12:28:03.700502",
+                  "metrics": {
+                    "success_rate": 0.0,
+                    "average_response_time": 0.99693730495252,
+                    "error_count": 1,
+                    "total_requests": 1
+                  }
+                },
+                "id": "de6a387e"
+              },
+              {
+                "component": "unhealthy",
+                "status": "critical",
+                "timestamp": "2025-08-22T12:28:05.702404",
+                "details": {
+                  "status": "critical",
+                  "timestamp": "2025-08-22T12:28:05.702398",
+                  "metrics": {
+                    "success_rate": 0.0,
+                    "average_response_time": 1.394364981776571,
+                    "error_count": 2,
+                    "total_requests": 2
+                  }
+                },
+                "id": "ea5a069c"
+              }
+            ]
+          },
+          "timestamp": 1755865686.2016788
+        },
+        {
+          "check_iteration": 2,
+          "overall_health": {
+            "overall_status": "warning",
+            "overall_success_rate": 0.6666666666666666,
+            "component_count": 3,
+            "active_alerts": 3,
+            "recent_alerts": [
+              {
+                "component": "unhealthy",
+                "status": "critical",
+                "timestamp": "2025-08-22T12:28:03.700512",
+                "details": {
+                  "status": "critical",
+                  "timestamp": "2025-08-22T12:28:03.700502",
+                  "metrics": {
+                    "success_rate": 0.0,
+                    "average_response_time": 0.99693730495252,
+                    "error_count": 1,
+                    "total_requests": 1
+                  }
+                },
+                "id": "de6a387e"
+              },
+              {
+                "component": "unhealthy",
+                "status": "critical",
+                "timestamp": "2025-08-22T12:28:05.702404",
+                "details": {
+                  "status": "critical",
+                  "timestamp": "2025-08-22T12:28:05.702398",
+                  "metrics": {
+                    "success_rate": 0.0,
+                    "average_response_time": 1.394364981776571,
+                    "error_count": 2,
+                    "total_requests": 2
+                  }
+                },
+                "id": "ea5a069c"
+              },
+              {
+                "component": "warning",
+                "status": "warning",
+                "timestamp": "2025-08-22T12:28:07.705545",
+                "details": {
+                  "status": "warning",
+                  "timestamp": "2025-08-22T12:28:07.705539",
+                  "metrics": {
+                    "success_rate": 0.75,
+                    "average_response_time": 0.6409198056158838,
+                    "error_count": 1,
+                    "total_requests": 4
+                  }
+                },
+                "id": "c1e8d273"
+              },
+              {
+                "component": "unhealthy",
+                "status": "critical",
+                "timestamp": "2025-08-22T12:28:07.705787",
+                "details": {
+                  "status": "critical",
+                  "timestamp": "2025-08-22T12:28:07.705776",
+                  "metrics": {
+                    "success_rate": 0.0,
+                    "average_response_time": 0.4753263759748143,
+                    "error_count": 4,
+                    "total_requests": 4
+                  }
+                },
+                "id": "84d5024e"
+              }
+            ]
+          },
+          "timestamp": 1755865688.703512
+        },
+        {
+          "check_iteration": 3,
+          "overall_health": {
+            "overall_status": "warning",
+            "overall_success_rate": 0.6666666666666666,
+            "component_count": 3,
+            "active_alerts": 4,
+            "recent_alerts": [
+              {
+                "component": "unhealthy",
+                "status": "critical",
+                "timestamp": "2025-08-22T12:28:03.700512",
+                "details": {
+                  "status": "critical",
+                  "timestamp": "2025-08-22T12:28:03.700502",
+                  "metrics": {
+                    "success_rate": 0.0,
+                    "average_response_time": 0.99693730495252,
+                    "error_count": 1,
+                    "total_requests": 1
+                  }
+                },
+                "id": "de6a387e"
+              },
+              {
+                "component": "unhealthy",
+                "status": "critical",
+                "timestamp": "2025-08-22T12:28:05.702404",
+                "details": {
+                  "status": "critical",
+                  "timestamp": "2025-08-22T12:28:05.702398",
+                  "metrics": {
+                    "success_rate": 0.0,
+                    "average_response_time": 1.394364981776571,
+                    "error_count": 2,
+                    "total_requests": 2
+                  }
+                },
+                "id": "ea5a069c"
+              },
+              {
+                "component": "warning",
+                "status": "warning",
+                "timestamp": "2025-08-22T12:28:07.705545",
+                "details": {
+                  "status": "warning",
+                  "timestamp": "2025-08-22T12:28:07.705539",
+                  "metrics": {
+                    "success_rate": 0.75,
+                    "average_response_time": 0.6409198056158838,
+                    "error_count": 1,
+                    "total_requests": 4
+                  }
+                },
+                "id": "c1e8d273"
+              },
+              {
+                "component": "unhealthy",
+                "status": "critical",
+                "timestamp": "2025-08-22T12:28:07.705787",
+                "details": {
+                  "status": "critical",
+                  "timestamp": "2025-08-22T12:28:07.705776",
+                  "metrics": {
+                    "success_rate": 0.0,
+                    "average_response_time": 0.4753263759748143,
+                    "error_count": 4,
+                    "total_requests": 4
+                  }
+                },
+                "id": "84d5024e"
+              },
+              {
+                "component": "unhealthy",
+                "status": "critical",
+                "timestamp": "2025-08-22T12:28:09.708842",
+                "details": {
+                  "status": "critical",
+                  "timestamp": "2025-08-22T12:28:09.708836",
+                  "metrics": {
+                    "success_rate": 0.16666666666666666,
+                    "average_response_time": 1.2773961822760227,
+                    "error_count": 5,
+                    "total_requests": 6
+                  }
+                },
+                "id": "cb02ccd3"
+              }
+            ]
+          },
+          "timestamp": 1755865691.2062163
+        }
+      ],
+      "final_overall_health": {
+        "overall_status": "warning",
+        "overall_success_rate": 0.6666666666666666,
+        "component_count": 3,
+        "active_alerts": 4,
+        "recent_alerts": [
+          {
+            "component": "unhealthy",
+            "status": "critical",
+            "timestamp": "2025-08-22T12:28:03.700512",
+            "details": {
+              "status": "critical",
+              "timestamp": "2025-08-22T12:28:03.700502",
+              "metrics": {
+                "success_rate": 0.0,
+                "average_response_time": 0.99693730495252,
+                "error_count": 1,
+                "total_requests": 1
+              }
+            },
+            "id": "de6a387e"
+          },
+          {
+            "component": "unhealthy",
+            "status": "critical",
+            "timestamp": "2025-08-22T12:28:05.702404",
+            "details": {
+              "status": "critical",
+              "timestamp": "2025-08-22T12:28:05.702398",
+              "metrics": {
+                "success_rate": 0.0,
+                "average_response_time": 1.394364981776571,
+                "error_count": 2,
+                "total_requests": 2
+              }
+            },
+            "id": "ea5a069c"
+          },
+          {
+            "component": "warning",
+            "status": "warning",
+            "timestamp": "2025-08-22T12:28:07.705545",
+            "details": {
+              "status": "warning",
+              "timestamp": "2025-08-22T12:28:07.705539",
+              "metrics": {
+                "success_rate": 0.75,
+                "average_response_time": 0.6409198056158838,
+                "error_count": 1,
+                "total_requests": 4
+              }
+            },
+            "id": "c1e8d273"
+          },
+          {
+            "component": "unhealthy",
+            "status": "critical",
+            "timestamp": "2025-08-22T12:28:07.705787",
+            "details": {
+              "status": "critical",
+              "timestamp": "2025-08-22T12:28:07.705776",
+              "metrics": {
+                "success_rate": 0.0,
+                "average_response_time": 0.4753263759748143,
+                "error_count": 4,
+                "total_requests": 4
+              }
+            },
+            "id": "84d5024e"
+          },
+          {
+            "component": "unhealthy",
+            "status": "critical",
+            "timestamp": "2025-08-22T12:28:09.708842",
+            "details": {
+              "status": "critical",
+              "timestamp": "2025-08-22T12:28:09.708836",
+              "metrics": {
+                "success_rate": 0.16666666666666666,
+                "average_response_time": 1.2773961822760227,
+                "error_count": 5,
+                "total_requests": 6
+              }
+            },
+            "id": "cb02ccd3"
+          }
+        ]
+      },
+      "alert_count": 5
+    }
+  ],
+  "self_healing_tests": [
+    {
+      "healing_tests": [
+        {
+          "test_name": "connection_test",
+          "error_type": "ConnectionError",
+          "error_message": "Connection failed",
+          "healing_attempts": [
+            {
+              "attempt": 1,
+              "success": true
+            }
+          ]
+        },
+        {
+          "test_name": "timeout_test",
+          "error_type": "TimeoutError",
+          "error_message": "Operation timed out",
+          "healing_attempts": [
+            {
+              "attempt": 1,
+              "success": true
+            }
+          ]
+        },
+        {
+          "test_name": "memory_test",
+          "error_type": "MemoryError",
+          "error_message": "Out of memory",
+          "healing_attempts": [
+            {
+              "attempt": 1,
+              "success": false
+            },
+            {
+              "attempt": 2,
+              "success": false
+            },
+            {
+              "attempt": 3,
+              "success": false
+            },
+            {
+              "attempt": 4,
+              "success": false
+            }
+          ]
+        },
+        {
+          "test_name": "unknown_error_test",
+          "error_type": "ValueError",
+          "error_message": "Unknown error",
+          "healing_attempts": [
+            {
+              "attempt": 1,
+              "success": false
+            },
+            {
+              "attempt": 2,
+              "success": false
+            },
+            {
+              "attempt": 3,
+              "success": false
+            },
+            {
+              "attempt": 4,
+              "success": false
+            }
+          ]
+        }
+      ],
+      "healing_statistics": {
+        "registered_strategies": 3,
+        "strategies": {
+          "ConnectionError": {
+            "success_count": 1,
+            "failure_count": 0,
+            "attempts_used": 0,
+            "max_attempts": 2,
+            "success_rate": 1.0
+          },
+          "TimeoutError": {
+            "success_count": 1,
+            "failure_count": 0,
+            "attempts_used": 0,
+            "max_attempts": 3,
+            "success_rate": 1.0
+          },
+          "MemoryError": {
+            "success_count": 0,
+            "failure_count": 1,
+            "attempts_used": 1,
+            "max_attempts": 1,
+            "success_rate": 0.0
+          }
+        },
+        "healing_history_count": 2,
+        "recent_healings": [
+          {
+            "pattern": "ConnectionError",
+            "timestamp": "2025-08-22T12:28:12.211599",
+            "success": true,
+            "error": "Connection failed",
+            "context": {
+              "test_name": "connection_test",
+              "timestamp": 1755865691.710686
+            }
+          },
+          {
+            "pattern": "TimeoutError",
+            "timestamp": "2025-08-22T12:28:12.512669",
+            "success": true,
+            "error": "Operation timed out",
+            "context": {
+              "test_name": "timeout_test",
+              "timestamp": 1755865692.2118309
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "integrated_resilience_tests": [
+    {
+      "formalization_tests": [
+        {
+          "test_id": 1,
+          "theorem": "Simple theorem: For any natural number n, n + 0 = ...",
+          "success": true,
+          "processing_time": 2.8717286586761475,
+          "resilience_features_used": {
+            "circuit_breaker_used": true,
+            "retry_attempts": 0,
+            "bulkhead_isolation": true,
+            "self_healing_applied": false
+          },
+          "formal_code_length": 60
+        },
+        {
+          "test_id": 2,
+          "theorem": "Complex theorem: The fundamental theorem of arithm...",
+          "success": true,
+          "processing_time": 0.5900611877441406,
+          "resilience_features_used": {
+            "circuit_breaker_used": true,
+            "retry_attempts": 0,
+            "bulkhead_isolation": true,
+            "self_healing_applied": false
+          },
+          "formal_code_length": 60
+        },
+        {
+          "test_id": 3,
+          "theorem": "Analysis theorem: Every continuous function on a c...",
+          "success": true,
+          "processing_time": 0.2617199420928955,
+          "resilience_features_used": {
+            "circuit_breaker_used": true,
+            "retry_attempts": 0,
+            "bulkhead_isolation": true,
+            "self_healing_applied": false
+          },
+          "formal_code_length": 60
+        },
+        {
+          "test_id": 4,
+          "theorem": "Algebra theorem: Every finite group has a unique d...",
+          "success": true,
+          "processing_time": 0.5579855442047119,
+          "resilience_features_used": {
+            "circuit_breaker_used": true,
+            "retry_attempts": 0,
+            "bulkhead_isolation": true,
+            "self_healing_applied": false
+          },
+          "formal_code_length": 60
+        },
+        {
+          "test_id": 5,
+          "theorem": "Topology theorem: Every compact metric space is co...",
+          "success": true,
+          "processing_time": 0.36771488189697266,
+          "resilience_features_used": {
+            "circuit_breaker_used": true,
+            "retry_attempts": 0,
+            "bulkhead_isolation": true,
+            "self_healing_applied": false
+          },
+          "formal_code_length": 60
+        }
+      ],
+      "success_rate": 1.0,
+      "average_processing_time": 0.9298420429229737,
+      "resilience_system_status": {
+        "circuit_breakers": {
+          "llm_api": {
+            "name": "llm_api",
+            "state": "closed",
+            "metrics": {
+              "success_rate": 0.8333333333333334,
+              "average_response_time": 0.20682343041896822,
+              "error_count": 1,
+              "total_requests": 6,
+              "consecutive_failures": 0,
+              "consecutive_successes": 5
+            },
+            "thresholds": {
+              "failure_threshold": 3,
+              "recovery_timeout": 60,
+              "success_threshold": 3
+            }
+          },
+          "verification": {
+            "name": "verification",
+            "state": "closed",
+            "metrics": {
+              "success_rate": 0.0,
+              "average_response_time": 0.0,
+              "error_count": 0,
+              "total_requests": 0,
+              "consecutive_failures": 0,
+              "consecutive_successes": 0
+            },
+            "thresholds": {
+              "failure_threshold": 5,
+              "recovery_timeout": 60,
+              "success_threshold": 3
+            }
+          },
+          "parsing": {
+            "name": "parsing",
+            "state": "closed",
+            "metrics": {
+              "success_rate": 0.0,
+              "average_response_time": 0.0,
+              "error_count": 0,
+              "total_requests": 0,
+              "consecutive_failures": 0,
+              "consecutive_successes": 0
+            },
+            "thresholds": {
+              "failure_threshold": 2,
+              "recovery_timeout": 60,
+              "success_threshold": 3
+            }
+          }
+        },
+        "bulkhead_status": {
+          "formalization": {
+            "current": 0,
+            "max": 10,
+            "available": 10
+          },
+          "verification": {
+            "current": 0,
+            "max": 5,
+            "available": 5
+          },
+          "parsing": {
+            "current": 0,
+            "max": 8,
+            "available": 8
+          }
+        },
+        "health_status": {
+          "overall_status": "critical",
+          "overall_success_rate": 0.2777777777777778,
+          "component_count": 3,
+          "active_alerts": 0,
+          "recent_alerts": []
+        },
+        "self_healing_stats": {
+          "registered_strategies": 4,
+          "strategies": {
+            "RateLimitError": {
+              "success_count": 0,
+              "failure_count": 0,
+              "attempts_used": 0,
+              "max_attempts": 3,
+              "success_rate": 0.0
+            },
+            "MemoryError": {
+              "success_count": 0,
+              "failure_count": 0,
+              "attempts_used": 0,
+              "max_attempts": 3,
+              "success_rate": 0.0
+            },
+            "TimeoutError": {
+              "success_count": 0,
+              "failure_count": 0,
+              "attempts_used": 0,
+              "max_attempts": 3,
+              "success_rate": 0.0
+            },
+            "ConnectionError": {
+              "success_count": 0,
+              "failure_count": 0,
+              "attempts_used": 0,
+              "max_attempts": 3,
+              "success_rate": 0.0
+            }
+          },
+          "healing_history_count": 0,
+          "recent_healings": []
+        },
+        "retry_effectiveness": {
+          "recent_success_rate": 0.8333333333333334,
+          "max_retries": 3,
+          "base_delay": 1.0
+        }
+      }
+    }
+  ],
+  "performance_metrics": {}
+}

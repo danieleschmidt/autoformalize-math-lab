@@ -1,0 +1,41 @@
+{
+  "neural_config": {
+    "embedding_dim": 384,
+    "memory_size": 5000,
+    "d_model": 768,
+    "num_heads": 8,
+    "training_mode": true,
+    "learning_rate": 0.001
+  },
+  "export_timestamp": "2025-08-22 12:24:43",
+  "performance_summary": {
+    "total_formalizations": 6,
+    "success_rate": 0.8333333333333334,
+    "average_attention_accuracy": 0.8223606332010848,
+    "average_memory_retrieval": 0.9264403877473502,
+    "learning_trend": [
+      0.7127274191167466,
+      0.7412531784080046,
+      0.8125060305594454,
+      0.8538461705356393,
+      0.7959453386424833,
+      0.8427613898175457,
+      0.7143115545168413,
+      0.8238124536959393,
+      0.803174051397472,
+      0.7734757137211088
+    ],
+    "memory_bank_size": {
+      "successful_patterns": 101,
+      "failed_patterns": 14,
+      "total_embeddings": 252
+    },
+    "neural_capabilities": {
+      "transformer_attention": true,
+      "memory_networks": true,
+      "experience_replay": true,
+      "continuous_learning": true,
+      "strategy_adaptation": true
+    }
+  }
+}
