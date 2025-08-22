@@ -1,0 +1,101 @@
+{
+  "neural_formalizations": [
+    {
+      "theorem_id": 3,
+      "success": false,
+      "processing_time": 1.9311904907226562e-05,
+      "neural_concepts": [],
+      "attention_score": 0.3,
+      "expected_concepts_found": 0,
+      "formal_code_length": 0,
+      "correction_rounds": 0
+    }
+  ],
+  "performance_metrics": {
+    "total_formalizations": 6,
+    "success_rate": 0.8333333333333334,
+    "average_attention_accuracy": 0.9125698021962771,
+    "average_memory_retrieval": 0.9534814643390814,
+    "learning_trend": [
+      0.7338882060683755,
+      0.8227506221602361,
+      0.8437186847373743,
+      0.7091198586290341,
+      0.8908456855572546,
+      0.7511002908308962,
+      0.7350998717680589,
+      0.7660210318990682,
+      0.7363482617901986,
+      0.7505733598242845
+    ],
+    "memory_bank_size": {
+      "successful_patterns": 158,
+      "failed_patterns": 31,
+      "total_embeddings": 300
+    },
+    "neural_capabilities": {
+      "transformer_attention": true,
+      "memory_networks": true,
+      "experience_replay": true,
+      "continuous_learning": true,
+      "strategy_adaptation": true
+    }
+  },
+  "learning_progression": [
+    {
+      "training_examples": 3,
+      "initial_success_rate": 0.6666666666666666,
+      "final_success_rate": 0.8333333333333334,
+      "improvement": 0.16666666666666674,
+      "memory_growth": {
+        "initial_successful_patterns": 150,
+        "final_successful_patterns": 174,
+        "growth": 24
+      },
+      "attention_improvement": {
+        "initial_accuracy": 0.9310561742796307,
+        "final_accuracy": 0.807909509671796,
+        "improvement": -0.12314666460783474
+      }
+    }
+  ],
+  "attention_analysis": [],
+  "memory_effectiveness": [
+    {
+      "query_id": 1,
+      "query": "Every odd prime is greater than 2",
+      "similar_experiences_found": 3,
+      "successful_matches": 3,
+      "domains_retrieved": [
+        "algebra"
+      ],
+      "strategies_retrieved": [
+        "direct_proof"
+      ]
+    },
+    {
+      "query_id": 2,
+      "query": "cos\u00b2(x) + sin\u00b2(x) equals 1",
+      "similar_experiences_found": 3,
+      "successful_matches": 3,
+      "domains_retrieved": [
+        "algebra"
+      ],
+      "strategies_retrieved": [
+        "direct_proof"
+      ]
+    },
+    {
+      "query_id": 3,
+      "query": "Even numbers multiplied together",
+      "similar_experiences_found": 3,
+      "successful_matches": 3,
+      "domains_retrieved": [
+        "algebra"
+      ],
+      "strategies_retrieved": [
+        "direct_proof"
+      ]
+    }
+  ]
+}

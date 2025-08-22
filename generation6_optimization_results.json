@@ -1,0 +1,445 @@
+{
+  "quantum_optimization_tests": [
+    {
+      "optimization_tests": [
+        {
+          "algorithm": "quantum_annealing",
+          "solution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "cost": 0.0,
+          "optimization_time": 0.012046575546264648,
+          "dimensions": 6
+        },
+        {
+          "algorithm": "particle_swarm",
+          "solution": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "cost": 0.0,
+          "optimization_time": 0.016046524047851562,
+          "dimensions": 6,
+          "num_particles": 20,
+          "iterations": 50
+        }
+      ],
+      "best_algorithm": "quantum_annealing",
+      "best_cost": 0.0,
+      "performance_comparison": {
+        "quantum_annealing": {
+          "cost": 0.0,
+          "time": 0.012046575546264648,
+          "efficiency": 0.0
+        },
+        "particle_swarm": {
+          "cost": 0.0,
+          "time": 0.016046524047851562,
+          "efficiency": 0.0
+        }
+      }
+    }
+  ],
+  "distributed_processing_tests": [
+    {
+      "distribution_tests": [
+        {
+          "strategy": "quantum_annealing",
+          "total_execution_time": 0.06798577308654785,
+          "success_rate": 0.0,
+          "tasks_processed": 2,
+          "average_task_time": 0.0,
+          "worker_statistics": {
+            "num_workers": 2,
+            "total_tasks_processed": 0,
+            "overall_error_rate": 0.0,
+            "worker_performance": {},
+            "average_worker_performance": 0.0
+          },
+          "throughput": 29.417919502863374
+        },
+        {
+          "strategy": "particle_swarm",
+          "total_execution_time": 0.08324909210205078,
+          "success_rate": 0.0,
+          "tasks_processed": 2,
+          "average_task_time": 0.0,
+          "worker_statistics": {
+            "num_workers": 2,
+            "total_tasks_processed": 0,
+            "overall_error_rate": 0.0,
+            "worker_performance": {},
+            "average_worker_performance": 0.0
+          },
+          "throughput": 24.02428602522539
+        },
+        {
+          "strategy": "genetic_algorithm",
+          "total_execution_time": 0.022052764892578125,
+          "success_rate": 0.0,
+          "tasks_processed": 2,
+          "average_task_time": 0.0,
+          "worker_statistics": {
+            "num_workers": 2,
+            "total_tasks_processed": 0,
+            "overall_error_rate": 0.0,
+            "worker_performance": {},
+            "average_worker_performance": 0.0
+          },
+          "throughput": 90.69157585192873
+        }
+      ],
+      "best_strategy": "quantum_annealing",
+      "best_performance": {
+        "success_rate": 0.0,
+        "throughput": 29.417919502863374
+      },
+      "strategy_comparison": {
+        "quantum_annealing": {
+          "success_rate": 0.0,
+          "throughput": 29.417919502863374,
+          "efficiency": 0.0
+        },
+        "particle_swarm": {
+          "success_rate": 0.0,
+          "throughput": 24.02428602522539,
+          "efficiency": 0.0
+        },
+        "genetic_algorithm": {
+          "success_rate": 0.0,
+          "throughput": 90.69157585192873,
+          "efficiency": 0.0
+        }
+      }
+    }
+  ],
+  "performance_monitoring_tests": [
+    {
+      "total_metrics_recorded": 50,
+      "performance_summary": {
+        "status": "degraded",
+        "averages": {
+          "cpu_usage": 51.049542366407415,
+          "memory_usage": 50.77074445191231,
+          "processing_time": 5.765386990336509,
+          "success_rate": 0.9015128792708729
+        },
+        "trends": {
+          "processing_time_trend": -0.34003696512948184
+        },
+        "recent_alerts": [],
+        "total_measurements": 50
+      },
+      "alert_analysis": {
+        "total_alerts": 29,
+        "critical_alerts": 0,
+        "warning_alerts": 29
+      },
+      "metric_ranges": {
+        "cpu_usage": {
+          "min": 24.974202019215195,
+          "max": 78.51992590292022,
+          "avg": 51.049542366407415
+        },
+        "processing_time": {
+          "min": 0.7298285497331611,
+          "max": 9.922424780933088,
+          "avg": 5.765386990336509
+        },
+        "success_rate": {
+          "min": 0.6273880742266928,
+          "max": 1.0,
+          "avg": 0.9015128792708729
+        }
+      }
+    }
+  ],
+  "workload_analysis_tests": [
+    {
+      "workload_analyses": [
+        {
+          "scenario_name": "light_workload",
+          "task_count": 5,
+          "workload_metrics": {
+            "complexity_score": 1.014,
+            "estimated_processing_time": 10.14,
+            "parallelization_factor": 0.4
+          },
+          "task_complexity_distribution": {
+            "min": 0.5,
+            "max": 0.5,
+            "avg": 0.5
+          }
+        },
+        {
+          "scenario_name": "medium_workload",
+          "task_count": 15,
+          "workload_metrics": {
+            "complexity_score": 1.0139999999999998,
+            "estimated_processing_time": 30.41999999999999,
+            "parallelization_factor": 0.13333333333333333
+          },
+          "task_complexity_distribution": {
+            "min": 1.0683996526636061,
+            "max": 1.9401821737842342,
+            "avg": 1.4462474550780893
+          }
+        },
+        {
+          "scenario_name": "heavy_workload",
+          "task_count": 30,
+          "workload_metrics": {
+            "complexity_score": 1.0150000000000003,
+            "estimated_processing_time": 60.90000000000002,
+            "parallelization_factor": 0.06666666666666667
+          },
+          "task_complexity_distribution": {
+            "min": 2.0210856623350377,
+            "max": 3.832570799410765,
+            "avg": 2.8431127866277004
+          }
+        },
+        {
+          "scenario_name": "mixed_workload",
+          "task_count": 25,
+          "workload_metrics": {
+            "complexity_score": 1.393248,
+            "estimated_processing_time": 69.6624,
+            "parallelization_factor": 0.08
+          },
+          "task_complexity_distribution": {
+            "min": 0.5879130625077238,
+            "max": 3.650748115394515,
+            "avg": 1.7939422995999872
+          }
+        }
+      ],
+      "analysis_effectiveness": {
+        "scenarios_analyzed": 4,
+        "complexity_range": {
+          "min": 1.0139999999999998,
+          "max": 1.393248
+        },
+        "parallelization_effectiveness": {
+          "min": 0.06666666666666667,
+          "max": 0.4
+        }
+      }
+    }
+  ],
+  "integrated_optimization_tests": [
+    {
+      "integrated_tests": [
+        {
+          "strategy": "quantum_annealing",
+          "optimization_result": {
+            "strategy": "quantum_annealing",
+            "execution_time": 0.07207226753234863,
+            "success_rate": 0.0,
+            "tasks_processed": 30,
+            "quantum_advantage": 750.0,
+            "workload_metrics": "WorkloadMetrics(cpu_usage=0.0, memory_usage=0.0, io_operations=0, network_latency=0.0, processing_time=0.07207226753234863, success_rate=0.0, complexity_score=0.0, parallelization_factor=0.06666666666666667)",
+            "performance_improvement": 0.0
+          },
+          "comprehensive_stats": {
+            "total_optimizations": 1,
+            "total_tasks_processed": 30,
+            "total_execution_time": 0.07207226753234863,
+            "average_success_rate": 0.0,
+            "average_quantum_advantage": 750.0,
+            "best_strategy": "quantum_annealing",
+            "strategy_effectiveness": {
+              "quantum_annealing": 750.0
+            },
+            "performance_monitor_summary": {
+              "status": "degraded",
+              "averages": {
+                "cpu_usage": 0.0,
+                "memory_usage": 0.0,
+                "processing_time": 43.36103613376617,
+                "success_rate": 0.5
+              },
+              "trends": {
+                "processing_time_trend": 0.0
+              },
+              "recent_alerts": [
+                {
+                  "type": "critical",
+                  "metric": "processing_time",
+                  "value": 86.64999999999999,
+                  "threshold": 10.0,
+                  "timestamp": "2025-08-22T12:31:48.260907"
+                }
+              ],
+              "total_measurements": 2
+            },
+            "workload_manager_stats": {
+              "num_workers": 2,
+              "total_tasks_processed": 0,
+              "overall_error_rate": 0.0,
+              "worker_performance": {},
+              "average_worker_performance": 0.0
+            }
+          },
+          "system_performance": {
+            "quantum_advantage": 750.0,
+            "execution_efficiency": 0.0,
+            "scalability_factor": 416.2488711283424
+          }
+        },
+        {
+          "strategy": "particle_swarm",
+          "optimization_result": {
+            "strategy": "particle_swarm",
+            "execution_time": 0.0767827033996582,
+            "success_rate": 0.0,
+            "tasks_processed": 30,
+            "quantum_advantage": 540.0,
+            "workload_metrics": "WorkloadMetrics(cpu_usage=0.0, memory_usage=0.0, io_operations=0, network_latency=0.0, processing_time=0.0767827033996582, success_rate=0.0, complexity_score=0.0, parallelization_factor=0.06666666666666667)",
+            "performance_improvement": 0.0
+          },
+          "comprehensive_stats": {
+            "total_optimizations": 1,
+            "total_tasks_processed": 30,
+            "total_execution_time": 0.0767827033996582,
+            "average_success_rate": 0.0,
+            "average_quantum_advantage": 540.0,
+            "best_strategy": "particle_swarm",
+            "strategy_effectiveness": {
+              "particle_swarm": 540.0
+            },
+            "performance_monitor_summary": {
+              "status": "degraded",
+              "averages": {
+                "cpu_usage": 0.0,
+                "memory_usage": 0.0,
+                "processing_time": 43.363391351699825,
+                "success_rate": 0.5
+              },
+              "trends": {
+                "processing_time_trend": 0.0
+              },
+              "recent_alerts": [
+                {
+                  "type": "critical",
+                  "metric": "processing_time",
+                  "value": 86.64999999999999,
+                  "threshold": 10.0,
+                  "timestamp": "2025-08-22T12:31:48.364744"
+                }
+              ],
+              "total_measurements": 2
+            },
+            "workload_manager_stats": {
+              "num_workers": 2,
+              "total_tasks_processed": 0,
+              "overall_error_rate": 0.0,
+              "worker_performance": {},
+              "average_worker_performance": 0.0
+            }
+          },
+          "system_performance": {
+            "quantum_advantage": 540.0,
+            "execution_efficiency": 0.0,
+            "scalability_factor": 390.71299487657194
+          }
+        },
+        {
+          "strategy": "genetic_algorithm",
+          "optimization_result": {
+            "strategy": "genetic_algorithm",
+            "execution_time": 0.022963285446166992,
+            "success_rate": 0.0,
+            "tasks_processed": 30,
+            "quantum_advantage": 450.0,
+            "workload_metrics": "WorkloadMetrics(cpu_usage=0.0, memory_usage=0.0, io_operations=0, network_latency=0.0, processing_time=0.022963285446166992, success_rate=0.0, complexity_score=0.0, parallelization_factor=0.06666666666666667)",
+            "performance_improvement": 0.0
+          },
+          "comprehensive_stats": {
+            "total_optimizations": 1,
+            "total_tasks_processed": 30,
+            "total_execution_time": 0.022963285446166992,
+            "average_success_rate": 0.0,
+            "average_quantum_advantage": 450.0,
+            "best_strategy": "genetic_algorithm",
+            "strategy_effectiveness": {
+              "genetic_algorithm": 450.0
+            },
+            "performance_monitor_summary": {
+              "status": "degraded",
+              "averages": {
+                "cpu_usage": 0.0,
+                "memory_usage": 0.0,
+                "processing_time": 43.33648164272308,
+                "success_rate": 0.5
+              },
+              "trends": {
+                "processing_time_trend": 0.0
+              },
+              "recent_alerts": [
+                {
+                  "type": "critical",
+                  "metric": "processing_time",
+                  "value": 86.64999999999999,
+                  "threshold": 10.0,
+                  "timestamp": "2025-08-22T12:31:48.459713"
+                }
+              ],
+              "total_measurements": 2
+            },
+            "workload_manager_stats": {
+              "num_workers": 2,
+              "total_tasks_processed": 0,
+              "overall_error_rate": 0.0,
+              "worker_performance": {},
+              "average_worker_performance": 0.0
+            }
+          },
+          "system_performance": {
+            "quantum_advantage": 450.0,
+            "execution_efficiency": 0.0,
+            "scalability_factor": 1306.4332658464414
+          }
+        }
+      ],
+      "best_overall_strategy": "quantum_annealing",
+      "performance_comparison": {
+        "quantum_annealing": {
+          "quantum_advantage": 750.0,
+          "execution_efficiency": 0.0,
+          "scalability_factor": 416.2488711283424
+        },
+        "particle_swarm": {
+          "quantum_advantage": 540.0,
+          "execution_efficiency": 0.0,
+          "scalability_factor": 390.71299487657194
+        },
+        "genetic_algorithm": {
+          "quantum_advantage": 450.0,
+          "execution_efficiency": 0.0,
+          "scalability_factor": 1306.4332658464414
+        }
+      },
+      "quantum_advantages": {
+        "quantum_annealing": 750.0,
+        "particle_swarm": 540.0,
+        "genetic_algorithm": 450.0
+      },
+      "system_scalability": {
+        "total_tasks_processed": 90,
+        "average_quantum_advantage": 580.0,
+        "best_scalability_factor": 1306.4332658464414
+      }
+    }
+  ],
+  "performance_metrics": {}
+}

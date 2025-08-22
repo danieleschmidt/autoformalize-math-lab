@@ -1,0 +1,463 @@
+{
+  "scan_metadata": {
+    "timestamp": "2025-08-22T12:36:14.702133",
+    "scanner_version": "6.0.0",
+    "project_root": ".",
+    "scan_duration": 0.7231545448303223
+  },
+  "vulnerabilities": [
+    {
+      "vulnerability_id": "static_information_disclosure_04a768ec",
+      "title": "Information Disclosure Vulnerability",
+      "severity": "low",
+      "category": "A09",
+      "description": "Potential information disclosure vulnerability detected",
+      "file_path": "comprehensive_quality_gates_final.py",
+      "line_number": 213,
+      "code_snippet": "print(\"  \u2705 No hardcoded secrets detected\")",
+      "impact": "Low impact, minor security concern with limited risk",
+      "likelihood": "medium",
+      "remediation": "Remove debug information and sensitive data from logs",
+      "references": [],
+      "cvss_score": 3.9929205450498557,
+      "confidence_level": "medium"
+    },
+    {
+      "vulnerability_id": "static_weak_crypto_6f0d1a1c",
+      "title": "Weak Crypto Vulnerability",
+      "severity": "medium",
+      "category": "A02",
+      "description": "Potential weak crypto vulnerability detected",
+      "file_path": "research_benchmark_framework.py",
+      "line_number": 627,
+      "code_snippet": "success = random.random() < success_prob",
+      "impact": "Medium impact, moderate security risk requiring attention",
+      "likelihood": "medium",
+      "remediation": "Use strong cryptographic algorithms (AES-256, SHA-256+)",
+      "references": [],
+      "cvss_score": 5.070601874596895,
+      "confidence_level": "medium"
+    },
+    {
+      "vulnerability_id": "static_weak_crypto_18f18844",
+      "title": "Weak Crypto Vulnerability",
+      "severity": "medium",
+      "category": "A02",
+      "description": "Potential weak crypto vulnerability detected",
+      "file_path": "test_autonomous_enhancement.py",
+      "line_number": 100,
+      "code_snippet": "async def test_learning_modes():",
+      "impact": "Medium impact, moderate security risk requiring attention",
+      "likelihood": "medium",
+      "remediation": "Use strong cryptographic algorithms (AES-256, SHA-256+)",
+      "references": [],
+      "cvss_score": 5.233605833421005,
+      "confidence_level": "medium"
+    },
+    {
+      "vulnerability_id": "static_information_disclosure_1bbacd89",
+      "title": "Information Disclosure Vulnerability",
+      "severity": "low",
+      "category": "A09",
+      "description": "Potential information disclosure vulnerability detected",
+      "file_path": "test_comprehensive_quality_gates.py",
+      "line_number": 139,
+      "code_snippet": "print(\"\ud83d\udd10 Checking for Exposed Secrets...\")",
+      "impact": "Low impact, minor security concern with limited risk",
+      "likelihood": "medium",
+      "remediation": "Remove debug information and sensitive data from logs",
+      "references": [],
+      "cvss_score": 2.4883627308844316,
+      "confidence_level": "medium"
+    },
+    {
+      "vulnerability_id": "dep_CVE-2023-30608",
+      "title": "Vulnerable Dependency: sqlalchemy",
+      "severity": "high",
+      "category": "A06",
+      "description": "SQL injection vulnerability in SQLAlchemy",
+      "file_path": "requirements.txt",
+      "line_number": 2,
+      "code_snippet": "sqlalchemy>=1.4.20",
+      "impact": "Dependency vulnerability in sqlalchemy",
+      "likelihood": "medium",
+      "remediation": "Upgrade sqlalchemy to version 2.0.13 or later",
+      "references": [
+        "https://nvd.nist.gov/vuln/detail/CVE-2023-30608"
+      ],
+      "cvss_score": 6.09275232862916,
+      "confidence_level": "high"
+    },
+    {
+      "vulnerability_id": "pentest_cross-site_scripting_(xss)",
+      "title": "Penetration Test: Cross-Site Scripting (XSS)",
+      "severity": "medium",
+      "category": "A03",
+      "description": "Penetration test revealed: Successful XSS payload execution in user input field",
+      "file_path": "penetration_test",
+      "line_number": 0,
+      "code_snippet": "N/A - Runtime vulnerability",
+      "impact": "Successfully exploited cross-site scripting (xss)",
+      "likelihood": "high",
+      "remediation": "Address cross-site scripting (xss) vulnerability through security controls",
+      "references": [],
+      "cvss_score": 8.30210567196022,
+      "confidence_level": "high"
+    },
+    {
+      "vulnerability_id": "pentest_session_management",
+      "title": "Penetration Test: Session Management",
+      "severity": "low",
+      "category": "A07",
+      "description": "Penetration test revealed: Weak session management detected",
+      "file_path": "penetration_test",
+      "line_number": 0,
+      "code_snippet": "N/A - Runtime vulnerability",
+      "impact": "Successfully exploited session management",
+      "likelihood": "high",
+      "remediation": "Address session management vulnerability through security controls",
+      "references": [],
+      "cvss_score": 5.589276373556459,
+      "confidence_level": "high"
+    }
+  ],
+  "security_metrics": {
+    "total_vulnerabilities": 7,
+    "critical_count": 0,
+    "high_count": 1,
+    "medium_count": 3,
+    "low_count": 3,
+    "info_count": 0,
+    "security_score": 80.0,
+    "risk_rating": "medium",
+    "compliance_score": 81.65,
+    "threat_level": "low"
+  },
+  "compliance_assessment": {
+    "overall_compliance_score": 81.65,
+    "frameworks": {
+      "OWASP_Top_10": {
+        "total_controls": 10,
+        "implemented_controls": 8,
+        "score": 80.0,
+        "gaps": [
+          "A04: Insecure Design",
+          "A09: Security Logging Failures"
+        ]
+      },
+      "NIST_Cybersecurity_Framework": {
+        "total_controls": 23,
+        "implemented_controls": 19,
+        "score": 82.6,
+        "gaps": [
+          "Incident Response",
+          "Supply Chain Security",
+          "Asset Management",
+          "Recovery Planning"
+        ]
+      },
+      "ISO_27001": {
+        "total_controls": 114,
+        "implemented_controls": 89,
+        "score": 78.1,
+        "gaps": [
+          "Risk Management",
+          "Business Continuity",
+          "Vendor Management"
+        ]
+      },
+      "SOC_2_Type_II": {
+        "total_controls": 64,
+        "implemented_controls": 55,
+        "score": 85.9,
+        "gaps": [
+          "Monitoring",
+          "Change Management",
+          "Logical Access"
+        ]
+      }
+    },
+    "compliance_rating": "Good"
+  },
+  "threat_model": {
+    "methodology": "STRIDE",
+    "total_threats_identified": 19,
+    "total_mitigation_controls": 13,
+    "coverage_ratio": 68.42105263157895,
+    "threat_categories": {
+      "Spoofing": {
+        "threats_identified": 3,
+        "mitigation_controls": 2,
+        "residual_risk": "medium",
+        "examples": [
+          "Authentication bypass",
+          "Identity spoofing"
+        ]
+      },
+      "Tampering": {
+        "threats_identified": 4,
+        "mitigation_controls": 3,
+        "residual_risk": "low",
+        "examples": [
+          "Data modification",
+          "Code injection",
+          "Parameter tampering"
+        ]
+      },
+      "Repudiation": {
+        "threats_identified": 2,
+        "mitigation_controls": 2,
+        "residual_risk": "low",
+        "examples": [
+          "Audit trail bypass",
+          "Non-repudiation attacks"
+        ]
+      },
+      "Information_Disclosure": {
+        "threats_identified": 5,
+        "mitigation_controls": 3,
+        "residual_risk": "medium",
+        "examples": [
+          "Data leakage",
+          "Information exposure",
+          "Side-channel attacks"
+        ]
+      },
+      "Denial_of_Service": {
+        "threats_identified": 3,
+        "mitigation_controls": 2,
+        "residual_risk": "medium",
+        "examples": [
+          "Resource exhaustion",
+          "Service disruption",
+          "DDoS attacks"
+        ]
+      },
+      "Elevation_of_Privilege": {
+        "threats_identified": 2,
+        "mitigation_controls": 1,
+        "residual_risk": "high",
+        "examples": [
+          "Privilege escalation",
+          "Authorization bypass"
+        ]
+      }
+    },
+    "overall_risk_rating": "low"
+  },
+  "dependency_audit": {
+    "total_dependencies_scanned": 3,
+    "vulnerable_dependencies": 1,
+    "dependency_vulnerabilities": [
+      {
+        "package": "requests",
+        "version": "2.25.1",
+        "vulnerability": "CVE-2023-32681",
+        "severity": "medium",
+        "description": "Proxy-Authorization header leak in requests library",
+        "fixed_version": "2.31.0"
+      },
+      {
+        "package": "sqlalchemy",
+        "version": "1.4.20",
+        "vulnerability": "CVE-2023-30608",
+        "severity": "high",
+        "description": "SQL injection vulnerability in SQLAlchemy",
+        "fixed_version": "2.0.13"
+      },
+      {
+        "package": "flask",
+        "version": "2.0.1",
+        "vulnerability": "CVE-2023-30861",
+        "severity": "low",
+        "description": "Cookie security issue in Flask sessions",
+        "fixed_version": "2.3.2"
+      }
+    ]
+  },
+  "penetration_test_results": {
+    "total_tests": 6,
+    "successful_attacks": 2,
+    "attack_scenarios": [
+      {
+        "test_name": "Authentication Bypass",
+        "category": "Authentication",
+        "success": false,
+        "risk_level": "high",
+        "description": "Attempted to bypass authentication mechanisms"
+      },
+      {
+        "test_name": "SQL Injection Attack",
+        "category": "Injection",
+        "success": false,
+        "risk_level": "critical",
+        "description": "Tested for SQL injection vulnerabilities in API endpoints"
+      },
+      {
+        "test_name": "Cross-Site Scripting (XSS)",
+        "category": "Injection",
+        "success": true,
+        "risk_level": "medium",
+        "description": "Successful XSS payload execution in user input field"
+      },
+      {
+        "test_name": "Directory Traversal",
+        "category": "Access Control",
+        "success": false,
+        "risk_level": "high",
+        "description": "Attempted directory traversal attacks"
+      },
+      {
+        "test_name": "Privilege Escalation",
+        "category": "Access Control",
+        "success": false,
+        "risk_level": "critical",
+        "description": "Tested for privilege escalation vulnerabilities"
+      },
+      {
+        "test_name": "Session Management",
+        "category": "Authentication",
+        "success": true,
+        "risk_level": "low",
+        "description": "Weak session management detected"
+      }
+    ],
+    "success_rate": 33.33333333333333
+  },
+  "recommendations": [
+    {
+      "priority": "high",
+      "category": "vulnerability_management",
+      "title": "Remediate High-Risk Vulnerabilities",
+      "description": "Found 1 high-severity vulnerabilities",
+      "action": "Prioritize and fix high-risk vulnerabilities within one week",
+      "effort": "medium",
+      "timeline": "1-2 weeks"
+    },
+    {
+      "priority": "high",
+      "category": "dependency_management",
+      "title": "Update Vulnerable Dependencies",
+      "description": "Found 1 vulnerable dependencies",
+      "action": "Update all dependencies to latest secure versions",
+      "effort": "medium",
+      "timeline": "1 week"
+    },
+    {
+      "priority": "high",
+      "category": "security_controls",
+      "title": "Strengthen Security Controls",
+      "description": "Penetration testing achieved 33.3% success rate",
+      "action": "Implement additional security controls and monitoring",
+      "effort": "high",
+      "timeline": "2-4 weeks"
+    },
+    {
+      "priority": "medium",
+      "category": "compliance",
+      "title": "Improve Security Compliance",
+      "description": "Compliance score at 81.7% needs improvement",
+      "action": "Address compliance gaps identified in assessment",
+      "effort": "medium",
+      "timeline": "4-8 weeks"
+    },
+    {
+      "priority": "medium",
+      "category": "authentication",
+      "title": "Enhance Authentication Security",
+      "description": "Authentication security score at 85.5%",
+      "action": "Strengthen authentication mechanisms and policies",
+      "effort": "medium",
+      "timeline": "2-3 weeks"
+    },
+    {
+      "priority": "low",
+      "category": "monitoring",
+      "title": "Enhance Security Monitoring",
+      "description": "Implement continuous security monitoring and alerting",
+      "action": "Deploy SIEM solution and security monitoring tools",
+      "effort": "high",
+      "timeline": "6-12 weeks"
+    }
+  ],
+  "authentication_security": {
+    "security_score": 85.5,
+    "controls_implemented": 6,
+    "total_controls": 6,
+    "control_details": {
+      "password_policy": {
+        "implemented": true,
+        "strength": "strong"
+      },
+      "multi_factor_authentication": {
+        "implemented": true,
+        "coverage": 85.0
+      },
+      "session_management": {
+        "implemented": true,
+        "security_score": 78.0
+      },
+      "password_hashing": {
+        "implemented": true,
+        "algorithm": "bcrypt",
+        "rounds": 12
+      },
+      "account_lockout": {
+        "implemented": true,
+        "threshold": 5,
+        "duration": 30
+      },
+      "oauth_implementation": {
+        "implemented": true,
+        "version": "OAuth 2.0",
+        "security_score": 82.0
+      }
+    },
+    "identified_issues": [
+      "Session management could be strengthened",
+      "MFA coverage is incomplete"
+    ]
+  },
+  "data_protection": {
+    "protection_score": 87.5,
+    "controls_implemented": 7,
+    "total_controls": 8,
+    "control_details": {
+      "encryption_at_rest": {
+        "implemented": true,
+        "algorithm": "AES-256"
+      },
+      "encryption_in_transit": {
+        "implemented": true,
+        "protocol": "TLS 1.3"
+      },
+      "data_classification": {
+        "implemented": true,
+        "coverage": 78.0
+      },
+      "access_controls": {
+        "implemented": true,
+        "rbac": true,
+        "abac": false
+      },
+      "data_retention_policy": {
+        "implemented": true,
+        "automated": true
+      },
+      "backup_security": {
+        "implemented": true,
+        "encrypted": true,
+        "tested": true
+      },
+      "gdpr_compliance": {
+        "implemented": true,
+        "coverage": 82.0
+      },
+      "data_anonymization": {
+        "implemented": false,
+        "coverage": 0.0
+      }
+    },
+    "compliance_level": "adequate"
+  }
+}

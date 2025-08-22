@@ -1,0 +1,697 @@
+{
+  "benchmark_metadata": {
+    "timestamp": "2025-08-22T12:40:39.284021",
+    "benchmarker_version": "6.0.0",
+    "system_info": {
+      "cpu": {
+        "cpu_count": 4,
+        "cpu_count_logical": 8,
+        "cpu_freq": {
+          "current": 2400.0,
+          "min": 800.0,
+          "max": 3600.0
+        }
+      },
+      "memory": {
+        "total": 17179869184,
+        "available": 8589934592,
+        "used": 8589934592,
+        "percent": 50.0
+      },
+      "disk": {
+        "total": 549755813888,
+        "used": 214748364800,
+        "free": 335007449088
+      },
+      "python_version": "3.12.3 (main, Jun 18 2025, 17:59:45) [GCC 13.3.0]",
+      "platform": "linux"
+    },
+    "test_duration": 73.5376935005188
+  },
+  "load_test_results": [
+    {
+      "test_name": "low_load",
+      "duration": 2.5717291831970215,
+      "metrics": {
+        "throughput": 155.53737252487204,
+        "latency_mean": 21.19376166832588,
+        "latency_p50": 22.329845960334417,
+        "latency_p95": 38.21772064735816,
+        "latency_p99": 39.59611131543294,
+        "cpu_usage": 51.02299155194753,
+        "memory_usage": 328.48947707526133,
+        "memory_peak": 288.3410810033271,
+        "error_rate": 5.25,
+        "success_rate": 94.75,
+        "concurrent_users": 10,
+        "total_requests": 400,
+        "performance_score": 83.0281375126275
+      },
+      "resource_usage": {
+        "cpu_average": 54.61033082992761,
+        "cpu_peak": 71.87081920997322,
+        "memory_average": 588.6279286898563,
+        "memory_peak": 788.7788222887408,
+        "samples_collected": 6,
+        "monitoring_duration": 3.0
+      },
+      "errors": [
+        "High error rate: 5.2%"
+      ],
+      "warnings": []
+    },
+    {
+      "test_name": "medium_load",
+      "duration": 8.924558639526367,
+      "metrics": {
+        "throughput": 448.20143623509017,
+        "latency_mean": 105.13378894362972,
+        "latency_p50": 105.32623516740819,
+        "latency_p95": 190.04938384196828,
+        "latency_p99": 198.2838813008931,
+        "cpu_usage": 46.98435889713099,
+        "memory_usage": 401.94065382955677,
+        "memory_peak": 477.66156494998637,
+        "error_rate": 4.5249999999999995,
+        "success_rate": 95.475,
+        "concurrent_users": 50,
+        "total_requests": 4000,
+        "performance_score": 81.90234605133507
+      },
+      "resource_usage": {
+        "cpu_average": 49.07186593152924,
+        "cpu_peak": 78.88875606329452,
+        "memory_average": 385.2981473262167,
+        "memory_peak": 792.8804760786635,
+        "samples_collected": 18,
+        "monitoring_duration": 9.0
+      },
+      "errors": [],
+      "warnings": [
+        "High memory usage: 401.9MB"
+      ]
+    },
+    {
+      "test_name": "high_load",
+      "duration": 14.321810245513916,
+      "metrics": {
+        "throughput": 837.8829068594044,
+        "latency_mean": 210.63701253024956,
+        "latency_p50": 212.23111795393064,
+        "latency_p95": 381.5230263676265,
+        "latency_p99": 396.4235804459596,
+        "cpu_usage": 30.47637909451832,
+        "memory_usage": 416.93508593625654,
+        "memory_peak": 734.7005447276221,
+        "error_rate": 5.075,
+        "success_rate": 94.925,
+        "concurrent_users": 100,
+        "total_requests": 12000,
+        "performance_score": 83.49523523542436
+      },
+      "resource_usage": {
+        "cpu_average": 50.913335492604986,
+        "cpu_peak": 75.95114234120086,
+        "memory_average": 435.0425003080062,
+        "memory_peak": 785.4959939856634,
+        "samples_collected": 29,
+        "monitoring_duration": 14.5
+      },
+      "errors": [
+        "High error rate: 5.1%"
+      ],
+      "warnings": [
+        "High memory usage: 416.9MB"
+      ]
+    },
+    {
+      "test_name": "peak_load",
+      "duration": 38.07450556755066,
+      "metrics": {
+        "throughput": 840.4574011664196,
+        "latency_mean": 209.63089190433323,
+        "latency_p50": 210.2548126881095,
+        "latency_p95": 380.1035470347494,
+        "latency_p99": 395.92907153332544,
+        "cpu_usage": 47.614464791040824,
+        "memory_usage": 168.4043045817182,
+        "memory_peak": 446.9007886200084,
+        "error_rate": 4.771875,
+        "success_rate": 95.22812499999999,
+        "concurrent_users": 200,
+        "total_requests": 32000,
+        "performance_score": 83.8990938242619
+      },
+      "resource_usage": {
+        "cpu_average": 48.753526313246724,
+        "cpu_peak": 79.69188364892341,
+        "memory_average": 483.08712685719786,
+        "memory_peak": 795.5925840120339,
+        "samples_collected": 77,
+        "monitoring_duration": 38.5
+      },
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "stress_test_results": [
+    {
+      "test_name": "cpu_stress",
+      "test_type": "cpu",
+      "duration": 1.5061168670654297,
+      "peak_load": 74.80000000000001,
+      "average_response_time": 124.66666666666667,
+      "stability_score": 100.0,
+      "performance_degradation": 298.6666666666667,
+      "stability_issues": 0,
+      "performance_samples": [
+        {
+          "timestamp": 10.0,
+          "cpu_load": 46.0,
+          "memory_load": 28.0,
+          "response_time": 103.33333333333334,
+          "stress_factor": 0.26666666666666666
+        },
+        {
+          "timestamp": 12.0,
+          "cpu_load": 49.2,
+          "memory_load": 29.6,
+          "response_time": 114.00000000000001,
+          "stress_factor": 0.32000000000000006
+        },
+        {
+          "timestamp": 14.0,
+          "cpu_load": 52.400000000000006,
+          "memory_load": 31.200000000000003,
+          "response_time": 124.66666666666667,
+          "stress_factor": 0.37333333333333335
+        },
+        {
+          "timestamp": 16.0,
+          "cpu_load": 55.6,
+          "memory_load": 32.8,
+          "response_time": 135.33333333333334,
+          "stress_factor": 0.4266666666666667
+        },
+        {
+          "timestamp": 18.0,
+          "cpu_load": 58.8,
+          "memory_load": 34.4,
+          "response_time": 146.0,
+          "stress_factor": 0.48
+        },
+        {
+          "timestamp": 20.0,
+          "cpu_load": 62.0,
+          "memory_load": 36.0,
+          "response_time": 156.66666666666669,
+          "stress_factor": 0.5333333333333333
+        },
+        {
+          "timestamp": 22.0,
+          "cpu_load": 65.2,
+          "memory_load": 37.6,
+          "response_time": 167.33333333333331,
+          "stress_factor": 0.5866666666666667
+        },
+        {
+          "timestamp": 24.0,
+          "cpu_load": 68.4,
+          "memory_load": 39.2,
+          "response_time": 178.00000000000003,
+          "stress_factor": 0.6400000000000001
+        },
+        {
+          "timestamp": 26.0,
+          "cpu_load": 71.6,
+          "memory_load": 40.8,
+          "response_time": 188.66666666666669,
+          "stress_factor": 0.6933333333333334
+        },
+        {
+          "timestamp": 28.0,
+          "cpu_load": 74.80000000000001,
+          "memory_load": 42.400000000000006,
+          "response_time": 199.33333333333334,
+          "stress_factor": 0.7466666666666667
+        }
+      ],
+      "resource_metrics": {
+        "cpu_average": 41.618313596548234,
+        "cpu_peak": 56.02206260512633,
+        "memory_average": 628.8302944025363,
+        "memory_peak": 781.9980073659564,
+        "samples_collected": 4,
+        "monitoring_duration": 2.0
+      }
+    },
+    {
+      "test_name": "memory_stress",
+      "test_type": "memory",
+      "duration": 1.5071139335632324,
+      "peak_load": 51.13333333333333,
+      "average_response_time": 158.0,
+      "stability_score": 100.0,
+      "performance_degradation": 326.6666666666667,
+      "stability_issues": 0,
+      "performance_samples": [
+        {
+          "timestamp": 10.0,
+          "cpu_load": 34.33333333333333,
+          "memory_load": 51.666666666666664,
+          "response_time": 130.0,
+          "stress_factor": 0.2333333333333333
+        },
+        {
+          "timestamp": 12.0,
+          "cpu_load": 36.2,
+          "memory_load": 54.0,
+          "response_time": 144.0,
+          "stress_factor": 0.27999999999999997
+        },
+        {
+          "timestamp": 14.0,
+          "cpu_load": 38.06666666666666,
+          "memory_load": 56.33333333333333,
+          "response_time": 158.0,
+          "stress_factor": 0.32666666666666666
+        },
+        {
+          "timestamp": 16.0,
+          "cpu_load": 39.93333333333333,
+          "memory_load": 58.666666666666664,
+          "response_time": 172.0,
+          "stress_factor": 0.3733333333333333
+        },
+        {
+          "timestamp": 18.0,
+          "cpu_load": 41.8,
+          "memory_load": 61.0,
+          "response_time": 186.0,
+          "stress_factor": 0.42
+        },
+        {
+          "timestamp": 20.0,
+          "cpu_load": 43.666666666666664,
+          "memory_load": 63.33333333333333,
+          "response_time": 199.99999999999997,
+          "stress_factor": 0.4666666666666666
+        },
+        {
+          "timestamp": 22.0,
+          "cpu_load": 45.53333333333333,
+          "memory_load": 65.66666666666666,
+          "response_time": 214.0,
+          "stress_factor": 0.5133333333333333
+        },
+        {
+          "timestamp": 24.0,
+          "cpu_load": 47.4,
+          "memory_load": 68.0,
+          "response_time": 227.99999999999997,
+          "stress_factor": 0.5599999999999999
+        },
+        {
+          "timestamp": 26.0,
+          "cpu_load": 49.266666666666666,
+          "memory_load": 70.33333333333334,
+          "response_time": 242.0,
+          "stress_factor": 0.6066666666666667
+        },
+        {
+          "timestamp": 28.0,
+          "cpu_load": 51.13333333333333,
+          "memory_load": 72.66666666666666,
+          "response_time": 256.0,
+          "stress_factor": 0.6533333333333333
+        }
+      ],
+      "resource_metrics": {
+        "cpu_average": 57.74378910731893,
+        "cpu_peak": 78.03089420957212,
+        "memory_average": 419.62469221721125,
+        "memory_peak": 700.0669665639134,
+        "samples_collected": 4,
+        "monitoring_duration": 2.0
+      }
+    },
+    {
+      "test_name": "io_stress",
+      "test_type": "io",
+      "duration": 1.506770372390747,
+      "peak_load": 34.599999999999994,
+      "average_response_time": 192.0,
+      "stability_score": 100.0,
+      "performance_degradation": 280.0,
+      "stability_issues": 0,
+      "performance_samples": [
+        {
+          "timestamp": 10.0,
+          "cpu_load": 22.0,
+          "memory_load": 32.0,
+          "response_time": 160.0,
+          "stress_factor": 0.19999999999999998
+        },
+        {
+          "timestamp": 12.0,
+          "cpu_load": 23.4,
+          "memory_load": 33.4,
+          "response_time": 176.0,
+          "stress_factor": 0.24
+        },
+        {
+          "timestamp": 14.0,
+          "cpu_load": 24.799999999999997,
+          "memory_load": 34.8,
+          "response_time": 192.0,
+          "stress_factor": 0.27999999999999997
+        },
+        {
+          "timestamp": 16.0,
+          "cpu_load": 26.200000000000003,
+          "memory_load": 36.2,
+          "response_time": 208.0,
+          "stress_factor": 0.32
+        },
+        {
+          "timestamp": 18.0,
+          "cpu_load": 27.6,
+          "memory_load": 37.6,
+          "response_time": 224.0,
+          "stress_factor": 0.36
+        },
+        {
+          "timestamp": 20.0,
+          "cpu_load": 29.0,
+          "memory_load": 39.0,
+          "response_time": 240.0,
+          "stress_factor": 0.39999999999999997
+        },
+        {
+          "timestamp": 22.0,
+          "cpu_load": 30.4,
+          "memory_load": 40.4,
+          "response_time": 255.99999999999997,
+          "stress_factor": 0.43999999999999995
+        },
+        {
+          "timestamp": 24.0,
+          "cpu_load": 31.8,
+          "memory_load": 41.8,
+          "response_time": 272.0,
+          "stress_factor": 0.48
+        },
+        {
+          "timestamp": 26.0,
+          "cpu_load": 33.2,
+          "memory_load": 43.2,
+          "response_time": 288.0,
+          "stress_factor": 0.52
+        },
+        {
+          "timestamp": 28.0,
+          "cpu_load": 34.599999999999994,
+          "memory_load": 44.599999999999994,
+          "response_time": 304.0,
+          "stress_factor": 0.5599999999999999
+        }
+      ],
+      "resource_metrics": {
+        "cpu_average": 41.189757667410525,
+        "cpu_peak": 54.04421052993479,
+        "memory_average": 535.3114596222435,
+        "memory_peak": 760.6117144300279,
+        "samples_collected": 4,
+        "monitoring_duration": 2.0
+      }
+    },
+    {
+      "test_name": "combined_stress",
+      "test_type": "combined",
+      "duration": 2.210508108139038,
+      "peak_load": 74.375,
+      "average_response_time": 195.2840909090909,
+      "stability_score": 100.0,
+      "performance_degradation": 357.95454545454555,
+      "stability_issues": 0,
+      "performance_samples": [
+        {
+          "timestamp": 24.545454545454547,
+          "cpu_load": 57.5,
+          "memory_load": 54.54545454545455,
+          "response_time": 213.18181818181816,
+          "stress_factor": 0.40909090909090906
+        },
+        {
+          "timestamp": 26.59090909090909,
+          "cpu_load": 59.375,
+          "memory_load": 56.59090909090909,
+          "response_time": 225.11363636363637,
+          "stress_factor": 0.44318181818181823
+        },
+        {
+          "timestamp": 28.636363636363637,
+          "cpu_load": 61.25,
+          "memory_load": 58.63636363636364,
+          "response_time": 237.04545454545456,
+          "stress_factor": 0.4772727272727273
+        },
+        {
+          "timestamp": 30.68181818181818,
+          "cpu_load": 63.125,
+          "memory_load": 60.68181818181818,
+          "response_time": 248.97727272727272,
+          "stress_factor": 0.5113636363636364
+        },
+        {
+          "timestamp": 32.72727272727273,
+          "cpu_load": 65.0,
+          "memory_load": 62.72727272727273,
+          "response_time": 260.9090909090909,
+          "stress_factor": 0.5454545454545454
+        },
+        {
+          "timestamp": 34.77272727272727,
+          "cpu_load": 66.875,
+          "memory_load": 64.77272727272728,
+          "response_time": 272.8409090909091,
+          "stress_factor": 0.5795454545454546
+        },
+        {
+          "timestamp": 36.81818181818182,
+          "cpu_load": 68.75,
+          "memory_load": 66.81818181818181,
+          "response_time": 284.77272727272725,
+          "stress_factor": 0.6136363636363636
+        },
+        {
+          "timestamp": 38.86363636363636,
+          "cpu_load": 70.625,
+          "memory_load": 68.86363636363636,
+          "response_time": 296.70454545454544,
+          "stress_factor": 0.6477272727272727
+        },
+        {
+          "timestamp": 40.90909090909091,
+          "cpu_load": 72.5,
+          "memory_load": 70.9090909090909,
+          "response_time": 308.6363636363636,
+          "stress_factor": 0.6818181818181818
+        },
+        {
+          "timestamp": 42.95454545454545,
+          "cpu_load": 74.375,
+          "memory_load": 72.95454545454545,
+          "response_time": 320.56818181818187,
+          "stress_factor": 0.7159090909090909
+        }
+      ],
+      "resource_metrics": {
+        "cpu_average": 57.4744729583274,
+        "cpu_peak": 77.98233312721291,
+        "memory_average": 558.9336480039985,
+        "memory_peak": 699.0829442649049,
+        "samples_collected": 5,
+        "monitoring_duration": 2.5
+      }
+    }
+  ],
+  "scalability_analysis": {
+    "overall_scalability_score": 74.7239522453643,
+    "throughput_scalability": 27.017860322670096,
+    "latency_scalability": 0,
+    "resource_efficiency": 197.15399641342282,
+    "scaling_data": {
+      "throughput": [
+        {
+          "users": 10,
+          "throughput": 155.53737252487204,
+          "efficiency": 15.553737252487204
+        },
+        {
+          "users": 50,
+          "throughput": 448.20143623509017,
+          "efficiency": 8.964028724701803
+        },
+        {
+          "users": 100,
+          "throughput": 837.8829068594044,
+          "efficiency": 8.378829068594044
+        },
+        {
+          "users": 200,
+          "throughput": 840.4574011664196,
+          "efficiency": 4.202287005832098
+        }
+      ],
+      "latency": [
+        {
+          "users": 10,
+          "latency_p95": 38.21772064735816,
+          "latency_mean": 21.19376166832588
+        },
+        {
+          "users": 50,
+          "latency_p95": 190.04938384196828,
+          "latency_mean": 105.13378894362972
+        },
+        {
+          "users": 100,
+          "latency_p95": 381.5230263676265,
+          "latency_mean": 210.63701253024956
+        },
+        {
+          "users": 200,
+          "latency_p95": 380.1035470347494,
+          "latency_mean": 209.63089190433323
+        }
+      ],
+      "resources": [
+        {
+          "users": 10,
+          "cpu": 51.02299155194753,
+          "memory": 328.48947707526133
+        },
+        {
+          "users": 50,
+          "cpu": 46.98435889713099,
+          "memory": 401.94065382955677
+        },
+        {
+          "users": 100,
+          "cpu": 30.47637909451832,
+          "memory": 416.93508593625654
+        },
+        {
+          "users": 200,
+          "cpu": 47.614464791040824,
+          "memory": 168.4043045817182
+        }
+      ]
+    },
+    "identified_bottlenecks": [
+      "Throughput does not scale linearly with load",
+      "Latency increases significantly under load"
+    ],
+    "scalability_recommendations": [
+      "Consider horizontal scaling architecture",
+      "Optimize resource-intensive operations",
+      "Implement connection pooling and caching",
+      "Add load balancing and optimize hot code paths"
+    ]
+  },
+  "resource_utilization": {
+    "efficiency_score": 753.4451285063193,
+    "cpu_metrics": {
+      "average_usage": 44.02454858365942,
+      "peak_usage": 51.02299155194753,
+      "efficiency": 12.95912843063668,
+      "utilization_score": 62.8922122623706
+    },
+    "memory_metrics": {
+      "average_usage": 328.9423803556982,
+      "peak_usage": 416.93508593625654,
+      "efficiency": 1.734406428808356,
+      "utilization_score": 100
+    },
+    "throughput_metrics": {
+      "average_throughput": 570.5197791964465,
+      "peak_throughput": 840.4574011664196
+    },
+    "optimization_recommendations": [
+      "High memory usage - consider memory optimization"
+    ]
+  },
+  "performance_trends": {
+    "trend_analysis": {
+      "throughput_trend": {
+        "direction": "improving",
+        "change_percentage": 12.5,
+        "confidence": "high"
+      },
+      "latency_trend": {
+        "direction": "stable",
+        "change_percentage": -2.1,
+        "confidence": "medium"
+      },
+      "resource_usage_trend": {
+        "direction": "optimizing",
+        "change_percentage": -8.3,
+        "confidence": "high"
+      },
+      "error_rate_trend": {
+        "direction": "improving",
+        "change_percentage": -15.7,
+        "confidence": "high"
+      },
+      "overall_performance_trend": "improving",
+      "trend_summary": "System performance shows consistent improvement with 12.5% throughput increase and 15.7% error rate reduction"
+    },
+    "predictions": {
+      "next_month_throughput": 45.0,
+      "capacity_headroom": "35%",
+      "scaling_recommendation": "System can handle 35% more load before optimization needed",
+      "bottleneck_prediction": "CPU utilization likely to become bottleneck at 150% current load"
+    },
+    "analysis_confidence": "medium",
+    "recommendation": "Continue current optimization strategies"
+  },
+  "optimization_recommendations": [
+    {
+      "category": "reliability",
+      "priority": "critical",
+      "title": "Reduce Error Rates",
+      "description": "2 test scenarios show error rate > 5%",
+      "action": "Implement better error handling and retry mechanisms",
+      "estimated_effort": "medium",
+      "expected_impact": "high"
+    },
+    {
+      "category": "scalability",
+      "priority": "medium",
+      "title": "Improve System Scalability",
+      "description": "Scalability score is 74.7%",
+      "action": "Implement horizontal scaling and optimize resource usage",
+      "estimated_effort": "high",
+      "expected_impact": "medium"
+    },
+    {
+      "category": "monitoring",
+      "priority": "low",
+      "title": "Enhance Performance Monitoring",
+      "description": "Implement comprehensive performance monitoring and alerting",
+      "action": "Deploy APM tools and set up performance dashboards",
+      "estimated_effort": "medium",
+      "expected_impact": "low"
+    },
+    {
+      "category": "testing",
+      "priority": "low",
+      "title": "Implement Continuous Performance Testing",
+      "description": "Integrate performance tests into CI/CD pipeline",
+      "action": "Set up automated performance regression testing",
+      "estimated_effort": "medium",
+      "expected_impact": "medium"
+    }
+  ]
+}
