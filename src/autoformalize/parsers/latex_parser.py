@@ -102,6 +102,10 @@ class LaTeXParser:
         
         # Compile regex patterns for efficiency
         self._compile_patterns()
+    
+    def _create_empty_content(self) -> ParsedContent:
+        """Create an empty ParsedContent object."""
+        return ParsedContent()
         
     def _compile_patterns(self) -> None:
         """Compile regex patterns for parsing."""
