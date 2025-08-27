@@ -1,0 +1,175 @@
+{
+  "timestamp": 1756308166.5942285,
+  "overall_status": "FAILED",
+  "generation_1": {
+    "status": "PASSED",
+    "tests": {
+      "pipeline_init": {
+        "status": "PASSED",
+        "message": "Pipeline initialized successfully"
+      },
+      "configuration": {
+        "status": "PASSED",
+        "message": "Configuration system operational"
+      },
+      "metrics": {
+        "status": "PASSED",
+        "message": "Metrics collection working"
+      },
+      "target_systems": {
+        "status": "PASSED",
+        "message": "All target systems available"
+      }
+    }
+  },
+  "generation_2": {
+    "status": "PASSED",
+    "tests": {
+      "robust_pipeline_init": {
+        "status": "PASSED",
+        "message": "Robust pipeline initialized"
+      },
+      "input_validation": {
+        "status": "PASSED",
+        "message": "Input validation working"
+      },
+      "error_handling": {
+        "status": "PASSED",
+        "message": "Error handling working"
+      },
+      "health_monitoring": {
+        "status": "PASSED",
+        "message": "Health monitoring active"
+      },
+      "correlation_tracking": {
+        "status": "PASSED",
+        "message": "Correlation tracking working"
+      }
+    }
+  },
+  "generation_3": {
+    "status": "PASSED",
+    "tests": {
+      "optimized_pipeline_init": {
+        "status": "PASSED",
+        "message": "Optimized pipeline initialized"
+      },
+      "intelligent_caching": {
+        "status": "PASSED",
+        "message": "Cache working - speedup: 1.7x"
+      },
+      "batch_processing": {
+        "status": "PASSED",
+        "message": "Batch processing: 5/5 successful"
+      },
+      "optimization_stats": {
+        "status": "PASSED",
+        "message": "Optimization statistics working"
+      },
+      "performance_analysis": {
+        "status": "PASSED",
+        "message": "Performance analysis: 1 suggestions"
+      }
+    }
+  },
+  "research_analysis": {
+    "status": "PASSED",
+    "tests": {
+      "research_files": {
+        "status": "PASSED",
+        "message": "6/6 research files found"
+      },
+      "result_files": {
+        "status": "PASSED",
+        "message": "21 result files found"
+      },
+      "cache_system": {
+        "status": "PASSED",
+        "message": "Cache system active with 18 cache files"
+      }
+    }
+  },
+  "security_scan": {
+    "status": "PASSED",
+    "tests": {
+      "no_hardcoded_secrets": {
+        "status": "PASSED",
+        "message": "Security check no_hardcoded_secrets: PASSED"
+      },
+      "input_validation": {
+        "status": "PASSED",
+        "message": "Security check input_validation: PASSED"
+      },
+      "error_handling": {
+        "status": "PASSED",
+        "message": "Security check error_handling: PASSED"
+      },
+      "logging_security": {
+        "status": "PASSED",
+        "message": "Security check logging_security: PASSED"
+      },
+      "dependency_security": {
+        "status": "PASSED",
+        "message": "Security check dependency_security: PASSED"
+      }
+    }
+  },
+  "performance_benchmark": {
+    "status": "FAILED",
+    "tests": {
+      "single_request": {
+        "status": "PASSED",
+        "message": "Single request: 0.001s"
+      },
+      "batch_processing": {
+        "status": "PASSED",
+        "message": "Batch processing (10 items): 0.003s, 0.000s per item"
+      }
+    },
+    "error": "No module named 'psutil'"
+  },
+  "integration_tests": {
+    "status": "PASSED",
+    "tests": {
+      "pipeline_integration": {
+        "status": "PASSED",
+        "message": "All pipelines working: basic=True, robust=True, optimized=True"
+      },
+      "cross_system_compatibility": {
+        "status": "PASSED",
+        "message": "3/3 target systems compatible"
+      }
+    }
+  },
+  "compliance_checks": {
+    "status": "PASSED",
+    "tests": {
+      "data_privacy": {
+        "status": "PASSED",
+        "message": "Compliance check data_privacy: PASSED"
+      },
+      "error_logging": {
+        "status": "PASSED",
+        "message": "Compliance check error_logging: PASSED"
+      },
+      "audit_trails": {
+        "status": "PASSED",
+        "message": "Compliance check audit_trails: PASSED"
+      },
+      "performance_monitoring": {
+        "status": "PASSED",
+        "message": "Compliance check performance_monitoring: PASSED"
+      },
+      "documentation": {
+        "status": "PASSED",
+        "message": "Compliance check documentation: PASSED"
+      }
+    }
+  },
+  "summary": {
+    "total_categories": 8,
+    "passed": 7,
+    "failed": 1,
+    "warnings": 0
+  }
+}

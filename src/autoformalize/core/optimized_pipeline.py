@@ -1,538 +1,370 @@
-"""Optimized and scalable formalization pipeline.
-
-This module extends the robust pipeline with performance optimizations,
-intelligent caching, parallel processing, and scalability enhancements.
-"""
+"""Optimized formalization pipeline with performance enhancements."""
 
 import asyncio
-import hashlib
 import time
-from pathlib import Path
-from typing import Dict, List, Optional, Union, Any, Tuple
+import hashlib
+from typing import Dict, List, Optional, Any, Set, Callable, Tuple
 from dataclasses import dataclass, field
-from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
-import multiprocessing
-import json
+from pathlib import Path
+from contextlib import asynccontextmanager
+from concurrent.futures import ThreadPoolExecutor
+import threading
+from collections import defaultdict, deque
 
 from .robust_pipeline import RobustFormalizationPipeline, RobustFormalizationResult
+from .pipeline import TargetSystem, FormalizationResult
 from .config import FormalizationConfig
-from .exceptions import FormalizationError
-from ..utils.caching import CacheManager, CacheStrategy
-from ..utils.concurrency import AsyncBatch, ResourcePool
+from .exceptions import FormalizationError, TimeoutError
 from ..utils.logging_config import setup_logger
 from ..utils.metrics import FormalizationMetrics
-from ..utils.resilience import resource_monitor
 
 
 @dataclass
-class OptimizedFormalizationResult(RobustFormalizationResult):
-    """Extended result with optimization metrics."""
-    cache_hit: bool = False
-    cache_key: Optional[str] = None
-    parallel_processing_time: float = 0.0
-    memory_peak_mb: float = 0.0
-    cpu_usage_percent: float = 0.0
-    optimization_stats: Dict[str, Any] = field(default_factory=dict)
-
-
-class OptimizedFormalizationPipeline(RobustFormalizationPipeline):
-    """High-performance, scalable formalization pipeline.
+class CacheEntry:
+    """Cache entry for memoized formalization results."""
+    result: FormalizationResult
+    timestamp: float
+    access_count: int = 0
+    last_accessed: float = field(default_factory=time.time)
+    content_hash: str = ""
+    size_bytes: int = 0
     
-    This pipeline adds the following optimizations:
-    - Intelligent multi-level caching (memory, disk, distributed)
-    - Adaptive parallel processing with work stealing
-    - Resource-aware batching and load balancing
-    - Performance monitoring and auto-tuning
-    - Memory-efficient streaming for large datasets
-    - Predictive pre-computation and warming
-    - Advanced metrics and telemetry
-    """
+    def update_access(self) -> None:
+        """Update access statistics."""
+        self.access_count += 1
+        self.last_accessed = time.time()
+
+
+@dataclass
+class OptimizationSettings:
+    """Settings for performance optimization."""
+    enable_caching: bool = True
+    cache_max_size: int = 1000
+    cache_ttl: float = 3600.0  # 1 hour
+    enable_parallel_processing: bool = True
+    max_concurrent_requests: int = 10
+    batch_processing_enabled: bool = True
+    max_batch_size: int = 50
+
+
+class IntelligentCache:
+    """High-performance intelligent cache with LRU and TTL eviction."""
+    
+    def __init__(self, max_size: int = 1000, ttl: float = 3600.0):
+        self.max_size = max_size
+        self.ttl = ttl
+        self._cache: Dict[str, CacheEntry] = {}
+        self._access_order = deque()  # LRU tracking
+        self._lock = threading.RLock()
+        self.stats = {
+            'hits': 0,
+            'misses': 0,
+            'evictions': 0,
+            'size_bytes': 0
+        }
+    
+    def _make_key(self, content: str, target_system: str, **kwargs) -> str:
+        """Create cache key from content and parameters."""
+        key_data = f"{content}:{target_system}:{sorted(kwargs.items())}"
+        return hashlib.sha256(key_data.encode()).hexdigest()
+    
+    def _evict_expired(self) -> None:
+        """Remove expired entries."""
+        current_time = time.time()
+        expired_keys = [
+            key for key, entry in self._cache.items()
+            if current_time - entry.timestamp > self.ttl
+        ]
+        
+        for key in expired_keys:
+            self._remove_entry(key)
+            self.stats['evictions'] += 1
+    
+    def _evict_lru(self) -> None:
+        """Remove least recently used entries to maintain size limit."""
+        while len(self._cache) >= self.max_size and self._access_order:
+            lru_key = self._access_order.popleft()
+            if lru_key in self._cache:  # Key might have been removed already
+                self._remove_entry(lru_key)
+                self.stats['evictions'] += 1
+    
+    def _remove_entry(self, key: str) -> None:
+        """Remove cache entry and update stats."""
+        if key in self._cache:
+            entry = self._cache.pop(key)
+            self.stats['size_bytes'] -= entry.size_bytes
+            try:
+                self._access_order.remove(key)
+            except ValueError:
+                pass  # Already removed
+    
+    def get(self, content: str, target_system: str, **kwargs) -> Optional[FormalizationResult]:
+        """Get cached result if available."""
+        with self._lock:
+            self._evict_expired()
+            
+            key = self._make_key(content, target_system, **kwargs)
+            entry = self._cache.get(key)
+            
+            if entry:
+                entry.update_access()
+                # Move to end of access order (most recently used)
+                try:
+                    self._access_order.remove(key)
+                except ValueError:
+                    pass
+                self._access_order.append(key)
+                
+                self.stats['hits'] += 1
+                return entry.result
+            
+            self.stats['misses'] += 1
+            return None
+    
+    def put(self, content: str, target_system: str, result: FormalizationResult, **kwargs) -> None:
+        """Store result in cache."""
+        with self._lock:
+            key = self._make_key(content, target_system, **kwargs)
+            
+            # Estimate size
+            size_bytes = len(content) + len(str(result.formal_code or ""))
+            
+            # Create cache entry
+            entry = CacheEntry(
+                result=result,
+                timestamp=time.time(),
+                content_hash=key,
+                size_bytes=size_bytes
+            )
+            
+            # Remove existing entry if present
+            if key in self._cache:
+                self._remove_entry(key)
+            
+            # Ensure we have space
+            self._evict_lru()
+            
+            # Add new entry
+            self._cache[key] = entry
+            self._access_order.append(key)
+            self.stats['size_bytes'] += size_bytes
+    
+    def get_stats(self) -> Dict[str, Any]:
+        """Get cache statistics."""
+        with self._lock:
+            hit_rate = self.stats['hits'] / max(1, self.stats['hits'] + self.stats['misses'])
+            return {
+                **self.stats,
+                'hit_rate': hit_rate,
+                'current_size': len(self._cache),
+                'max_size': self.max_size,
+                'fill_percentage': len(self._cache) / self.max_size * 100
+            }
+    
+    def clear(self) -> None:
+        """Clear all cached entries."""
+        with self._lock:
+            self._cache.clear()
+            self._access_order.clear()
+            self.stats = {'hits': 0, 'misses': 0, 'evictions': 0, 'size_bytes': 0}
+
+
+class OptimizedFormalizationPipeline:
+    """Highly optimized formalization pipeline with advanced performance features."""
     
     def __init__(
         self,
-        target_system: Union[str, "TargetSystem"] = "lean4",
-        model: str = "gpt-4",
+        target_system: TargetSystem,
         config: Optional[FormalizationConfig] = None,
-        api_key: Optional[str] = None,
-        enable_caching: bool = True,
-        cache_ttl: int = 3600,  # 1 hour
-        max_parallel_workers: int = None,
-        enable_predictive_caching: bool = True,
-        enable_streaming: bool = True,
-        memory_limit_mb: int = 2048
+        optimization_settings: Optional[OptimizationSettings] = None
     ):
-        super().__init__(target_system, model, config, api_key)
+        self.target_system = target_system
+        self.config = config or FormalizationConfig()
+        self.optimization_settings = optimization_settings or OptimizationSettings()
+        self.logger = setup_logger(__name__)
         
-        self.enable_caching = enable_caching
-        self.cache_ttl = cache_ttl
-        self.max_parallel_workers = max_parallel_workers or min(multiprocessing.cpu_count(), 8)
-        self.enable_predictive_caching = enable_predictive_caching
-        self.enable_streaming = enable_streaming
-        self.memory_limit_mb = memory_limit_mb
-        
-        self.logger = setup_logger(f"{__name__}.OptimizedPipeline")
-        self.optimization_metrics = FormalizationMetrics()
-        
-        self._setup_optimization_features()
-        
-    def _setup_optimization_features(self):
-        """Initialize optimization features."""
-        # Cache manager with multiple strategies
-        if self.enable_caching:
-            self.cache_manager = CacheManager(
-                strategies=[
-                    CacheStrategy.MEMORY,
-                    CacheStrategy.DISK,
-                ],
-                ttl=self.cache_ttl,
-                max_memory_size=256 * 1024 * 1024,  # 256MB
-                disk_cache_dir=Path("./cache/formalization")
-            )
-        
-        # Resource pool for managing computational resources
-        self.resource_pool = ResourcePool(
-            max_cpu_workers=self.max_parallel_workers,
-            max_memory_mb=self.memory_limit_mb,
-            enable_monitoring=True
+        # Initialize base pipeline
+        self.base_pipeline = RobustFormalizationPipeline(
+            target_system=target_system,
+            config=self.config
         )
         
-        # Async batch processor for efficient batching
-        self.batch_processor = AsyncBatch(
-            batch_size=10,
-            max_wait_time=5.0,
-            max_workers=self.max_parallel_workers
-        )
+        # Initialize optimization components
+        self._initialize_optimization_components()
         
         # Performance tracking
-        self.performance_stats = {
-            "cache_hits": 0,
-            "cache_misses": 0,
-            "total_processing_time": 0.0,
-            "parallel_speedup": 0.0,
-            "memory_efficiency": 0.0,
-        }
+        self._active_requests = set()
         
-        self.logger.info(
-            f"Optimization features initialized: "
-            f"caching={'enabled' if self.enable_caching else 'disabled'}, "
-            f"workers={self.max_parallel_workers}, "
-            f"memory_limit={self.memory_limit_mb}MB"
-        )
+        self.logger.info(f"Initialized optimized pipeline for {target_system.value}")
     
-    def _generate_cache_key(self, latex_content: str, config: Dict[str, Any]) -> str:
-        """Generate a unique cache key for content and configuration."""
-        content_hash = hashlib.sha256(latex_content.encode()).hexdigest()[:16]
-        config_hash = hashlib.sha256(json.dumps(config, sort_keys=True).encode()).hexdigest()[:8]
-        return f"{self.target_system.value}:{self.model}:{content_hash}:{config_hash}"
-    
-    async def _try_cache_lookup(
-        self, 
-        latex_content: str, 
-        config: Dict[str, Any]
-    ) -> Optional[OptimizedFormalizationResult]:
-        """Try to retrieve result from cache."""
-        if not self.enable_caching:
-            return None
+    def _initialize_optimization_components(self) -> None:
+        """Initialize optimization-specific components."""
         
-        cache_key = self._generate_cache_key(latex_content, config)
-        
-        try:
-            cached_result = await self.cache_manager.get(cache_key)
-            if cached_result:
-                self.performance_stats["cache_hits"] += 1
-                self.logger.debug(f"Cache hit for key {cache_key[:16]}...")
-                
-                # Convert to OptimizedFormalizationResult
-                result = OptimizedFormalizationResult(**cached_result)
-                result.cache_hit = True
-                result.cache_key = cache_key
-                return result
-                
-        except Exception as e:
-            self.logger.warning(f"Cache lookup failed: {e}")
-        
-        self.performance_stats["cache_misses"] += 1
-        return None
-    
-    async def _cache_result(
-        self, 
-        cache_key: str, 
-        result: OptimizedFormalizationResult
-    ) -> None:
-        """Store result in cache."""
-        if not self.enable_caching:
-            return
-        
-        try:
-            # Convert to dict for caching (remove non-serializable fields)
-            cache_data = {
-                "success": result.success,
-                "formal_code": result.formal_code,
-                "error_message": result.error_message,
-                "verification_status": result.verification_status,
-                "processing_time": result.processing_time,
-                "retry_count": result.retry_count,
-                "fallback_used": result.fallback_used,
-                "warnings": result.warnings,
-                "metrics": result.metrics,
-            }
-            
-            await self.cache_manager.set(cache_key, cache_data)
-            self.logger.debug(f"Cached result for key {cache_key[:16]}...")
-            
-        except Exception as e:
-            self.logger.warning(f"Failed to cache result: {e}")
-    
-    async def optimized_formalize(
-        self,
-        latex_content: str,
-        verify: bool = True,
-        timeout: int = 30,
-        enable_parallel: bool = True,
-        cache_strategy: str = "auto"
-    ) -> OptimizedFormalizationResult:
-        """Optimized formalization with caching and performance enhancements.
-        
-        Args:
-            latex_content: LaTeX source containing mathematical content
-            verify: Whether to verify the generated formal code
-            timeout: Timeout in seconds for verification
-            enable_parallel: Enable parallel processing where possible
-            cache_strategy: Caching strategy ("auto", "force", "bypass")
-            
-        Returns:
-            OptimizedFormalizationResult with performance metrics
-        """
-        start_time = time.time()
-        config = {
-            "verify": verify,
-            "timeout": timeout,
-            "target_system": self.target_system.value,
-        }
-        
-        # Try cache lookup first
-        cache_key = self._generate_cache_key(latex_content, config)
-        if cache_strategy != "bypass":
-            cached_result = await self._try_cache_lookup(latex_content, config)
-            if cached_result:
-                return cached_result
-        
-        # Monitor resource usage during processing
-        initial_resources = resource_monitor.check_resources()
-        
-        try:
-            # Use robust formalization as base
-            robust_result = await self.robust_formalize(
-                latex_content=latex_content,
-                verify=verify,
-                timeout=timeout,
-                enable_monitoring=True
-            )
-            
-            # Get final resource usage
-            final_resources = resource_monitor.check_resources()
-            memory_peak_mb = max(
-                initial_resources.get('memory_mb', 0),
-                final_resources.get('memory_mb', 0)
-            )
-            
-            # Create optimized result
-            processing_time = time.time() - start_time
-            optimized_result = OptimizedFormalizationResult(
-                success=robust_result.success,
-                formal_code=robust_result.formal_code,
-                error_message=robust_result.error_message,
-                verification_status=robust_result.verification_status,
-                metrics=robust_result.metrics,
-                processing_time=processing_time,
-                retry_count=robust_result.retry_count,
-                fallback_used=robust_result.fallback_used,
-                resource_usage=robust_result.resource_usage,
-                health_status=robust_result.health_status,
-                warnings=robust_result.warnings,
-                cache_hit=False,
-                cache_key=cache_key,
-                memory_peak_mb=memory_peak_mb,
-                optimization_stats={
-                    "cache_hits": self.performance_stats["cache_hits"],
-                    "cache_misses": self.performance_stats["cache_misses"],
-                    "worker_pool_size": self.max_parallel_workers,
-                    "memory_efficiency": memory_peak_mb / self.memory_limit_mb,
-                }
-            )
-            
-            # Cache successful results
-            if optimized_result.success and cache_strategy != "bypass":
-                await self._cache_result(cache_key, optimized_result)
-            
-            # Update performance tracking
-            self.performance_stats["total_processing_time"] += processing_time
-            
-            return optimized_result
-            
-        except Exception as e:
-            processing_time = time.time() - start_time
-            self.logger.error(f"Optimized formalization failed: {e}")
-            
-            return OptimizedFormalizationResult(
-                success=False,
-                error_message=str(e),
-                processing_time=processing_time,
-                cache_key=cache_key,
-                optimization_stats=self.performance_stats.copy()
-            )
-    
-    async def batch_formalize_optimized(
-        self,
-        input_files: List[Union[str, Path]],
-        output_dir: Optional[Union[str, Path]] = None,
-        parallel: int = None,
-        verify: bool = True,
-        chunk_size: int = 100,
-        enable_streaming: bool = None,
-        progress_callback: Optional[callable] = None
-    ) -> List[OptimizedFormalizationResult]:
-        """Highly optimized batch processing with streaming and parallelization.
-        
-        Args:
-            input_files: List of input LaTeX file paths
-            output_dir: Optional output directory
-            parallel: Number of parallel workers (None = auto-detect)
-            verify: Whether to verify generated code
-            chunk_size: Size of processing chunks for streaming
-            enable_streaming: Enable streaming processing for large datasets
-            progress_callback: Optional callback for progress updates
-            
-        Returns:
-            List of OptimizedFormalizationResult objects
-        """
-        actual_parallel = parallel or self.max_parallel_workers
-        enable_streaming = enable_streaming if enable_streaming is not None else self.enable_streaming
-        
-        if output_dir:
-            output_dir = Path(output_dir)
-            output_dir.mkdir(parents=True, exist_ok=True)
-        
-        self.logger.info(
-            f"Starting optimized batch processing: "
-            f"{len(input_files)} files, {actual_parallel} workers, "
-            f"streaming={'enabled' if enable_streaming else 'disabled'}"
-        )
-        
-        start_time = time.time()
-        
-        # Use streaming processing for large datasets
-        if enable_streaming and len(input_files) > chunk_size:
-            results = await self._stream_batch_process(
-                input_files, output_dir, actual_parallel, verify, 
-                chunk_size, progress_callback
+        # Intelligent caching
+        if self.optimization_settings.enable_caching:
+            self.cache = IntelligentCache(
+                max_size=self.optimization_settings.cache_max_size,
+                ttl=self.optimization_settings.cache_ttl
             )
         else:
-            results = await self._parallel_batch_process(
-                input_files, output_dir, actual_parallel, verify, progress_callback
+            self.cache = None
+        
+        # Thread pools for concurrent processing
+        if self.optimization_settings.enable_parallel_processing:
+            self.thread_pool = ThreadPoolExecutor(
+                max_workers=self.optimization_settings.max_concurrent_requests,
+                thread_name_prefix="formalization_"
             )
+        else:
+            self.thread_pool = None
+    
+    async def formalize_optimized(
+        self,
+        latex_content: str,
+        use_cache: bool = True,
+        **kwargs
+    ) -> RobustFormalizationResult:
+        """Optimized formalization with all performance enhancements."""
         
-        total_time = time.time() - start_time
-        successful = sum(1 for r in results if r.success)
-        cache_hits = sum(1 for r in results if r.cache_hit)
+        request_id = id(latex_content)
+        self._active_requests.add(request_id)
         
-        # Calculate performance metrics
-        sequential_time = sum(r.processing_time for r in results)
-        speedup = sequential_time / total_time if total_time > 0 else 1.0
+        try:
+            # Check cache first
+            if use_cache and self.cache:
+                cached_result = self.cache.get(latex_content, self.target_system.value, **kwargs)
+                if cached_result:
+                    self.logger.debug("Cache hit for formalization request")
+                    return RobustFormalizationResult(
+                        success=cached_result.success,
+                        formal_code=cached_result.formal_code,
+                        error_message=cached_result.error_message,
+                        verification_status=cached_result.verification_status,
+                        metrics=cached_result.metrics,
+                        correction_rounds=cached_result.correction_rounds,
+                        processing_time=0.001,  # Cache hit time
+                        warnings=["Result from cache"]
+                    )
+            
+            # Execute formalization
+            result = await self.base_pipeline.formalize_robust(
+                latex_content=latex_content,
+                **kwargs
+            )
+            
+            # Store in cache if successful
+            if use_cache and self.cache and result.success:
+                self.cache.put(latex_content, self.target_system.value, result, **kwargs)
+            
+            return result
+            
+        finally:
+            self._active_requests.discard(request_id)
+    
+    async def formalize_batch(
+        self,
+        latex_contents: List[str],
+        batch_size: Optional[int] = None,
+        **kwargs
+    ) -> List[RobustFormalizationResult]:
+        """Process multiple formalizations in optimized batches."""
         
-        self.performance_stats["parallel_speedup"] = speedup
+        if not self.optimization_settings.batch_processing_enabled:
+            # Process sequentially
+            results = []
+            for content in latex_contents:
+                result = await self.formalize_optimized(content, **kwargs)
+                results.append(result)
+            return results
         
-        self.logger.info(
-            f"Optimized batch processing completed: "
-            f"{successful}/{len(results)} successful, "
-            f"{cache_hits} cache hits, "
-            f"{speedup:.2f}x speedup, "
-            f"{total_time:.2f}s total"
-        )
+        batch_size = batch_size or self.optimization_settings.max_batch_size
+        results = []
+        
+        # Process in batches
+        for i in range(0, len(latex_contents), batch_size):
+            batch = latex_contents[i:i + batch_size]
+            
+            # Process batch concurrently
+            batch_tasks = [
+                self.formalize_optimized(content, **kwargs)
+                for content in batch
+            ]
+            
+            batch_results = await asyncio.gather(*batch_tasks, return_exceptions=True)
+            
+            # Handle exceptions in batch results
+            for result in batch_results:
+                if isinstance(result, Exception):
+                    results.append(RobustFormalizationResult(
+                        success=False,
+                        error_message=str(result),
+                        processing_time=0.0
+                    ))
+                else:
+                    results.append(result)
         
         return results
     
-    async def _stream_batch_process(
-        self,
-        input_files: List[Union[str, Path]],
-        output_dir: Optional[Path],
-        parallel: int,
-        verify: bool,
-        chunk_size: int,
-        progress_callback: Optional[callable]
-    ) -> List[OptimizedFormalizationResult]:
-        """Stream-based batch processing for memory efficiency."""
-        all_results = []
-        
-        # Process files in chunks to manage memory usage
-        for chunk_start in range(0, len(input_files), chunk_size):
-            chunk_files = input_files[chunk_start:chunk_start + chunk_size]
-            
-            self.logger.debug(f"Processing chunk {chunk_start//chunk_size + 1}: {len(chunk_files)} files")
-            
-            chunk_results = await self._parallel_batch_process(
-                chunk_files, output_dir, parallel, verify, None
-            )
-            
-            all_results.extend(chunk_results)
-            
-            # Progress callback
-            if progress_callback:
-                progress = len(all_results) / len(input_files)
-                await progress_callback(progress, len(all_results), len(input_files))
-            
-            # Garbage collection between chunks
-            import gc
-            gc.collect()
-        
-        return all_results
-    
-    async def _parallel_batch_process(
-        self,
-        input_files: List[Union[str, Path]],
-        output_dir: Optional[Path],
-        parallel: int,
-        verify: bool,
-        progress_callback: Optional[callable]
-    ) -> List[OptimizedFormalizationResult]:
-        """Parallel batch processing with resource management."""
-        semaphore = asyncio.Semaphore(parallel)
-        
-        async def process_single_file(input_path: Path) -> OptimizedFormalizationResult:
-            async with semaphore:
-                try:
-                    # Generate output path
-                    output_path = None
-                    if output_dir:
-                        if self.target_system.value == "lean4":
-                            output_path = output_dir / f"{input_path.stem}.lean"
-                        elif self.target_system.value == "isabelle":
-                            output_path = output_dir / f"{input_path.stem}.thy"
-                        elif self.target_system.value == "coq":
-                            output_path = output_dir / f"{input_path.stem}.v"
-                    
-                    # Read file content
-                    try:
-                        with open(input_path, 'r', encoding='utf-8') as f:
-                            latex_content = f.read()
-                    except Exception as e:
-                        return OptimizedFormalizationResult(
-                            success=False,
-                            error_message=f"Failed to read {input_path}: {e}",
-                            warnings=[f"File read error: {e}"]
-                        )
-                    
-                    # Process with optimization
-                    result = await self.optimized_formalize(
-                        latex_content=latex_content,
-                        verify=verify,
-                        enable_parallel=True,
-                        cache_strategy="auto"
-                    )
-                    
-                    # Write output if successful
-                    if result.success and result.formal_code and output_path:
-                        try:
-                            output_path.parent.mkdir(parents=True, exist_ok=True)
-                            with open(output_path, 'w', encoding='utf-8') as f:
-                                f.write(result.formal_code)
-                        except Exception as e:
-                            result.warnings.append(f"Failed to write output: {e}")
-                    
-                    return result
-                    
-                except Exception as e:
-                    return OptimizedFormalizationResult(
-                        success=False,
-                        error_message=str(e),
-                        warnings=[f"Processing error: {e}"]
-                    )
-        
-        # Process all files concurrently
-        tasks = [process_single_file(Path(f)) for f in input_files]
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-        
-        # Handle exceptions
-        final_results = []
-        for result in results:
-            if isinstance(result, Exception):
-                final_results.append(OptimizedFormalizationResult(
-                    success=False,
-                    error_message=str(result)
-                ))
-            else:
-                final_results.append(result)
-        
-        return final_results
-    
-    async def warm_cache(
-        self, 
-        warmup_files: List[Union[str, Path]],
-        background: bool = True
-    ) -> Dict[str, Any]:
-        """Warm up the cache with commonly used patterns."""
-        if not self.enable_caching or not self.enable_predictive_caching:
-            return {"status": "disabled"}
-        
-        self.logger.info(f"Warming cache with {len(warmup_files)} files")
-        
-        async def warm_single_file(file_path: Path):
-            try:
-                with open(file_path, 'r', encoding='utf-8') as f:
-                    content = f.read()
-                await self.optimized_formalize(content, cache_strategy="force")
-            except Exception as e:
-                self.logger.warning(f"Failed to warm cache for {file_path}: {e}")
-        
-        if background:
-            # Start warming in background
-            tasks = [warm_single_file(Path(f)) for f in warmup_files]
-            asyncio.create_task(asyncio.gather(*tasks, return_exceptions=True))
-            return {"status": "started_background", "files": len(warmup_files)}
-        else:
-            # Wait for completion
-            tasks = [warm_single_file(Path(f)) for f in warmup_files]
-            await asyncio.gather(*tasks, return_exceptions=True)
-            return {"status": "completed", "files": len(warmup_files)}
-    
-    def get_optimization_metrics(self) -> Dict[str, Any]:
-        """Get comprehensive optimization and performance metrics."""
-        base_metrics = self.get_robust_metrics()
-        
-        optimization_metrics = {
-            "caching": {
-                "enabled": self.enable_caching,
-                "cache_hits": self.performance_stats["cache_hits"],
-                "cache_misses": self.performance_stats["cache_misses"],
-                "hit_rate": (
-                    self.performance_stats["cache_hits"] / 
-                    max(self.performance_stats["cache_hits"] + self.performance_stats["cache_misses"], 1)
-                ),
-            },
-            "parallelization": {
-                "max_workers": self.max_parallel_workers,
-                "speedup": self.performance_stats["parallel_speedup"],
-                "memory_limit_mb": self.memory_limit_mb,
-            },
-            "resource_usage": {
-                "memory_efficiency": self.performance_stats["memory_efficiency"],
-                "total_processing_time": self.performance_stats["total_processing_time"],
-            },
-            "optimization_features": {
-                "streaming_enabled": self.enable_streaming,
-                "predictive_caching": self.enable_predictive_caching,
-                "resource_pooling": True,
+    def get_optimization_stats(self) -> Dict[str, Any]:
+        """Get comprehensive optimization statistics."""
+        stats = {
+            'target_system': self.target_system.value,
+            'active_requests': len(self._active_requests),
+            'optimization_settings': {
+                'caching_enabled': self.optimization_settings.enable_caching,
+                'parallel_processing_enabled': self.optimization_settings.enable_parallel_processing,
+                'max_concurrent_requests': self.optimization_settings.max_concurrent_requests,
+                'batch_processing_enabled': self.optimization_settings.batch_processing_enabled
             }
         }
         
-        return {**base_metrics, "optimization": optimization_metrics}
+        # Add cache statistics
+        if self.cache:
+            stats['cache'] = self.cache.get_stats()
+        
+        return stats
     
-    async def cleanup(self):
-        """Clean up optimization resources."""
-        if hasattr(self, 'cache_manager'):
-            await self.cache_manager.cleanup()
+    async def optimize_performance(self) -> Dict[str, Any]:
+        """Run performance optimization analysis and suggestions."""
+        stats = self.get_optimization_stats()
+        suggestions = []
         
-        if hasattr(self, 'resource_pool'):
-            await self.resource_pool.cleanup()
+        # Cache optimization suggestions
+        if self.cache:
+            cache_stats = stats.get('cache', {})
+            hit_rate = cache_stats.get('hit_rate', 0)
+            if hit_rate < 0.3:
+                suggestions.append("Low cache hit rate. Consider increasing cache size or TTL.")
+            elif hit_rate > 0.9 and cache_stats.get('fill_percentage', 0) < 50:
+                suggestions.append("Excellent cache hit rate but low utilization. Consider reducing cache size.")
         
-        self.logger.info("Optimization resources cleaned up")
+        return {
+            'current_stats': stats,
+            'optimization_suggestions': suggestions,
+            'timestamp': time.time()
+        }
+    
+    async def shutdown_gracefully(self) -> None:
+        """Gracefully shutdown the optimized pipeline."""
+        self.logger.info("Shutting down optimized pipeline")
+        
+        try:
+            # Wait for active requests to complete (with timeout)
+            timeout = 30.0
+            start_time = time.time()
+            
+            while self._active_requests and (time.time() - start_time) < timeout:
+                await asyncio.sleep(0.1)
+            
+            # Shutdown thread pools
+            if self.thread_pool:
+                self.thread_pool.shutdown(wait=True)
+            
+            # Clear cache
+            if self.cache:
+                self.cache.clear()
+            
+            self.logger.info("Optimized pipeline shutdown completed")
+            
+        except Exception as e:
+            self.logger.error(f"Error during optimized pipeline shutdown: {e}")

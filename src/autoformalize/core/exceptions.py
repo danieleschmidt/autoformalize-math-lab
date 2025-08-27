@@ -30,6 +30,16 @@ class UnsupportedSystemError(FormalizationError):
     pass
 
 
+class ModelError(FormalizationError):
+    """Raised when LLM model interaction fails."""
+    pass
+
+
+class ConfigurationError(FormalizationError):
+    """Raised when configuration is invalid or missing."""
+    pass
+
+
 class ValidationError(FormalizationError):
     """Raised when input validation fails."""
     pass
