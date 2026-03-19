@@ -1,457 +1,307 @@
 # autoformalize-math-lab
 
-> An LLM-driven auto-formalization workbench that converts LaTeX proofs into Lean4/Isabelle
+> **Auto-formalization:** translating informal mathematical proofs written in LaTeX into Lean4-style verified pseudocode using rule-based pattern matching.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Lean 4](https://img.shields.io/badge/Lean-4.0+-purple.svg)](https://leanprover.github.io/)
-[![CI Status](https://img.shields.io/badge/CI-ready-brightgreen.svg)](docs/SETUP_REQUIRED.md)
-[![SDLC](https://img.shields.io/badge/SDLC-Fully%20Implemented-success.svg)](docs/SETUP_REQUIRED.md)
-[![Security](https://img.shields.io/badge/Security-Scanned-blue.svg)](docs/workflows/examples/security-template.yml)
-[![Monitoring](https://img.shields.io/badge/Monitoring-Configured-orange.svg)](docs/monitoring/README.md)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## 📐 Overview
+---
 
-**autoformalize-math-lab** bridges the gap between informal mathematical writing and formal verification systems. Leveraging state-of-the-art LLMs and self-correcting prompt chains, it automatically translates LaTeX proofs into formally verified code for Lean 4, Isabelle/HOL, and Coq.
+## The Problem: The Formalization Gap
 
-## ✨ Key Features
+Mathematics has a dirty secret. The proofs in textbooks, papers, and PhD theses are written in a semi-formal mix of natural language and LaTeX notation. Mathematicians understand them through shared convention, intuition, and years of training. But computers don't.
 
-- **Multi-Format Parser**: Handles PDF, LaTeX, and arXiv papers
-- **Self-Correcting Pipeline**: Iterative refinement using proof assistant feedback
-- **Cross-System Support**: Targets Lean 4, Isabelle/HOL, Coq, and Agda
-- **Mathlib Integration**: Automatically aligns with standard mathematical libraries
-- **Success Tracking**: CI dashboard monitoring formalization success rates
+Formal proof assistants — **Lean4**, **Isabelle**, **Coq** — can verify proofs with mathematical certainty: every logical step is checked by a type checker with no room for hand-waving. The problem? Writing proofs in these systems takes roughly **10–100× longer** than writing them informally. A 2-page textbook proof can require 200+ lines of Lean4 code.
 
-## 🎯 Motivation
+This creates a massive bottleneck. The mathematical knowledge encoded in millions of academic papers is effectively **inaccessible to formal verification tools**. We can't run Lean4 on a PDF.
 
-The May 2025 survey on theorem auto-formalization highlighted critical gaps:
-- Only 3% of published mathematics is formally verified
-- Manual formalization takes 10-100x longer than proof writing
-- Lack of standardized benchmarks and evaluation metrics
+**Auto-formalization** is the research problem of bridging this gap: given informal math, produce verified formal code automatically.
 
-This project addresses these challenges with an industrial-strength pipeline.
+This is currently one of the hardest open problems in AI for mathematics. State-of-the-art LLMs (GPT-4, Gemini, Claude) can handle simple lemmas but fail on novel or complex proofs. The challenge sits at the intersection of:
 
-## 🚀 Quick Start
+- Natural language understanding (parsing mathematical prose)
+- Symbolic reasoning (understanding proof structure)
+- Type theory (generating well-typed Lean4 terms)
+- Automated theorem proving (verifying the result)
 
-### Installation
+Research venues targeting this: **ICML**, **NeurIPS**, **LICS**, **ITP**, **JAR**.
+
+---
+
+## What This Repo Does
+
+This lab demonstrates the **structural decomposition** approach to auto-formalization without relying on LLM API calls. It uses rule-based pattern matching to show the core pipeline concept clearly:
+
+```
+LaTeX proof text
+      ↓
+  LaTeXParser         ← tokenizer + recursive-descent parser
+      ↓
+  Abstract Syntax Tree (AST)
+      ↓
+  FormalConverter     ← AST → Lean4-style pseudocode
+      ↓
+  Lean4 pseudocode
+      ↓
+  ProofChecker        ← structural validation
+      ↓
+  Validation report
+```
+
+**No LLM, no external dependencies** — pure Python 3.10+ standard library.
+
+---
+
+## Architecture
+
+### `LaTeXParser`
+
+Tokenizes LaTeX math strings and parses them into an AST using a recursive-descent parser.
+
+Supports:
+| Construct | LaTeX | AST Node |
+|-----------|-------|----------|
+| Fractions | `\frac{a}{b}` | `FractionNode` |
+| Sums | `\sum_{i=0}^{n} f(i)` | `SumNode` |
+| Products | `\prod_{k=1}^{n} k` | `ProductNode` |
+| Integrals | `\int_{a}^{b} f(x)` | `IntegralNode` |
+| Universal | `\forall x \in S, P` | `QuantifierNode` |
+| Existential | `\exists x, P` | `QuantifierNode` |
+| Implication | `P \implies Q` | `LogicBinNode('→')` |
+| Iff | `P \iff Q` | `LogicBinNode('↔')` |
+| Conjunction | `A \land B` | `LogicBinNode('∧')` |
+| Disjunction | `A \lor B` | `LogicBinNode('∨')` |
+| Negation | `\neg P` | `NotNode` |
+| Set membership | `x \in S` | `SetMemberNode` |
+| Subset | `A \subseteq B` | `SubsetNode` |
+| Set union | `A \cup B` | `SetOpNode('∪')` |
+| Set intersection | `A \cap B` | `SetOpNode('∩')` |
+| Arithmetic | `+, -, *, /, ^` | `BinaryOpNode` |
+
+The `parse_proof` method additionally extracts proof structure from informal text by recognising sentence-level markers:
+- **Premises**: sentences starting with `Assume`, `Let`, `Suppose`, `Given`
+- **Steps**: sentences starting with `Then`, `Hence`, `Thus`, `So`, `We have`
+- **Conclusion**: sentences starting with `Therefore`, `Consequently`, `QED`, `□`
+
+### `FormalConverter`
+
+Converts AST nodes to Lean4-style pseudocode strings following Lean4 syntax conventions:
+
+- `∀ (x : α), P x` — universal quantification with type annotation
+- `∃ x, P x` — existential quantification
+- `∑ i in Finset.range (n), f i` — finite sums
+- `∏ i in Finset.range (n), f i` — finite products
+- `∫ x in a..b, f x` — integrals
+- `(p / q : ℚ)` — rational fractions with type coercion
+- `ℕ ℤ ℚ ℝ ℂ` — Unicode number system symbols
+
+Full proofs are rendered as:
+```lean4
+theorem <name> (h1 : <premise1>) (h2 : <premise2>) : <conclusion> := by
+  have step1 : <statement> := by  -- <justification>
+    exact?
+  ...
+  show <conclusion>
+  exact?
+```
+
+### `ProofChecker`
+
+Validates structural properties of a parsed proof:
+
+| Check | Description |
+|-------|-------------|
+| `has_premises` | At least one assumption/hypothesis extracted |
+| `has_conclusion` | A conclusion node was identified |
+| `has_steps` | Proof contains intermediate deductive steps |
+| `steps_non_trivial` | ≥50% of steps contain parsed math (not raw text) |
+| `conclusion_follows` | Conclusion is structurally consistent with the proof body |
+| `variable_scope` | Multi-character variables in conclusion are scoped by premises |
+
+---
+
+## Installation
 
 ```bash
-# Clone repository
-git clone https://github.com/yourusername/autoformalize-math-lab.git
+git clone https://github.com/danieleschmidt/autoformalize-math-lab
 cd autoformalize-math-lab
-
-# Install Python dependencies
-pip install -r requirements.txt
-
-# Install proof assistants (or use Docker)
-make install-provers  # Installs Lean 4, Isabelle, Coq
-
-# Or use pre-built Docker image
-docker pull autoformalize/math-lab:latest
+pip install -e .
 ```
 
-### Basic Usage
+No external dependencies. Requires Python 3.10+.
+
+---
+
+## Usage
+
+### Run the demo
+
+```bash
+python demo.py
+```
+
+This processes three classical theorems through the full pipeline:
+
+1. **Irrationality of √2** — proof by contradiction
+2. **Gauss sum formula** — proof by induction
+3. **De Morgan's Law for sets** — set theory proof
+
+### Use the library
 
 ```python
-from autoformalize import FormalizationPipeline
+from autoformalize_math import LaTeXParser, FormalConverter, ProofChecker
 
-# Initialize pipeline
-pipeline = FormalizationPipeline(
-    target_system="lean4",
-    model="gpt-4",
-    max_correction_rounds=5
-)
+parser = LaTeXParser()
+converter = FormalConverter()
+checker = ProofChecker()
 
-# Formalize a LaTeX proof
-latex_proof = r"""
-\begin{theorem}
-For any prime $p > 2$, we have $p \equiv 1 \pmod{2}$ or $p \equiv 3 \pmod{2}$.
-\end{theorem}
-\begin{proof}
-Since $p$ is odd and greater than 2, $p$ is not divisible by 2.
-By the division algorithm, $p = 2q + r$ where $r \in \{0, 1\}$.
-Since $p$ is odd, $r \neq 0$, thus $r = 1$ and $p = 2q + 1$.
-\end{proof}
+# Parse a single expression
+node = parser.parse_expression(r"\forall n \in \mathbb{N}, \sum_{i=0}^{n} i = \frac{n(n+1)}{2}")
+lean = converter.convert_expression(node)
+print(lean)
+# → ∀ (n : ℕ), ∑ i in Finset.range (n), i = (n(n + 1) / 2 : ℚ)
+
+# Parse a full proof
+proof_text = r"""
+Assume $p, q \in \mathbb{Z}$ and $\gcd(p, q) = 1$.
+Then $p^2 = 2q^2$.
+Hence $p$ is even.
+Therefore $\gcd(p, q) \geq 2$, a contradiction.
 """
+proof = parser.parse_proof("irrationality_sqrt2", proof_text)
+lean_code = converter.convert_proof(proof)
+report = checker.validate(proof)
 
-# Convert to Lean 4
-lean_code = pipeline.formalize(latex_proof)
 print(lean_code)
+print(report.summary())
 ```
 
-Output:
-```lean
-theorem odd_prime_mod_two (p : ℕ) (hp : Nat.Prime p) (hp_gt : p > 2) : 
-  p % 2 = 1 := by
-  have h_odd : Odd p := Nat.Prime.odd_of_ne_two hp (ne_of_gt hp_gt)
-  exact Nat.odd_iff_not_even.mp h_odd
-```
+---
 
-### CLI Interface
+## Tests
 
 ```bash
-# Formalize a single file
-autoformalize paper.tex --target lean4 --output proof.lean
-
-# Batch process arXiv papers
-autoformalize arxiv:2301.00001 --all-theorems
-
-# Run on directory with progress tracking
-autoformalize ./papers/ --target isabelle --parallel 4
+pip install pytest
+pytest tests/ -v
 ```
 
-## 🔧 Advanced Features
+64 tests covering:
+- All parser constructs (fractions, sums, products, integrals, logic, sets, arithmetic)
+- Proof-structure extraction
+- Expression-to-Lean4 conversion for all node types
+- All ProofChecker structural validations
+- End-to-end pipeline integration
 
-### Self-Correction Loop
+---
 
-```python
-from autoformalize import SelfCorrectingPipeline
+## Example Output
 
-pipeline = SelfCorrectingPipeline(
-    verifier_timeout=30,  # seconds per proof attempt
-    correction_prompts=[
-        "fix_syntax_errors.txt",
-        "resolve_type_mismatches.txt", 
-        "find_missing_imports.txt"
-    ]
-)
+**Input (informal LaTeX proof of √2 irrationality):**
 
-# The pipeline automatically:
-# 1. Generates initial formalization
-# 2. Runs proof assistant
-# 3. Parses error messages
-# 4. Generates corrections
-# 5. Repeats until success or max rounds
-
-result = pipeline.formalize_with_feedback(
-    latex_proof,
-    verbose=True  # Shows correction attempts
-)
+```latex
+Assume $\sqrt{2} = \frac{p}{q}$ where $p, q \in \mathbb{Z}$ and $\gcd(p, q) = 1$.
+Then $p^2 = 2 q^2$.
+Hence $p$ is even.
+Let $p = 2k$ for some integer $k$.
+Then $4k^2 = 2q^2$, so $q^2 = 2k^2$.
+Hence $q$ is even.
+Therefore $\gcd(p, q) \geq 2$, contradicting $\gcd(p, q) = 1$.
 ```
 
-### Multi-System Translation
+**Output (Lean4 pseudocode):**
 
-```python
-from autoformalize import CrossSystemTranslator
-
-translator = CrossSystemTranslator()
-
-# Start with Lean proof
-lean_proof = "theorem my_theorem : ∀ n : ℕ, n + 0 = n := ..."
-
-# Translate to other systems
-isabelle_proof = translator.lean_to_isabelle(lean_proof)
-coq_proof = translator.lean_to_coq(lean_proof)
-agda_proof = translator.lean_to_agda(lean_proof)
-
-# Verify all versions
-results = translator.verify_all({
-    "lean4": lean_proof,
-    "isabelle": isabelle_proof,
-    "coq": coq_proof,
-    "agda": agda_proof
-})
+```lean4
+theorem irrationality_sqrt2 (h1 : 2 ^ (1 / 2 : ℚ) = (p / q : ℚ)) (h2 : p = 2) : \gcd := by
+  have step1 : 2 = (p ^ 2 / q ^ 2 : ℚ) := by  -- deduction
+    exact?
+  have step2 : p ^ 2 := by  -- deduction
+    exact?
+  have step3 : 4 := by  -- deduction
+    exact?
+  have step4 : q ^ 2 := by  -- deduction
+    exact?
+  show \gcd
+  exact?
 ```
 
-### Mathlib Alignment
+**Validation report:**
+```
+Validation report for 'irrationality_sqrt2'
+  Result: VALID  (6/6 checks passed)
 
-```python
-from autoformalize import MathlibAligner
-
-aligner = MathlibAligner()
-
-# Automatically find relevant Mathlib theorems
-latex = "The sum of angles in a triangle equals π"
-suggestions = aligner.find_similar_theorems(latex)
-
-# Generate proof using Mathlib
-proof = aligner.generate_aligned_proof(
-    latex,
-    use_theorems=["Euclidean.angle_sum_triangle"]
-)
+  [✓] has_premises: 2 premise(s) found
+  [✓] has_conclusion: conclusion is SymbolNode
+  [✓] has_steps: 4 step(s) found
+  [✓] steps_non_trivial: 4/4 steps contain parsed math (ratio 100%)
+  [✓] conclusion_follows: conclusion is structurally consistent with proof body
+  [✓] variable_scope: all multi-character conclusion variables are properly scoped
 ```
 
-## 📊 Performance Metrics
+---
 
-### Success Rates by Domain
+## Research Context
 
-| Mathematical Domain | Success Rate | Avg. Corrections | Mathlib Usage |
-|--------------------|--------------|------------------|---------------|
-| Basic Algebra | 92% | 1.3 | 78% |
-| Number Theory | 87% | 2.1 | 82% |
-| Real Analysis | 73% | 3.4 | 91% |
-| Abstract Algebra | 68% | 3.8 | 85% |
-| Topology | 61% | 4.2 | 93% |
+### Why this matters
 
-### Benchmark Results
+The **formalization gap** is one of the most consequential unsolved problems in mathematics and AI:
 
-| System | IMO Problems | Putnam Problems | Textbook Exercises |
-|--------|--------------|-----------------|-------------------|
-| Lean 4 | 67/100 | 43/80 | 312/400 |
-| Isabelle | 61/100 | 39/80 | 298/400 |
-| Coq | 58/100 | 37/80 | 289/400 |
+- **Mathematics is accreting debt**: each year, thousands of papers contain proofs that have never been formally verified. Subtle errors propagate undetected for decades.
+- **AI math reasoning is brittle**: LLMs can produce plausible-looking proofs that contain logical holes, because they optimize for human-readable output, not logical correctness.
+- **Formal verification is underutilized**: Lean4's Mathlib library has formalized ~200,000 results — an impressive achievement, but a fraction of published mathematics.
 
-## 🏗️ Architecture
+Auto-formalization could change this by making formal verification accessible at scale.
 
-```mermaid
-graph TD
-    A[LaTeX/PDF Input] --> B[Mathematical Parser]
-    B --> C[Semantic Analyzer]
-    C --> D[LLM Formalizer]
-    D --> E[Proof Assistant]
-    E --> F{Verification}
-    F -->|Success| G[Output Formal Proof]
-    F -->|Error| H[Error Parser]
-    H --> I[Correction Prompter]
-    I --> D
+### Current state of the art
+
+- **Draft, Sketch, and Prove** (Jiang et al., 2022): LLM generates informal proof sketch, automated prover fills in the details
+- **Hypertree Proof Search** (Lample et al., 2022): tree search over Lean tactics guided by learned value function
+- **Lean Copilot** (Han et al., 2024): LLM-as-tactic-suggester within the Lean4 proof assistant
+- **MathLib4**: massive human-curated formal library — the ground truth target for auto-formalization
+
+### The rule-based approach (this repo)
+
+Before throwing LLMs at the problem, it helps to understand the *structural* challenge. This repo answers the question: **how far can explicit pattern matching take us?**
+
+The answer: far enough to demonstrate the pipeline and identify where the hard problems live:
+
+1. **Ambiguous notation**: `A^c` could mean complement, power, or transpose depending on context
+2. **Implicit quantifiers**: "for all n" is often left out when it's obvious to a human
+3. **Proof gaps**: informal proofs routinely skip "obvious" steps that require dozens of Lean4 lines
+4. **Semantic alignment**: mapping informal terms to Mathlib lemma names requires world knowledge
+
+A production system needs to solve all of these — which is why this is a hard research problem.
+
+### Future directions
+
+- **LLM-guided parsing**: use an LLM to resolve ambiguity in the AST (which `^c` means complement here?)
+- **Tactic generation**: map proof steps to Lean4 tactics (`ring`, `linarith`, `simp`, `omega`)
+- **Mathlib alignment**: retrieve relevant Mathlib lemmas for each step using embedding search
+- **Feedback loop**: use Lean4's type checker as a training signal for improving generation
+
+---
+
+## Project Structure
+
+```
+autoformalize-math-lab/
+├── src/
+│   └── autoformalize_math/
+│       ├── __init__.py          # Public API
+│       ├── ast_nodes.py         # All AST node dataclasses
+│       ├── parser.py            # LaTeXParser (tokenizer + recursive descent)
+│       ├── converter.py         # FormalConverter (AST → Lean4 pseudocode)
+│       └── checker.py           # ProofChecker (structural validation)
+├── tests/
+│   ├── test_parser.py           # Parser unit tests
+│   ├── test_converter.py        # Converter unit tests
+│   └── test_checker.py          # Checker unit tests + end-to-end
+├── demo.py                      # 3-proof demonstration
+├── pyproject.toml
+└── README.md
 ```
 
-### Component Details
+---
 
-1. **Mathematical Parser**: Extracts theorems, definitions, and proofs from LaTeX
-2. **Semantic Analyzer**: Identifies mathematical concepts and dependencies
-3. **LLM Formalizer**: Generates formal proof candidates
-4. **Proof Assistant Interface**: Runs verification and captures feedback
-5. **Correction Engine**: Iteratively refines failed attempts
+## License
 
-## 🧪 Evaluation Dataset
-
-We provide a comprehensive benchmark dataset:
-
-```python
-from autoformalize.datasets import AutoFormalizeDataset
-
-# Load benchmark
-dataset = AutoFormalizeDataset.load("undergraduate_math")
-
-# Run evaluation
-results = pipeline.evaluate(
-    dataset,
-    metrics=["success_rate", "correction_rounds", "proof_length"]
-)
-
-# Generate report
-results.to_latex("evaluation_report.tex")
-```
-
-## 🔌 Integration Examples
-
-### CI/CD Integration
-
-```yaml
-# .github/workflows/formalize.yml
-name: Auto-Formalize Theorems
-
-on:
-  push:
-    paths:
-      - 'theorems/*.tex'
-
-jobs:
-  formalize:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: autoformalize/action@v1
-        with:
-          target: lean4
-          mathlib-version: latest
-      - name: Update scoreboard
-        run: |
-          autoformalize scoreboard --update
-```
-
-### VS Code Extension
-
-```json
-// settings.json
-{
-  "autoformalize.realtime": true,
-  "autoformalize.target": "lean4",
-  "autoformalize.showSuggestions": true
-}
-```
-
-## 📚 Documentation
-
-Complete documentation: [https://autoformalize-math.readthedocs.io](https://autoformalize-math.readthedocs.io)
-
-### Tutorials
-- [Getting Started with Auto-Formalization](docs/tutorials/01_getting_started.md)
-- [Custom Prompt Engineering](docs/tutorials/02_prompt_engineering.md)
-- [Building Domain-Specific Pipelines](docs/tutorials/03_domain_specific.md)
-
-## 🏗️ Enterprise-Grade SDLC Implementation
-
-This repository implements a **comprehensive Software Development Lifecycle (SDLC)** with enterprise-grade practices specifically tailored for mathematical formalization and LLM-based systems.
-
-### 🚀 Implemented Features
-
-#### ✅ **CI/CD Pipeline**
-- **Multi-platform Testing**: Ubuntu, macOS, Windows across Python 3.9-3.12
-- **Mathematical Verification**: Automated Lean 4 and Isabelle proof checking
-- **Security Scanning**: Vulnerability detection, secrets scanning, license compliance
-- **Performance Monitoring**: Benchmarking, regression detection, resource tracking
-- **Automated Releases**: PyPI publishing, Docker builds, semantic versioning
-
-#### ✅ **Code Quality & Security**
-- **Static Analysis**: MyPy, Pylint, Bandit security scanning
-- **Formatting**: Black, isort, pre-commit hooks
-- **Test Coverage**: 80%+ coverage requirement with comprehensive test suite
-- **Security**: Daily vulnerability scans, dependency updates, SBOM generation
-
-#### ✅ **Monitoring & Observability**
-- **Prometheus Metrics**: Business and technical KPIs tracking
-- **Grafana Dashboards**: Real-time performance and health monitoring
-- **Alerting**: Critical alerts with PagerDuty and Slack integration
-- **Structured Logging**: JSON logging with correlation IDs and context
-
-#### ✅ **Development Environment**
-- **Containerization**: Docker with multi-stage builds and optimization
-- **Development Tools**: Pre-commit hooks, linting, type checking
-- **Documentation**: Sphinx documentation with auto-generation
-- **IDE Integration**: VS Code configuration and extensions
-
-#### ✅ **Project Management**
-- **Issue Templates**: Bug reports, feature requests, mathematical issues
-- **PR Templates**: Comprehensive review guidelines and checklists
-- **Code Owners**: Automatic review assignment and expertise mapping
-- **Branch Protection**: Enforced code review and status checks
-
-### 📋 Quick Setup Guide
-
-1. **Activate CI/CD Pipeline**:
-   ```bash
-   # Copy workflow templates (manual setup required)
-   cp docs/workflows/ci-template.yml .github/workflows/ci.yml
-   git add .github/workflows/ && git commit -m "ci: activate pipeline"
-   ```
-
-2. **Configure Repository Secrets**:
-   - `PYPI_API_TOKEN`: For package publishing
-   - `CODECOV_TOKEN`: For coverage reporting
-   - `DOCKER_USERNAME`, `DOCKER_PASSWORD`: For container registry
-
-3. **Enable Branch Protection**:
-   - Require PR reviews from CODEOWNERS
-   - Enforce status checks before merging
-   - Auto-delete merged branches
-
-4. **Setup Monitoring** (Optional):
-   ```bash
-   # Deploy monitoring stack
-   docker-compose -f docker/monitoring.yml up -d
-   # Import Grafana dashboards from docs/monitoring/dashboards/
-   ```
-
-### 📊 SDLC Metrics & Automation
-
-#### **Automated Metrics Collection**
-```bash
-# Collect comprehensive project metrics
-./scripts/metrics_collection.py --output-json metrics.json
-
-# Run dependency security audits
-./scripts/dependency_automation.py --check-security --check-licenses
-
-# Perform repository maintenance
-./scripts/repository_maintenance.py --all --output-report maintenance.md
-
-# Execute performance benchmarks
-./scripts/performance_benchmarking.py --export-json benchmarks.json
-```
-
-#### **Key Performance Indicators**
-- **Formalization Success Rate**: Target >70% (monitored in real-time)
-- **Code Coverage**: Maintained >80% with quality gates
-- **Security Vulnerabilities**: Zero tolerance with automated fixes
-- **Build Time**: <10 minutes for full CI pipeline
-- **Deployment Frequency**: Automated releases on tag push
-
-### 🔒 Security & Compliance
-
-#### **Security Scanning**
-- **Daily Vulnerability Scans**: Safety, pip-audit, Bandit
-- **Secrets Detection**: TruffleHog, GitLeaks integration
-- **Container Security**: Trivy scanning for Docker images
-- **License Compliance**: Automated license compatibility checking
-
-#### **Compliance Features**
-- **SBOM Generation**: Software Bill of Materials for supply chain security
-- **Audit Trails**: Comprehensive logging and change tracking
-- **Access Control**: CODEOWNERS-based review requirements
-- **Data Privacy**: GDPR-compliant data handling procedures
-
-### 📈 Monitoring Dashboard
-
-The project includes comprehensive monitoring with:
-
-- **Business Metrics**: Daily formalizations, success rates, user engagement
-- **Technical Metrics**: Response times, error rates, resource usage
-- **Security Metrics**: Vulnerability counts, compliance status
-- **Performance Metrics**: LLM API usage, proof verification times
-
-Access dashboards at:
-- **Grafana**: [Import from docs/monitoring/dashboards/](docs/monitoring/dashboards/)
-- **Prometheus**: Configure from [docs/monitoring/metrics.md](docs/monitoring/metrics.md)
-
-### 🚨 Production Readiness
-
-This repository is **production-ready** with:
-
-- ✅ Enterprise-grade CI/CD pipeline
-- ✅ Comprehensive monitoring and alerting
-- ✅ Security scanning and vulnerability management
-- ✅ Automated testing and quality gates
-- ✅ Performance benchmarking and regression detection
-- ✅ Documentation and operational runbooks
-
-For complete setup instructions, see [**SETUP_REQUIRED.md**](docs/SETUP_REQUIRED.md).
-
-### 🛠️ Operational Excellence
-
-#### **Automated Maintenance**
-- **Weekly**: Dependency updates and security patches
-- **Monthly**: Performance benchmarking and optimization
-- **Quarterly**: Security audits and compliance reviews
-
-#### **Incident Response**
-- **Monitoring**: 24/7 service health monitoring
-- **Alerting**: Critical alerts routed to on-call engineers
-- **Runbooks**: Detailed incident response procedures in [docs/runbooks/](docs/runbooks/)
-
-#### **Capacity Planning**
-- **Scaling**: Automated scaling based on usage metrics
-- **Cost Optimization**: LLM API cost monitoring and budget alerts
-- **Resource Management**: Proactive capacity planning and optimization
-
-## 🤝 Contributing
-
-We welcome contributions! Key areas:
-- Additional proof assistant backends
-- Domain-specific formalization strategies
-- Improved error correction prompts
-- Benchmark dataset expansion
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-## 📄 Citation
-
-```bibtex
-@inproceedings{autoformalize_math_lab,
-  title={Autoformalize-Math-Lab: Bridging Informal and Formal Mathematics},
-  author={Daniel Schmidt},
-  booktitle={International Conference on Automated Reasoning},
-  year={2025}
-}
-```
-
-## 🏆 Acknowledgments
-
-- Mathlib community for the comprehensive formal library
-- Lean 4, Isabelle, and Coq development teams
-- Authors of the auto-formalization survey paper
-
-## 📜 License
-
-MIT License - see [LICENSE](LICENSE) for details.
+MIT — see [LICENSE](LICENSE).
